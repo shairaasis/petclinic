@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+    "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true" />
+    <constant name="struts.convention.action.suffix" value="Controller"/>
+    <constant name="struts.convention.action.mapAllMatches" value="true"/>
+    <constant name="struts.convention.default.parent.package" value="rest-default"/>
+    <constant name="struts.convention.package.locators" value="rest"/>
+    <constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper" />
+    <constant name="struts.mapper.prefixMapping" value="/api:rest,:struts"/>
+    <constant name="struts.rest.namespace" value="/api" />
+    <constant name="struts.rest.content.restrictToGET" value="false"/>
+    
+    <package name="basicstruts2" extends="struts-default">
+        <action name="index">
+            <result>/index.jsp</result>
+        </action>
+
+        <action name="register" class="com.example.proj.action.Register" method="execute">
+            <interceptor-ref name="defaultStack"/>
+            <result name="success">/login.jsp</result>
+            <result name="input">/register.jsp</result>
+            <result name="error">/error.jsp</result>
+            <result name="accountregistered" type="redirectAction">
+            <param name="actionName">listaccounts</param>
+            <param name="status">${status}</param>
+            </result>
+        </action>
+
+        <action name="login" class="com.example.proj.action.Login" method="execute">
+            <interceptor-ref name="defaultStack"/>
+            <result name="admin">/admin.jsp</result>
+            <result name="veterinarian" type="redirectAction">
+                <param name="actionName">veterinarian</param>
+                <param name="accountId">${accountBean.accountId}</param>
+            </result>
+            <result name="input">/login.jsp</result>
+            <result name="error">/error.jsp</result>
+            <result name="client" type="redirectAction">
+                <param name="actionName">client</param>
+                <param name="accountId">${accountBean.accountId}</param>
+            </result>
+        </action>
+
+        <action name="veterinarian" class="com.example.proj.action.Veterinarian">
+            <result name="success">/veterinarian.jsp</result>
+        </action>
+
+        
+
+        <action name="logout" class="com.example.proj.action.Login" method="logout">
+            <result name="success">/login.jsp</result>
+            <result name="input">/login.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="pets" class="com.example.proj.action.Pets">
+            <result name="success">/pets.jsp</result>
+        </action>
+        <action name="client" class="com.example.proj.action.Client">
+            <result name="success">/client.jsp</result>
+        </action>
+        
+        <action name="listaccounts" class="com.example.proj.action.Accounts">
+            <interceptor-ref name="defaultStack"/>
+            <result name="success">/accounts.jsp</result>
+        </action>
+        <action name="filterAccount" class="com.example.proj.action.Accounts" method="filterAccount">
+            <result name="success">/accounts.jsp</result>
+        </action>
+
+        <!-- delete an account by admin -->
+        <action name="delete" class="com.example.proj.action.Delete" method="execute">
+            <result name="success" type="redirectAction">
+                <param name="actionName">listaccounts</param>
+                <param name="status">${status}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
+        
+
+        <action name="update" class="com.example.proj.action.Update" method="execute">
+            <result name="success" type="redirectAction">
+            <param name="actionName">listaccounts</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
+        <action name="registerpet" class="com.example.proj.action.Pets" method="registerPet">
+            <result name="success" type="redirectAction">
+            <param name="actionName">pets</param>
+            <param name="accountId">${petBean.ownerId}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+<!-- View all pending appointments -->
+        <action name="appointments" class="com.example.proj.action.Appointments" method="execute">
+            <result name="success">/appointments.jsp</result>
+        </action>
+
+         <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
+            <result name="success">/vetPendingAppointments.jsp</result>
+        </action>
+
+        <action name="addService" class="com.example.proj.action.AddService" method="execute">
+            <result name="success" type="redirectAction">
+            <param name="actionName">services</param>
+            </result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="services" class="com.example.proj.action.Services1" method="execute">
+            <result name="success">/services.jsp</result>
+        </action>
+
+        <action name="customerAppointments" class="com.example.proj.action.Appointments" method="customerAppointments">
+            <result name="success">/pendingclientappointments.jsp</result>
+        </action>
+        <action name="createAppointment" class="com.example.proj.action.Appointments" method="createAppointment">
+            <result name="success" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${appointmentBean.clientId}</param>
+            <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+        <!-- cancel appointment by client -->
+        <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
+            <result name="success" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${accountId}</param>
+            <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
+        <!-- cancel appointment by admin -->
+        <action name="cancelAppointment" class="com.example.proj.action.Cancel" method="execute">
+            <result name="success" type="redirectAction">
+                <param name="actionName">approvedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="vetAppointmentCancelled" type="redirectAction">
+                <param name="actionName">vetApprovedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
+    
+
+
+        <!-- approve an appointment by admin and vet-->
+        <action name="approve" class="com.example.proj.action.Approve" method="approveAppointment">
+            <result name="success" type="redirectAction">
+                <param name="actionName">approvedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="vetApproved" type="redirectAction">
+                <param name="actionName">vetApprovedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
+        <!-- view all approved appointments by admin -->
+        <action name="approvedAppointments" class="com.example.proj.action.Approve" method="execute">
+            <result name="success">/approvedAppointments.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+        <!-- view all approved appointments by client -->
+        <action name="approvedClientAppointments" class="com.example.proj.action.Approve" method="approvedClientAppointments">
+            <result name="success">/approvedclientappointments.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
+        <!-- view all approved appointments by vet -->
+        <action name="vetApprovedAppointments" class="com.example.proj.action.Appointments" method="vetApprovedAppointments">
+            <result name="success">/vetApprovedAppointments.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
+        <action name="deletePet" class="com.example.proj.action.Delete" method="deletePet">
+            <result name="success" type="redirectAction">
+            <param name="actionName">pets</param>
+            <param name="accountId">${accountId}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
+        <action name="deleteService" class="com.example.proj.action.Delete" method="deleteService">
+            <result name="success" type="redirectAction">
+            <param name="actionName">services</param>
+            </result>           
+            <result name="error" type="redirectAction">
+            <param name="actionName">services</param>
+            <param name="error=">${error}</param>
+            </result>           
+        </action>
+
+
+    </package>
+
+</struts>
