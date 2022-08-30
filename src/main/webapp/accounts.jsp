@@ -18,7 +18,7 @@
 			background-color: #d22a2a!important;
 		}
 		
-		#myBtn{
+		#myBtn, #updateBtn{
 			padding: 5px;
 			color: white;
 			background-color: #13a052e5;
@@ -26,7 +26,7 @@
 			border: none;
 			cursor: pointer;
 		}
-		#myBtn:hover{
+		#myBtn:hover, #updateBtn:hover{
 			background-color: #0e783e!important;
 		}
 	  </style>
@@ -233,8 +233,8 @@
 							<i class='bx bxs-edit bx-sm'></i></button></s:a>
 							 -->
 
-							<!-- Trigger/Open The Modal
-							<button id="myBtn">Update</button> -->
+							<!-- Trigger/Open The Modal -->
+							<button id="updateBtn">Update</button>
 
 							<!-- The Modal -->
 							<div id="myModal" class="modal">

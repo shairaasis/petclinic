@@ -47,32 +47,6 @@ public class Services1 extends ActionSupport{
 
          return SUCCESS;
     }
-    
-    public String addService() throws Exception{
-        serviceBean = getServiceBean();
-        System.out.println("======\n\n\n\n"+serviceBean.getService()+"==\n\n"+serviceBean.getFee()+"====\n\n");
-        Connection connection = null;
-        Statement statement = null;
-        try {
-            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(URL, "root", "password");
-
-            if (connection != null) {
-                statement = connection.createStatement();
-                String sql = "INSERT INTO services(service, fee) VALUES('"+serviceBean.getService()+"','"+ serviceBean.getFee()+"')";
-                statement.executeUpdate(sql);
-                return SUCCESS;
-            } else {
-                return ERROR;
-            }
-         } catch (Exception e) {
-             return ERROR;  
-         } finally {
-            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
-            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
-    }
 
     public ArrayList<PetService> getServices() {
         return services;

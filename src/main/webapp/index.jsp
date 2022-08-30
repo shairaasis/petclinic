@@ -662,7 +662,7 @@
                     <a class="text-white font-weight-bold" href="https://htmlcodex.com">HTML Codex</a>
                 </p>
             </div>
-            <div class="col-md-6 text-center text-md-right">
+            <!-- <div class="col-md-6 text-center text-md-right">
                 <ul class="nav d-inline-flex">
                     <li class="nav-item">
                         <a class="nav-link text-white py-0" href="#">Privacy</a>
@@ -677,7 +677,7 @@
                         <a class="nav-link text-white py-0" href="#">Help</a>
                     </li>
                 </ul>
-            </div>
+            </div> -->
         </div>
     </div>
     <!-- Footer End -->
