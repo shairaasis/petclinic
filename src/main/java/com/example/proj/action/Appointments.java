@@ -22,15 +22,15 @@ public class Appointments extends ActionSupport{
     private String concat = "', '";
     private int accountId;
     private String error;
-    public ArrayList listOfServices = new ArrayList();
+    public ArrayList<String> listOfServices = new ArrayList<String>();
     ArrayList<PetService> services = new ArrayList<PetService>();
     private PetService serviceBean;
-    public ArrayList listOfCustomers = new ArrayList();
+    public ArrayList<String> listOfCustomers = new ArrayList<String>();
     ArrayList<Account> customers = new ArrayList<Account>();
     private Account accountBean;
-    public ArrayList listOfVeterinarians = new ArrayList();
+    public ArrayList<String> listOfVeterinarians = new ArrayList<String>();
     ArrayList<Account> veterinarians = new ArrayList<Account>();
-    public ArrayList listOfPets = new ArrayList();
+    public ArrayList<String> listOfPets = new ArrayList<String>();
     ArrayList<Pet> pets = new ArrayList<Pet>();
     private Account vetBean;
     private String appointmentStatus;
@@ -416,11 +416,11 @@ public class Appointments extends ActionSupport{
     }
 
 
-    public ArrayList getListOfPets() {
+    public ArrayList<String> getListOfPets() {
         return listOfPets;
     }
 
-    public void setListOfPets(ArrayList listOfPets) {
+    public void setListOfPets(ArrayList<String> listOfPets) {
         this.listOfPets = listOfPets;
     }
 
@@ -432,11 +432,11 @@ public class Appointments extends ActionSupport{
         this.pets = pets;
     }
 
-    public ArrayList getListOfVeterinarians() {
+    public ArrayList<String> getListOfVeterinarians() {
         return listOfVeterinarians;
     }
 
-    public void setListOfVeterinarians(ArrayList listOfVeterinarians) {
+    public void setListOfVeterinarians(ArrayList<String> listOfVeterinarians) {
         this.listOfVeterinarians = listOfVeterinarians;
     }
 
@@ -456,11 +456,11 @@ public class Appointments extends ActionSupport{
         this.vetBean = vetBean;
     }
 
-    public ArrayList getListOfCustomers() {
+    public ArrayList<String> getListOfCustomers() {
         return listOfCustomers;
     }
 
-    public void setListOfCustomers(ArrayList listOfCustomers) {
+    public void setListOfCustomers(ArrayList<String> listOfCustomers) {
         this.listOfCustomers = listOfCustomers;
     }
 
@@ -480,11 +480,11 @@ public class Appointments extends ActionSupport{
         this.accountBean = accountBean;
     }
 
-    public ArrayList getListOfServices() {
+    public ArrayList<String> getListOfServices() {
         return listOfServices;
     }
 
-    public void setListOfServices(ArrayList listOfServices) {
+    public void setListOfServices(ArrayList<String> listOfServices) {
         this.listOfServices = listOfServices;
     }
 
