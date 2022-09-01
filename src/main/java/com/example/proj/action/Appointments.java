@@ -167,7 +167,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where customer_id ="+getAccountId()+ " and status = 'pending'";
+                String sql = "SELECT appointments.*, DATE_FORMAT(`schedule`, '%a, %b %d %Y %h:%i %p') AS `schedule`, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where customer_id ="+getAccountId()+ " and status = 'pending'";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -178,13 +178,13 @@ public class Appointments extends ActionSupport{
                     appointment.setPetId(rs.getInt(3));
                     appointment.setVeterinarianId(rs.getInt(4));
                     appointment.setServiceId(rs.getInt(5));
-                    appointment.setSchedule(rs.getString(6));
-                    appointment.setSchedule(appointment.getSchedule().substring(0, 16));
+                    appointment.setSchedule(rs.getString(8));
+                    // appointment.setSchedule(appointment.getSchedule().substring(0, 16));
                     appointment.setStatus(rs.getString(7));
-                    appointment.setCustomer(rs.getString(8));
-                    appointment.setVeterinarian(rs.getString(9));
-                    appointment.setPetName(rs.getString(10));
-                    appointment.setService(rs.getString(11));
+                    appointment.setCustomer(rs.getString(9));
+                    appointment.setVeterinarian(rs.getString(10));
+                    appointment.setPetName(rs.getString(11));
+                    appointment.setService(rs.getString(12));
                     appointments.add(appointment);
                 }
                 if(appointment == null){
@@ -241,7 +241,7 @@ public class Appointments extends ActionSupport{
         appointmentBean = getAppointmentBean();
         System.out.println("\n\n\nDate:"+appointmentBean.getDateOfAppointment()+"\n Time:"+appointmentBean.getTimeOfAppointment()+"\n\n");
         appointmentBean.setDateOfAppointment(appointmentBean.getDateOfAppointment().substring(0, 10));
-        appointmentBean.setTimeOfAppointment(appointmentBean.getTimeOfAppointment().substring(12, 16));
+        appointmentBean.setTimeOfAppointment(appointmentBean.getTimeOfAppointment().substring(11, 18));
         System.out.println("\n =="+appointmentBean.getDateOfAppointment());
         System.out.println("\n =="+appointmentBean.getTimeOfAppointment());
         // System.out.println("\n =="+appointmentBean.getPetName()+"\n\n");
@@ -251,7 +251,7 @@ public class Appointments extends ActionSupport{
         if(saveAppointment(appointmentBean) == true) {
             return "success";
         } else {
-            return ERROR;
+            return error;
         }
     }
     public Appointment getAppointmentData(Appointment appointmentBean)throws SQLException{
@@ -300,7 +300,7 @@ public class Appointments extends ActionSupport{
 
             if (connection != null) {
                 statement = connection.createStatement();
-                String sql = "INSERT INTO appointments (CUSTOMER_ID, PET_ID, VETERINARIAN_ID,SERVICE,SCHEDULE,status) VALUES((select account_id from accounts where account_id ='"+appointmentBean.getClientId()+"'),(select pet_id from pets where pet_name = '"+appointmentBean.getPetName()+"'),(select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) = '"+ appointmentBean.getVeterinarian()+"'),(select service_id from services where service = '"+appointmentBean.getService()+"'),'"+appointmentBean.getDateOfAppointment().concat(" "+appointmentBean.getTimeOfAppointment())+"','"+status+"')";
+                String sql = "INSERT INTO appointments (CUSTOMER_ID, PET_ID, VETERINARIAN_ID,SERVICE,SCHEDULE,status) VALUES((select account_id from accounts where account_id ='"+appointmentBean.getClientId()+"'),(select pet_id from pets where pet_name = '"+appointmentBean.getPetName()+"' AND owner_id = '"+appointmentBean.getClientId()+"'),(select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) = '"+ appointmentBean.getVeterinarian()+"'),(select service_id from services where service = '"+appointmentBean.getService()+"'),'"+appointmentBean.getDateOfAppointment().concat(" "+appointmentBean.getTimeOfAppointment())+"','"+status+"')";
                 statement.executeUpdate(sql);
                 appointmentStatus = "Appointment is scheduled. Please wait for approval.";
                 return true;
@@ -308,7 +308,7 @@ public class Appointments extends ActionSupport{
                 error = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
+         } catch (SQLException e) {
              error = e.toString();
              return false;  
          } finally {
