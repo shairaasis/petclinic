@@ -127,6 +127,17 @@
         <action name="customerAppointments" class="com.example.proj.action.Appointments" method="customerAppointments">
             <result name="success">/pendingclientappointments.jsp</result>
         </action>
+        <!-- Get Available time of Vet on the date Selected -->
+        <action name="getTimeAvailable" class="com.example.proj.action.Appointments" method="getTimeAvailable">
+            <result name="success" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${appointmentBean.clientId}</param>
+            <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
         <action name="createAppointment" class="com.example.proj.action.Appointments" method="createAppointment">
             <result name="success" type="redirectAction">
             <param name="actionName">customerAppointments</param>

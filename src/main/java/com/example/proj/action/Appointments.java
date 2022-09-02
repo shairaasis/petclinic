@@ -7,14 +7,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 import com.example.proj.model.Account;
 import com.example.proj.model.Appointment;
 import com.example.proj.model.Pet;
 import com.example.proj.model.PetService;
+import com.example.proj.model.Time;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Appointments extends ActionSupport{
+    LocalDate now = LocalDate.now(); 
     private String numOfAppointments;
     private static Appointment appointmentBean = new Appointment();
     ArrayList<Appointment> appointments = new ArrayList<Appointment>();
@@ -34,6 +37,8 @@ public class Appointments extends ActionSupport{
     ArrayList<Pet> pets = new ArrayList<Pet>();
     private Account vetBean;
     private String appointmentStatus;
+    public ArrayList<String> listOfTimes = new ArrayList<String>();
+   
 
     public String execute() throws Exception {
         Connection connection = null;
@@ -75,6 +80,9 @@ public class Appointments extends ActionSupport{
 
          return SUCCESS;
     }
+
+    
+
     public String vetPendingAppointments() throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -156,6 +164,7 @@ public class Appointments extends ActionSupport{
          return SUCCESS;
     }
     public String customerAppointments() throws Exception {
+        getTimetable();
         listOfServices();
         listOfVeterinarians();
         listOfPets();
@@ -201,6 +210,38 @@ public class Appointments extends ActionSupport{
          return SUCCESS;
     }
 
+    private String getTimetable() {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+
+            if (connection != null) {
+                String sql = "SELECT * from time";
+                preparedStatement = connection.prepareStatement(sql);
+                ResultSet rs= preparedStatement.executeQuery();
+
+                while(rs.next()){  
+                    Time time=new Time();
+                    time.setTime(rs.getString(2));
+                    listOfTimes.add(time.getTime());
+                }
+            } 
+         } catch (Exception e) {
+            error = e.toString();
+            return error;
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+         return SUCCESS;
+    }
+    
+
+
+
     public String listOfPets() throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -228,6 +269,53 @@ public class Appointments extends ActionSupport{
                 }
             } 
          } catch (Exception e) {
+            error = e.toString();
+            return error;
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+
+         return SUCCESS;
+    }
+    public String getTimeAvailable() throws Exception{
+        getTimetable();
+        listOfServices();
+        listOfVeterinarians();
+        listOfPets();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+
+            if (connection != null) {
+                // String sql = "select appointments.*, time.time, CONCAT(veterinarian_name.first_name, ' ', veterinarian_name.last_name) AS Veterinarian from appointments INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id inner join `time` ON appointments.timeID = time.timeID where veterinarian_id = 28 and `schedule` = '2022-07-07' and `status` = "approved"";
+                // preparedStatement = connection.prepareStatement(sql);
+                ResultSet rs= preparedStatement.executeQuery();
+
+                while(rs.next()){  
+                    Appointment appointment=new Appointment();
+                    appointment.setAppointmentId(rs.getInt(1));
+                    appointment.setClientId(rs.getInt(2));
+                    appointment.setPetId(rs.getInt(3));
+                    appointment.setVeterinarianId(rs.getInt(4));
+                    appointment.setServiceId(rs.getInt(5));
+                    appointment.setSchedule(rs.getString(8));
+                    // appointment.setSchedule(appointment.getSchedule().substring(0, 16));
+                    appointment.setStatus(rs.getString(7));
+                    appointment.setCustomer(rs.getString(9));
+                    appointment.setVeterinarian(rs.getString(10));
+                    appointment.setPetName(rs.getString(11));
+                    appointment.setService(rs.getString(12));
+                    appointments.add(appointment);
+                }
+                if(appointment == null){
+                    numOfAppointments = "No approved Appointments. Wait for pending appointments to be approved.";
+                }
+            } 
+         } catch (Exception e) {
 
          } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
@@ -236,7 +324,6 @@ public class Appointments extends ActionSupport{
 
          return SUCCESS;
     }
-
     public String createAppointment() throws Exception{
         appointmentBean = getAppointmentBean();
         System.out.println("\n\n\nDate:"+appointmentBean.getDateOfAppointment()+"\n Time:"+appointmentBean.getTimeOfAppointment()+"\n\n");

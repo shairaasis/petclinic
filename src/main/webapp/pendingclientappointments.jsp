@@ -150,7 +150,11 @@
 				</div>
 				
 			</div>
-
+			<!-- TIME SELECTOR -->
+			<s:select headerKey="-1" id="time" headerValue="Select Time"
+				list="listOfTimes" 
+				name="appointmentBean.petName" />
+			</div>
 			
 			<!-- Trigger/Open The Modal -->
 			<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create an appointment</button>
@@ -163,7 +167,20 @@
 				<span class="close">&times;</span>
 				<div class="container">
 							<h2>Schedule an appointment</h2>
-							<s:form action="createAppointment" id="form" style="width: 100%;">
+							<s:form action="getTimeAvailable" id="form" style="width: 100%;">
+									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+									<div id="service">
+									<div class="control-group">
+										<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>
+									</div>
+									<div class="control-group">
+									<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
+										list="veterinarians"
+										name="appointmentBean.veterinarian" />
+									</div>
+								  	<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>
+							</s:form>
+							<!-- <s:form action="createAppointment" id="form" style="width: 100%;">
 									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
 									<div id="service">
 									<s:select headerKey="-1" id="service" headerValue="Select Service"
@@ -171,7 +188,7 @@
 										name="appointmentBean.service" />
 									</div>
 										<div class="control-group">
-											<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Date of Appointment (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{'2022-07-01'}"/>
+											<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Date of Appointment (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>
 										</div>
 										<div class="control-group">
 											<sx:datetimepicker type="time" labelposition="top" name="appointmentBean.timeOfAppointment" toggleType="fade" label="Time (HH:mm)" displayFormat="HH:mm" value="%{'10:00'}"/>
@@ -181,13 +198,14 @@
 											list="listOfVeterinarians" 
 											name="appointmentBean.veterinarian" />
 										</div>
+									
 										<div class="control-group">
 										<s:select headerKey="-1" id="pet" headerValue="Select Pet"
 											list="listOfPets" 
 											name="appointmentBean.petName" />
 										</div>
 								  	<s:submit id="myBtn" value="Schedule" class="btn btn-primary py-3 px-5"/>
-							</s:form>
+							</s:form> -->
 					</div>
 			</div>
 			</div>
