@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.sql.Statement;
 
-import org.apache.struts2.dispatcher.SessionMap;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionSupport;

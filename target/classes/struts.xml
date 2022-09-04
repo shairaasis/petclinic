@@ -50,7 +50,9 @@
             <result name="success">/veterinarian.jsp</result>
         </action>
 
-        
+        <action name="scheduleAvailability" class="com.example.proj.action.ScheduleAvailability">
+            <result name="success">/scheduleAvailability.jsp</result>
+        </action>
 
         <action name="logout" class="com.example.proj.action.Login" method="logout">
             <result name="success">/login.jsp</result>
@@ -60,6 +62,9 @@
 
         <action name="pets" class="com.example.proj.action.Pets">
             <result name="success">/pets.jsp</result>
+        </action>
+        <action name="client" class="com.example.proj.action.Client">
+            <result name="success">/client.jsp</result>
         </action>
         <action name="client" class="com.example.proj.action.Client">
             <result name="success">/client.jsp</result>

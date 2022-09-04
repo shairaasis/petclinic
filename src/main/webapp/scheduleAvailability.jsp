@@ -4,14 +4,23 @@
 <html> 
     <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	  <link href="assets/img/favicon-16x16.png" rel="icon">
 
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <!-- Boxicons -->
       <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
       <!-- My CSS -->
       <link rel="stylesheet" href="css/admincss/style.css">
-      <title>Veterinarian</title>
+	  <link rel="stylesheet" href="css/admincss/modal.css">
+      <title>Schedule Availability</title>
+	  <style>
+		#approve:hover{
+			background-color: #13a053!important;
+		}
+		#cancel:hover{
+			background-color: #d22a2a!important;
+		}
+	  </style>
     </head>
 <body>
   <!-- SIDEBAR -->
@@ -21,7 +30,7 @@
 			<span class="text">PetClinic</span>
 		</a>
 		<ul class="side-menu top">
-			<li class="active">
+			<li>
 				<s:url action="veterinarian" var="veterinarian">
 					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
@@ -30,7 +39,7 @@
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
-			<li>
+			<li class="active">
 				<s:url action="scheduleAvailability" var="scheduleAvailability">
 					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
@@ -98,48 +107,37 @@
 			</a> -->
 		</nav>
 		<!-- NAVBAR -->
-
-		<!-- MAIN -->
+    <!-- MAIN -->
 		<main>
+			
+
+
+			
 			<div class="head-title">
 				<div class="left">
-					<h1>Dashboard</h1>
+					<h1>Schedule Availability</h1>
 					<ul class="breadcrumb">
 						<li>
 							<a href="#">Dashboard</a>
 						</li>
 						<li><i class='bx bx-chevron-right' ></i></li>
 						<li>
-							<a class="active" href="client.jsp">Home</a>
+							<a class="active" href="#">Schedule Availability</a>
 						</li>
 					</ul>
 				</div>
-				
 			</div>
+			<!-- Trigger/Open The Modal -->
+			<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Add Availability</button>
 
-			<ul class="box-info">
-				<li>
-					<i class='bx bxs-user'></i>
-						<span class="text">
-						<h3>Welcome back</h3>
-						<p>to PetClinic</p>
-					</span>
-				</li>
-				
-			</ul>
-
-
-
-
-  </div>
+			
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	
-	
-  
   </div>
+
   <script src="css/admincss/script.js"></script>
+  <script src="css/admincss/modal.js"></script>
 </body>
 </html>

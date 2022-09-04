@@ -31,12 +31,21 @@
 		</a>
 		<ul class="side-menu top">
 			<li>
-				<s:url action="client" var="client">
+				<s:url action="veterinarian" var="veterinarian">
 					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
-				<a href="${client}">
+				<a href="${veterinarian}">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<s:url action="scheduleAvailability" var="scheduleAvailability">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${scheduleAvailability}">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Schedule Availability</span>
 				</a>
 			</li>
 			<li>

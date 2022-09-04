@@ -6,8 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.Statement;
-
 import com.example.proj.model.PetService;
 import com.opensymphony.xwork2.ActionSupport;
 
