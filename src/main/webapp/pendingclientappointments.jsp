@@ -150,13 +150,6 @@
 				</div>
 				
 			</div>
-			<!-- TIME SELECTOR -->
-			<s:select headerKey="-1" id="time" headerValue="Select Time"
-				list="listOfTimes" 
-				name="appointmentBean.petName" />
-			</div>
-
-			
 				<s:url action="clickCreateAppointment" var="clickCreateAppointment">
 					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
@@ -175,7 +168,7 @@
 									<div class="control-group">
 									<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
 										list="%{veterinarianId.entrySet()}"
-										name="appointmentBean.veterinarian" listKey="value"
+										name="appointmentBean.veterinarian" listKey="key"
 										listValue="key"/>
 									</div>
 
@@ -226,7 +219,7 @@
 									<s:hidden name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" />
 									<div class="control-group">
                                         <s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
-										list="%{listOfTimeAvailable.entrySet()}"
+										list="%{listOfTime.entrySet()}"
 										name="appointmentBean.timeOfAppointment" listKey="key"
 										listValue="value"/>
 									</div>
@@ -251,69 +244,7 @@
 								  	<s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
 							</s:form>
 						</s:if>
-		
 
-			<!-- Trigger/Open The Modal -->
-			<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create an appointment</button>
-
-			<!-- The Modal -->
-			<div id="myModal" class="modal">
-
-			<!-- Modal content -->
-			<div class="modal-content">
-				<span class="close">&times;</span>
-				<div class="container">
-							<h2>Schedule an appointment</h2>
-							<s:form action="getTimeAvailable" id="form" style="width: 100%;">
-									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-									<div id="service">
-									<div class="control-group">
-										<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>
-									</div>
-									<div class="control-group">
-									<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-										list="%{veterinarianId.entrySet()}"
-										name="appointmentBean.veterinarian" listKey="value"
-										listValue="key"/>
-									</div>
-
-									<!-- <select name="appointmentBean.veterinarian">
-										<c:forEach items="${veterinarianId}" var="vet">
-											<option value="${vet.key}">${country.value}</option>
-										</c:forEach>
-									</select> -->
-
-								  	<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>
-							</s:form>
-							<!-- <s:form action="createAppointment" id="form" style="width: 100%;">
-									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-									<div id="service">
-									<s:select headerKey="-1" id="service" headerValue="Select Service"
-										list="listOfServices" 
-										name="appointmentBean.service" />
-									</div>
-										<div class="control-group">
-											<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Date of Appointment (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>
-										</div>
-										<div class="control-group">
-											<sx:datetimepicker type="time" labelposition="top" name="appointmentBean.timeOfAppointment" toggleType="fade" label="Time (HH:mm)" displayFormat="HH:mm" value="%{'10:00'}"/>
-										</div>
-										<div class="control-group">
-										<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-											list="listOfVeterinarians" 
-											name="appointmentBean.veterinarian" />
-										</div>
-									
-										<div class="control-group">
-										<s:select headerKey="-1" id="pet" headerValue="Select Pet"
-											list="listOfPets" 
-											name="appointmentBean.petName" />
-										</div>
-								  	<s:submit id="myBtn" value="Schedule" class="btn btn-primary py-3 px-5"/>
-							</s:form> -->
-					</div>
-			</div>
-			</div>
 			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
 			
 			<div class="table-data">

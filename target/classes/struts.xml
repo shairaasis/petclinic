@@ -50,10 +50,6 @@
             <result name="success">/veterinarian.jsp</result>
         </action>
 
-        <action name="scheduleAvailability" class="com.example.proj.action.ScheduleAvailability">
-            <result name="success">/scheduleAvailability.jsp</result>
-        </action>
-
         <action name="logout" class="com.example.proj.action.Login" method="logout">
             <result name="success">/login.jsp</result>
             <result name="input">/login.jsp</result>
@@ -156,6 +152,7 @@
             <result name="input">/error.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
+
         <!-- cancel appointment by client -->
         <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
             <result name="success" type="redirectAction">
