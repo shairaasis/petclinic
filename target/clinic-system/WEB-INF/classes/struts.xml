@@ -5,7 +5,7 @@
 
 <struts>
 
-    <constant name="struts.devMode" value="true" />
+    <!-- <constant name="struts.devMode" value="true" /> -->
     <constant name="struts.convention.action.suffix" value="Controller"/>
     <constant name="struts.convention.action.mapAllMatches" value="true"/>
     <constant name="struts.convention.default.parent.package" value="rest-default"/>
@@ -34,19 +34,29 @@
         <action name="login" class="com.example.proj.action.Login" method="execute">
             <interceptor-ref name="defaultStack"/>
             <result name="admin">/admin.jsp</result>
-            <result name="veterinarian">/veterinarian.jsp</result>
+            <result name="veterinarian" type="redirectAction">
+                <param name="actionName">veterinarian</param>
+                <param name="accountId">${accountBean.accountId}</param>
+            </result>
             <result name="input">/login.jsp</result>
             <result name="error">/error.jsp</result>
             <result name="client" type="redirectAction">
-            <param name="actionName">client</param>
-            <param name="accountId">${accountBean.accountId}</param>
+                <param name="actionName">client</param>
+                <param name="accountId">${accountBean.accountId}</param>
             </result>
         </action>
 
-        
+        <action name="veterinarian" class="com.example.proj.action.Veterinarian">
+            <result name="success">/veterinarian.jsp</result>
+        </action>
+
+        <action name="scheduleAvailability" class="com.example.proj.action.ScheduleAvailability">
+            <result name="success">/scheduleAvailability.jsp</result>
+        </action>
 
         <action name="logout" class="com.example.proj.action.Login" method="logout">
             <result name="success">/login.jsp</result>
+            <result name="input">/login.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
 
@@ -56,9 +66,15 @@
         <action name="client" class="com.example.proj.action.Client">
             <result name="success">/client.jsp</result>
         </action>
+        <action name="client" class="com.example.proj.action.Client">
+            <result name="success">/client.jsp</result>
+        </action>
         
         <action name="listaccounts" class="com.example.proj.action.Accounts">
             <interceptor-ref name="defaultStack"/>
+            <result name="success">/accounts.jsp</result>
+        </action>
+        <action name="filterAccount" class="com.example.proj.action.Accounts" method="filterAccount">
             <result name="success">/accounts.jsp</result>
         </action>
 
@@ -70,6 +86,8 @@
             </result>
             <result name="error">/error.jsp</result>            
         </action>
+
+        
 
         <action name="update" class="com.example.proj.action.Update" method="execute">
             <result name="success" type="redirectAction">
@@ -86,9 +104,13 @@
             <result name="input">/error.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
-
+<!-- View all pending appointments -->
         <action name="appointments" class="com.example.proj.action.Appointments" method="execute">
             <result name="success">/appointments.jsp</result>
+        </action>
+
+        <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
+            <result name="success">/vetPendingAppointments.jsp</result>
         </action>
 
         <action name="addService" class="com.example.proj.action.AddService" method="execute">
@@ -115,7 +137,7 @@
             <result name="error">/error.jsp</result>
         </action>
         <!-- cancel appointment by client -->
-        <action name="cancel" class="com.example.proj.action.Cancel" method="execute">
+        <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
             <result name="success" type="redirectAction">
             <param name="actionName">customerAppointments</param>
             <param name="accountId">${accountId}</param>
@@ -126,16 +148,29 @@
         <!-- cancel appointment by admin -->
         <action name="cancelAppointment" class="com.example.proj.action.Cancel" method="execute">
             <result name="success" type="redirectAction">
-            <param name="actionName">approvedAppointments</param>
-            <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="actionName">approvedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="vetAppointmentCancelled" type="redirectAction">
+                <param name="actionName">vetApprovedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
-        <!-- approve an appointment by admin -->
+    
+
+
+        <!-- approve an appointment by admin and vet-->
         <action name="approve" class="com.example.proj.action.Approve" method="approveAppointment">
             <result name="success" type="redirectAction">
-            <param name="actionName">approvedAppointments</param>
-            <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="actionName">approvedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="vetApproved" type="redirectAction">
+                <param name="actionName">vetApprovedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
@@ -147,6 +182,12 @@
         <!-- view all approved appointments by client -->
         <action name="approvedClientAppointments" class="com.example.proj.action.Approve" method="approvedClientAppointments">
             <result name="success">/approvedclientappointments.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
+        <!-- view all approved appointments by vet -->
+        <action name="vetApprovedAppointments" class="com.example.proj.action.Appointments" method="vetApprovedAppointments">
+            <result name="success">/vetApprovedAppointments.jsp</result>
             <result name="error">/error.jsp</result>            
         </action>
 
@@ -166,6 +207,12 @@
             <param name="actionName">services</param>
             <param name="error=">${error}</param>
             </result>           
+        </action>
+
+        <!-- Email function  -->
+        <action name = "Emailer" class = "com.example.proj.action.Emailer" method = "execute">
+            <result name = "success">/TestSuccess.jsp</result>
+            <result name = "error">/TestError.jsp</result>
         </action>
 
 

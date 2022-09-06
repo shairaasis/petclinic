@@ -6,7 +6,7 @@
 	<display-name>Basic Struts2</display-name>
 	<welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
+</welcome-file-list>
 
 	<filter>
 		<filter-name>struts2</filter-name>

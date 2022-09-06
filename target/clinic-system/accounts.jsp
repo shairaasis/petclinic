@@ -18,7 +18,7 @@
 			background-color: #d22a2a!important;
 		}
 		
-		#myBtn{
+		#myBtn, #updateBtn{
 			padding: 5px;
 			color: white;
 			background-color: #13a052e5;
@@ -26,7 +26,7 @@
 			border: none;
 			cursor: pointer;
 		}
-		#myBtn:hover{
+		#myBtn:hover, #updateBtn:hover{
 			background-color: #0e783e!important;
 		}
 	  </style>
@@ -79,12 +79,14 @@
 			</li>
 		</ul>
 		<ul class="side-menu">
-			<s:url action="logout" var="logout">
-			</s:url>
-			<a href="${logout}" class="logout">
-				<i class='bx bxs-log-out-circle' ></i>
-				<span class="text">Logout</span>
-			</a>
+			<li>
+				<s:url action="logout" var="logout">
+				</s:url>
+				<a href="${logout}" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
@@ -146,11 +148,11 @@
 				  <s:checkbox name="client" fieldValue="true" label="Client"/> -->
 				  <s:radio name="typeOfAccount" list="#{'1':'Admin','2':'Veterinarian','3':'Client'}" value="3" />
 				  <div class="control-group">
-					  <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your username" />
+					  <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Username" required="required" data-validation-required-message="Please enter your username" />
 					  <p class="help-block text-danger"></p>
 					</div>
 					<div class="control-group">
-					  <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your password" />
+					  <s:password name="accountBean.password" class="form-control p-4" placeholder="Password" required="required" data-validation-required-message="Please enter your password" />
 					  <p class="help-block text-danger"></p>
 					</div>
 					<div class="control-group">
@@ -195,6 +197,15 @@
 						</form>
 						<i class='bx bx-search' ></i>
 						<i class='bx bx-filter' ></i> -->
+						<s:form action="filterAccount">
+							<select name="filter" id="filter" onchange='if(this.value != 0) { this.form.submit(); }'> 
+								<option value="0">Filter By</option> 
+								<option value="1">Admin</option> 
+								<option value="2">Veterinarian</option> 
+								<option value="3">Client</option> 
+							</select>
+						
+						</s:form>
 					</div>
 					<h3><s:property value="accountDeleted"></s:property></h3>
 					<table>
@@ -222,8 +233,8 @@
 							<i class='bx bxs-edit bx-sm'></i></button></s:a>
 							 -->
 
-							<!-- Trigger/Open The Modal
-							<button id="myBtn">Update</button> -->
+							<!-- Trigger/Open The Modal -->
+							<button id="updateBtn">Update</button>
 
 							<!-- The Modal -->
 							<div id="myModal" class="modal">
@@ -277,7 +288,7 @@
 							<s:url action="delete" var="delete">
 								<s:param name="accountId" value="accountId"></s:param>
 							</s:url>
-							<s:a href="%{delete}"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
+							<s:a href="%{delete}"><button id="cancel" title="Delete" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
 								<i class='bx bx-x bx-sm'></i></button></s:a>					
 						</td>
 					</tr>

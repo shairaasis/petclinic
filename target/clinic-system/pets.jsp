@@ -19,6 +19,18 @@
 		#cancel:hover{
 			background-color: #d22a2a!important;
 		}
+		
+		#myBtn{
+			padding: 5px;
+			color: white;
+			background-color: #13a052e5;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+		}
+		#myBtn:hover{
+			background-color: #0e783e!important;
+		}
 	  </style>
     </head>
 <body>
@@ -120,7 +132,7 @@
 			</div>
 			
 		<!-- Trigger/Open The Modal -->
-		<button id="myBtn">Register Pet</button>
+		<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i>Register Pet</button>
 
 		<!-- The Modal -->
 		<div id="myModal" class="modal">
@@ -134,28 +146,28 @@
 		
 		<div class="w3-container">
 			<s:form action="registerpet" id="form" style="width: 100%;">
-				<div class="control-group">
+				<div style="text-align: left; float: left;" class="control-group">
 					<s:hidden name="petBean.ownerId" value="%{accountId}" />
 					<!-- <s:textfield name="petBean.ownerId" class="form-control p-4" placeholder="Your ID" required="required" data-validation-required-message="Please enter your name" /> -->
 					<p class="help-block text-danger"></p>
 				</div>
 				<div class="control-group">
-					<s:textfield name="petBean.petName" class="form-control p-4" placeholder="Your Pet's name" required="required" data-validation-required-message="Please enter your name" />
+					<s:textfield name="petBean.petName" label="Pet Name" class="form-control p-4" placeholder="Your Pet's name" required="required" data-validation-required-message="Please enter your name" />
 					<p class="help-block text-danger"></p>
 				</div>
 				<div class="control-group">
-					<sx:datetimepicker name="petBean.dateOfBirth" toggleType="fade" labelposition="top" label="Date of Birth (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{'2010-01-01'}"/>
+					<sx:datetimepicker name="petBean.dateOfBirth" toggleType="fade" labelposition="left" label="Date of Birth (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{'2010-01-01'}"/>
 					<p class="help-block text-danger"></p>
 				</div>
 				<div class="control-group">
-					<s:textfield name="petBean.breed" class="form-control p-4" placeholder="Breed" required="required" data-validation-required-message="Please enter your name" />
+					<s:textfield name="petBean.breed" label="Breed" class="form-control p-4" placeholder="Breed" required="required" data-validation-required-message="Please enter your name" />
 					<p class="help-block text-danger"></p>
 				</div>
 				<div class="control-group">
-					<s:textfield name="petBean.coatColor" class="form-control p-4" placeholder="Coat color" required="required" data-validation-required-message="Please enter your name" />
+					<s:textfield name="petBean.coatColor" label="Coat Color" class="form-control p-4" placeholder="Coat color" required="required" data-validation-required-message="Please enter your name" />
 					<p class="help-block text-danger"></p>
 				</div>
-				<s:submit value="Register" class="btn btn-primary py-3 px-5"/>
+				<s:submit id="myBtn" value="Register" class="btn btn-primary py-3 px-5"/>
 				
 			</s:form>
 		</div>
@@ -190,7 +202,7 @@
 						<s:param name="accountId" value="accountId"></s:param>
 						<s:param name="petId" value="petId"></s:param>
 					</s:url>
-					<s:a href="%{deletepet}"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
+					<s:a href="%{deletepet}"><button id="cancel" title="Delete" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
 					<i class='bx bx-x bx-sm'></i></button></s:a>
                 </tr>
           		</s:iterator>

@@ -128,16 +128,6 @@
         </div>
       </div>
     </div>
-        <!-- <section id="contact" class="contact section-bg">
-            <div class="container">
-            <h3>Login</h3>
-            <s:form action="Login" class="php-email-form">
-            <p style="color: red; float: left;"><s:property value="errorMessage" /> </p>
-            <s:textfield name="accountBean.username" label="Username" class="form-group mt-3"/>
-            <s:password name="accountBean.password" label="Password" class="form-group mt-3"/>
-            <s:submit key="submit" value="Login" style="padding: 5px; background-color:#004C64; color: white; border: none;"/>
-            </s:form>
-            </div>
-            </section> -->
+ 
 </body>
 </html>

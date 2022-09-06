@@ -21,6 +21,28 @@
 		#cancel:hover{
 			background-color: #d22a2a!important;
 		}
+		#myBtn{
+			padding: 5px;
+			color: white;
+			background-color: #13a052e5;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+		}
+		#myBtn:hover{
+			background-color: #0e783e!important;
+		}
+		.tdLabel{
+			display: none;
+		}
+		.tdInput{
+			margin-left: 0px;
+		}
+		.wwFormTable {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 	  </style>
     </head>
 <body>
@@ -122,7 +144,7 @@
 						</li>
 						<li><i class='bx bx-chevron-right' ></i></li>
 						<li>
-							<a class="active" href="#">Appointments</a>
+							<a class="active" href="#">Pending Appointments</a>
 						</li>
 					</ul>
 				</div>
@@ -131,7 +153,7 @@
 
 			
 			<!-- Trigger/Open The Modal -->
-			<button id="myBtn">Create an appointment</button>
+			<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create an appointment</button>
 
 			<!-- The Modal -->
 			<div id="myModal" class="modal">
@@ -139,39 +161,34 @@
 			<!-- Modal content -->
 			<div class="modal-content">
 				<span class="close">&times;</span>
-				<div class="container-fluid pt-5">
-					<div class="row justify-content-center">
-					<div class="col-12 col-sm-8 mb-5">
-						<div class="contact-form">
+				<div class="container">
 							<h2>Schedule an appointment</h2>
 							<s:form action="createAppointment" id="form" style="width: 100%;">
-								
-								  <h2>
 									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+									<div id="service">
 									<s:select headerKey="-1" id="service" headerValue="Select Service"
 										list="listOfServices" 
 										name="appointmentBean.service" />
-									</h2> 
-									<h2>
-									<sx:datetimepicker name="appointmentBean.dateOfAppointment" toggleType="fade" label="Date of Appointment (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{'2022-07-01'}"/>
-									<sx:datetimepicker type="time" labelposition="top" name="appointmentBean.timeOfAppointment" toggleType="fade" label="Time (HH:mm)" displayFormat="HH:mm" value="%{'10:00'}"/>
-									</h2>
-									<h2>
+									</div>
+										<div class="control-group">
+											<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Date of Appointment (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{'2022-07-01'}"/>
+										</div>
+										<div class="control-group">
+											<sx:datetimepicker type="time" labelposition="top" name="appointmentBean.timeOfAppointment" toggleType="fade" label="Time (HH:mm)" displayFormat="HH:mm" value="%{'10:00'}"/>
+										</div>
+										<div class="control-group">
 										<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
 											list="listOfVeterinarians" 
 											name="appointmentBean.veterinarian" />
-									</h2>
-									<h2>
+										</div>
+										<div class="control-group">
 										<s:select headerKey="-1" id="pet" headerValue="Select Pet"
 											list="listOfPets" 
 											name="appointmentBean.petName" />
-									</h2> 
-								  	<s:submit value="Schedule" class="btn btn-primary py-3 px-5"/>
+										</div>
+								  	<s:submit id="myBtn" value="Schedule" class="btn btn-primary py-3 px-5"/>
 							</s:form>
-						</div>
 					</div>
-					</div>
-				</div>
 			</div>
 			</div>
 			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
@@ -180,8 +197,8 @@
 				<div class="order">
 					<div class="head">
 						<h3>Appointments</h3>
-						<i class='bx bx-search' ></i>
-						<i class='bx bx-filter' ></i>
+						<!-- <i class='bx bx-search' ></i>
+						<i class='bx bx-filter' ></i> -->
 					</div>
 					<table>
 						<thead>

@@ -5,7 +5,7 @@
 
 <struts>
 
-    <constant name="struts.devMode" value="true" />
+    <!-- <constant name="struts.devMode" value="true" /> -->
     <constant name="struts.convention.action.suffix" value="Controller"/>
     <constant name="struts.convention.action.mapAllMatches" value="true"/>
     <constant name="struts.convention.default.parent.package" value="rest-default"/>
@@ -109,7 +109,7 @@
             <result name="success">/appointments.jsp</result>
         </action>
 
-         <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
+        <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
             <result name="success">/vetPendingAppointments.jsp</result>
         </action>
 
@@ -207,6 +207,12 @@
             <param name="actionName">services</param>
             <param name="error=">${error}</param>
             </result>           
+        </action>
+
+        <!-- Email function  -->
+        <action name = "Emailer" class = "com.example.proj.action.Emailer" method = "execute">
+            <result name = "success">/TestSuccess.jsp</result>
+            <result name = "error">/TestError.jsp</result>
         </action>
 
 

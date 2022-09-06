@@ -45,7 +45,10 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<s:url action="approvedClientAppointments" var="approve">
+                    <s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${approve}">
 					<span style="margin-left: 50px;" class="text">Approved</span>
 				</a>
 			</li>

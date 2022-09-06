@@ -1,7 +1,9 @@
+com\example\proj\action\ScheduleAvailability.class
 com\example\proj\action\Login.class
 com\example\proj\action\Services1.class
 com\example\proj\action\Appointments.class
 com\example\proj\action\Update.class
+com\example\proj\action\Emailer$1.class
 com\example\proj\action\LoginToken.class
 com\example\proj\action\RegisterPet.class
 com\example\proj\action\RequestMapping.class
@@ -12,7 +14,9 @@ com\example\proj\model\Pet.class
 com\example\proj\action\Approve.class
 com\example\proj\action\AddService.class
 com\example\proj\action\Delete.class
+com\example\proj\action\Emailer.class
 com\example\proj\action\Register.class
+com\example\proj\action\Veterinarian.class
 com\example\proj\model\Appointment.class
 com\example\proj\action\Pets.class
 com\example\proj\action\Client.class
