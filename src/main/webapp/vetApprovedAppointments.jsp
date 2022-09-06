@@ -40,15 +40,6 @@
 				</a>
 			</li>
 			<li>
-				<s:url action="scheduleAvailability" var="scheduleAvailability">
-					<s:param name="accountId" value="%{accountId}"></s:param>
-				</s:url>
-				<a href="${scheduleAvailability}">
-					<i class='bx bxs-dashboard' ></i>
-					<span class="text">Schedule Availability</span>
-				</a>
-			</li>
-			<li>
 				<a href="#" style="pointer-events: none; cursor: default;" >
 					<i class='bx bxs-calendar'></i>
 					<span class="text">Appointments</span>
@@ -134,29 +125,30 @@
 			<div class="table-data">
 				<div class="order">
 					<div class="head">
-						<!-- <h3>Appointments</h3>
-						<i class='bx bx-search' ></i>
+						<h3>Appointments</h3>
+						<!-- <i class='bx bx-search' ></i>
 						<i class='bx bx-filter' ></i> -->
 					</div>
 					<table>
 						<thead>
 							<tr>
-								<th>Client</th>
-                                <th>Pet</th>
+								<th>Pet</th>
+                                <th>Client</th>
                                 <th>Service</th>
                                 <th>Schedule</th>
-                                <th>Cancel</th>
+                                <th>Status</th>
+								<th>Cancel</th>
 							</tr>
 						</thead>
 						<tbody>
                         <s:iterator value="appointments" var="appointment">  
                             <tr>
-                                <td><s:property value="customer"/></td>
                                 <td><s:property value="petName"/></td>
+                                <td><s:property value="customer"/></td>
                                 <td><s:property value="service"/></td>
-                                <td><s:property value="schedule"/></td>
+                                <td><s:property value="schedule"/> <s:property value="timeOfAppointment"/></td>
+								<td><span class="status completed"><s:property value="status"/></span></td>
                                 <td>
-                                    
                                     <s:url action="cancelAppointment" var="cancelAppointment">
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
 										<s:param name="accountId" value="accountId"></s:param>

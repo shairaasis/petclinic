@@ -50,10 +50,6 @@
             <result name="success">/veterinarian.jsp</result>
         </action>
 
-        <action name="scheduleAvailability" class="com.example.proj.action.ScheduleAvailability">
-            <result name="success">/scheduleAvailability.jsp</result>
-        </action>
-
         <action name="logout" class="com.example.proj.action.Login" method="logout">
             <result name="success">/login.jsp</result>
             <result name="input">/login.jsp</result>
@@ -127,6 +123,26 @@
         <action name="customerAppointments" class="com.example.proj.action.Appointments" method="customerAppointments">
             <result name="success">/pendingclientappointments.jsp</result>
         </action>
+        <action name="clickCreateAppointment" class="com.example.proj.action.Appointments" method="clickCreateAppointment">
+            <result name="success" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${accountId}</param>
+            <param name="createAppointment">${createAppointment}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="vetAvailableTime" class="com.example.proj.action.Appointments" method="vetAvailableTime">
+            <result name="success">/vetAvailableTime.jsp</result>
+        </action>
+        <!-- Get Available time of Vet on the date Selected -->
+        <action name="getTimeAvailable" class="com.example.proj.action.Appointments" method="getTimeAvailable">
+            <result name="success">/vetAvailableTime.jsp</result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
         <action name="createAppointment" class="com.example.proj.action.Appointments" method="createAppointment">
             <result name="success" type="redirectAction">
             <param name="actionName">customerAppointments</param>
@@ -136,6 +152,7 @@
             <result name="input">/error.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
+
         <!-- cancel appointment by client -->
         <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
             <result name="success" type="redirectAction">

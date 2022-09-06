@@ -2,7 +2,7 @@ package com.example.proj.action;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-public class ScheduleAvailability extends ActionSupport{
+public class VetAvailableTime extends ActionSupport{
     private String accountId;
 
     public String execute() throws Exception{
@@ -16,6 +16,4 @@ public class ScheduleAvailability extends ActionSupport{
     public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
-
-    
 }
