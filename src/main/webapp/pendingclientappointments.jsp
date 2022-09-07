@@ -43,6 +43,25 @@
 			align-items: center;
 			justify-content: center;
 		}
+		.getTimeAvailableForm{
+			text-align: center;
+			margin: 0px auto;
+			width: 50%;
+			display: block;
+		}
+		select#veterinarian{
+			padding: 10px; font-size: medium;
+		}
+		input{
+			padding: 10px;font-size: medium;
+		}
+		#dateIcon{
+			width: 34px;
+			height: 40px;
+		}.formButton {
+			text-align: left;
+			display: grid;
+		}
 	  </style>
     </head>
 <body>
@@ -158,28 +177,19 @@
 				</a>
 				<s:set var="createAppointment" value="createAppointment"/>
 				<s:if test='%{#createAppointment == "true"}'>
-					<h2>Schedule an appointment</h2>
+				<div class="getTimeAvailableForm">
+				<h2>Schedule an appointment</h2>
 							<s:form action="getTimeAvailable" id="form" style="width: 100%;">
-									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-									<div id="service">
-									<div class="control-group">
-										<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>
-									</div>
-									<div class="control-group">
-									<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-										list="%{veterinarianId.entrySet()}"
-										name="appointmentBean.veterinarian" listKey="key"
-										listValue="key"/>
-									</div>
-
-									<!-- <select name="appointmentBean.veterinarian">
-										<c:forEach items="${veterinarianId}" var="vet">
-											<option value="${vet.key}">${country.value}</option>
-										</c:forEach>
-									</select> -->
-
-								  	<s:submit id="btn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>
+								<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+								<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
+								<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
+									list="%{veterinarianId.entrySet()}"
+									name="appointmentBean.veterinarian" listKey="key"
+									listValue="key"/>
+									<p style="color:red;"><s:property value="formError"></s:property></p>
+								<s:submit id="btn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
 							</s:form>
+						</div>	
             	</s:if>
 				<s:set var="timeIsAvailable" value="timeIsAvailable"/>
 							<s:if test='%{#timeIsAvailable == "yes"}'>
