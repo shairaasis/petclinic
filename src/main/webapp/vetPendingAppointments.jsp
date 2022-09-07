@@ -171,19 +171,19 @@
 					<table>
 						<thead>
 							<tr>
-								<th>Client</th>
-                                <th>Pet</th>
+								<th>Pet</th>
+                                <th>Client</th>
                                 <th>Service</th>
                                 <th>Schedule</th>
-								<th>Status</th>
-                                <th>Approve</th>
+                                <th>Status</th>
+								<th>Approve</th>
 							</tr>
 						</thead>
 						<tbody>
                         <s:iterator value="appointments" var="appointment">  
                             <tr>
-                                <td><s:property value="customer"/></td>
                                 <td><s:property value="petName"/></td>
+                                <td><s:property value="customer"/></td>
                                 <td><s:property value="service"/></td>
                                 <td><s:property value="schedule"/></td>
 								<td><span class="status pending"><s:property value="status"/></span></td>

@@ -1,10 +1,6 @@
 package com.example.proj.action;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,7 +15,6 @@ import com.opensymphony.xwork2.ActionSupport;
 public class Approve extends ActionSupport{
     ArrayList<Appointment> appointments = new ArrayList<Appointment>();
     private Appointment appointment;
-    private String concat = "' '";
     private String appointmentId;
     private String error;
     private String appointmentStatus;
@@ -33,7 +28,7 @@ public class Approve extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status='approved' order by schedule ASC";
+                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status = 'approved' order by schedule ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -44,13 +39,13 @@ public class Approve extends ActionSupport{
                     appointment.setPetId(rs.getInt(3));
                     appointment.setVeterinarianId(rs.getInt(4));
                     appointment.setServiceId(rs.getInt(5));
-                    appointment.setSchedule(rs.getString(6));
-                    appointment.setSchedule(appointment.getSchedule().substring(0, 16));
-                    appointment.setStatus(rs.getString(7));
-                    appointment.setCustomer(rs.getString(8));
-                    appointment.setVeterinarian(rs.getString(9));
-                    appointment.setPetName(rs.getString(10));
-                    appointment.setService(rs.getString(11));
+                    appointment.setSchedule(rs.getString(9));
+                    appointment.setTimeOfAppointment(rs.getInt(7));
+                    appointment.setStatus(rs.getString(8));
+                    appointment.setCustomer(rs.getString(10));
+                    appointment.setVeterinarian(rs.getString(11));
+                    appointment.setPetName(rs.getString(12));
+                    appointment.setService(rs.getString(13));
                     appointments.add(appointment);
                 }
             } 
@@ -67,16 +62,6 @@ public class Approve extends ActionSupport{
     public String approveAppointment() throws SQLException, IOException, InterruptedException{
         Connection connection = null;
         Statement statement = null;
-        PreparedStatement preparedStatement = null;
-        // HttpRequest request = HttpRequest.newBuilder()
-		// .uri(URI.create("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"))
-		// .header("content-type", "application/json")
-		// .header("X-RapidAPI-Key", "8e5fc8ca86mshebf74458f8359fap1bbbabjsn71215df7915c")
-		// .header("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
-		// .method("POST", HttpRequest.BodyPublishers.ofString("{\r\n    \"personalizations\": [\r\n        {\r\n            \"to\": [\r\n                {\r\n                    \"email\": \"asisshaira99@gmail.com\"\r\n                }\r\n            ],\r\n            \"subject\": \"Appointment Confirmed\"\r\n        }\r\n    ],\r\n    \"from\": {\r\n        \"email\": \"shairaasis99@gmail.com\"\r\n    },\r\n    \"content\": [\r\n        {\r\n            \"type\": \"text/plain\",\r\n            \"value\": \"Hello, This is to inform you that your appointments has been confirmed!\"\r\n        }\r\n    ]\r\n}"))
-		// .build();
-        // HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        // System.out.println(response.body());
         try {
             String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
             Class.forName("com.mysql.jdbc.Driver");
@@ -87,42 +72,7 @@ public class Approve extends ActionSupport{
                 String sql = "update appointments set status='approved' where appointment_id =" +getAppointmentId();
                 statement.executeUpdate(sql);
                 appointmentStatus = "Appointment approved!";
-                String sql1 = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service, customerEmail.email as customerEmail, veterinarianEmail.email as veterinarianEmail FROM appointments inner join accounts as customerEmail on appointments.customer_id = customerEmail.account_id inner join accounts as veterinarianEmail on appointments.veterinarian_id = veterinarianEmail.account_id INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where appointment_id='"+getAppointmentId()+"'";
-                preparedStatement = connection.prepareStatement(sql1);
-                ResultSet rs= preparedStatement.executeQuery();
-                while(rs.next()){  
-                    Appointment appointment=new Appointment();
-                    appointment.setAppointmentId(rs.getInt(1));
-                    appointment.setClientId(rs.getInt(2));
-                    appointment.setPetId(rs.getInt(3));
-                    appointment.setVeterinarianId(rs.getInt(4));
-                    appointment.setServiceId(rs.getInt(5));
-                    appointment.setSchedule(rs.getString(6));
-                    appointment.setSchedule(appointment.getSchedule().substring(0, 16));
-                    appointment.setStatus(rs.getString(7));
-                    appointment.setCustomer(rs.getString(8));
-                    appointment.setVeterinarian(rs.getString(9));
-                    appointment.setPetName(rs.getString(10));
-                    appointment.setService(rs.getString(11));
-                    appointment.setCustomerEmail(rs.getString(12));
-                    appointment.setVeterinarianEmail(rs.getString(13));
-                    appointments.add(appointment);
-                    
-                    try {
-                    HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"))
-                    .header("content-type", "application/json")
-                    .header("X-RapidAPI-Key", "8e5fc8ca86mshebf74458f8359fap1bbbabjsn71215df7915c")
-                    .header("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
-                    .method("POST", HttpRequest.BodyPublishers.ofString("{\r\n    \"personalizations\": [\r\n        {\r\n            \"to\": [\r\n                {\r\n                    \"email\": \""+appointment.getCustomerEmail()+"\"\r\n                }\r\n            ],\r\n            \"subject\": \"Appointment Confirmed\"\r\n        }\r\n    ],\r\n    \"from\": {\r\n        \"email\": \"shairaasis99@gmail.com\"\r\n    },\r\n    \"content\": [\r\n        {\r\n            \"type\": \"text/plain\",\r\n            \"value\": \"Hello, This is to inform you that your appointment has been confirmed! Appointment Details:\n   Schedule:"+appointment.getSchedule()+" \n   Veterinarian: "+appointment.getVeterinarian()+" \n  Service: "+appointment.getService()+" \n Pet: "+appointment.getPetName()+" \n  \"\r\n        }\r\n    ]\r\n}"))
-                    .build();
-                    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-                    System.out.println(response.body());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    
-                }
+
                 if(accountId != null){
                     return "vetApproved";
                 }
@@ -192,13 +142,6 @@ public class Approve extends ActionSupport{
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
     }
-    public String getConcat() {
-        return concat;
-    }
-    public void setConcat(String concat) {
-        this.concat = concat;
-    }
-
     public String getAppointmentId() {
         return appointmentId;
     }
