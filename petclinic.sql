@@ -88,20 +88,22 @@ CREATE TABLE `appointments` (
   `pet_id` int NOT NULL,
   `veterinarian_id` int DEFAULT NULL,
   `service` int NOT NULL,
-  `schedule` datetime NOT NULL,
+  `schedule` date DEFAULT NULL,
+  `timeID` int NOT NULL,
   `status` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`appointment_id`),
   UNIQUE KEY `appointment_id_UNIQUE` (`appointment_id`),
-  UNIQUE KEY `schedule_unique` (`schedule`),
   KEY `customer_id_idx` (`customer_id`),
   KEY `pet_id_idx` (`pet_id`),
   KEY `veterinarian_id_idx` (`veterinarian_id`),
   KEY `service_idx` (`service`),
+  KEY `timeID` (`timeID`),
+  CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`timeID`) REFERENCES `time` (`timeID`),
   CONSTRAINT `customer_id` FOREIGN KEY (`customer_id`) REFERENCES `accounts` (`account_id`),
   CONSTRAINT `pet_id` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`pet_id`),
   CONSTRAINT `service` FOREIGN KEY (`service`) REFERENCES `services` (`service_id`),
   CONSTRAINT `veterinarian_id` FOREIGN KEY (`veterinarian_id`) REFERENCES `accounts` (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +112,7 @@ CREATE TABLE `appointments` (
 
 LOCK TABLES `appointments` WRITE;
 /*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
-INSERT INTO `appointments` VALUES (9,15,13,21,2,'2022-07-30 10:00:00',NULL),(63,45,21,21,20,'2022-07-23 08:00:00','approved'),(86,44,22,46,2,'2022-07-13 07:35:00','approved'),(87,44,22,46,2,'2022-07-16 02:00:00','pending');
+INSERT INTO `appointments` VALUES (9,15,13,21,2,'2022-07-30',0,NULL),(63,45,21,21,20,'2022-07-23',0,'approved'),(86,44,22,46,2,'2022-07-13',1,'approved'),(88,44,19,28,2,'2022-09-01',0,'pending'),(89,44,22,30,2,'2022-07-06',0,'pending'),(90,44,22,46,20,'2022-07-16',0,'pending'),(91,44,19,46,2,'2023-07-13',0,'pending'),(92,44,23,28,2,'2022-07-20',0,'pending'),(93,44,23,21,20,'2022-07-08',0,'pending'),(95,44,19,28,2,'2022-07-07',0,'pending'),(97,44,19,28,2,'2022-07-07',0,'pending'),(98,44,19,28,2,'2022-09-04',1,'approved'),(99,44,19,28,2,'2022-09-05',1,'approved'),(100,52,19,28,2,'2022-09-05',2,'approved'),(103,44,19,28,2,'2022-09-05',1,'approved'),(104,44,22,28,2,'2022-09-05',3,'pending'),(105,44,22,28,2,'2022-09-05',3,'pending'),(106,44,19,28,20,'2022-09-05',3,'pending'),(107,44,19,28,20,'2022-09-05',3,'pending'),(108,44,19,28,2,'2022-09-05',4,'pending'),(109,44,23,28,20,'2022-09-05',6,'pending'),(110,44,23,28,20,'2022-09-06',2,'pending'),(112,44,23,48,2,'2022-09-06',7,'pending'),(113,44,23,48,20,'2022-09-06',1,'pending'),(115,44,23,48,2,'2022-09-06',2,'pending'),(116,44,19,21,2,'2022-09-06',1,'pending'),(117,44,22,28,20,'2022-09-07',1,'pending'),(118,44,19,28,2,'2022-09-07',2,'pending'),(119,44,19,28,2,'2022-09-07',3,'pending'),(120,44,19,28,2,'2022-09-07',4,'pending');
 /*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,37 +149,6 @@ INSERT INTO `pets` VALUES (3,9,NULL,'sasasa','2021-04-18','MalShih','Brown-White
 UNLOCK TABLES;
 
 --
--- Table structure for table `schedule_availability`
---
-
-DROP TABLE IF EXISTS `schedule_availability`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `schedule_availability` (
-  `schedule_id` int NOT NULL AUTO_INCREMENT,
-  `veterinarian_id` int NOT NULL,
-  `date` date NOT NULL,
-  `start_time` time NOT NULL,
-  `end_time` time NOT NULL,
-  `schedule_availability` varchar(45) NOT NULL,
-  PRIMARY KEY (`schedule_id`),
-  UNIQUE KEY `schedule_id_UNIQUE` (`schedule_id`),
-  KEY `veterinarian_id` (`veterinarian_id`),
-  CONSTRAINT `schedule_availability_ibfk_1` FOREIGN KEY (`veterinarian_id`) REFERENCES `accounts` (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `schedule_availability`
---
-
-LOCK TABLES `schedule_availability` WRITE;
-/*!40000 ALTER TABLE `schedule_availability` DISABLE KEYS */;
-INSERT INTO `schedule_availability` VALUES (1,21,'2022-07-30','08:00:00','09:00:00','AVAILABLE');
-/*!40000 ALTER TABLE `schedule_availability` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `services`
 --
 
@@ -189,7 +160,7 @@ CREATE TABLE `services` (
   `service` varchar(255) NOT NULL,
   `fee` int NOT NULL,
   PRIMARY KEY (`service_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -200,6 +171,30 @@ LOCK TABLES `services` WRITE;
 /*!40000 ALTER TABLE `services` DISABLE KEYS */;
 INSERT INTO `services` VALUES (2,'Consultation',450),(20,'Vaccination',500);
 /*!40000 ALTER TABLE `services` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `time`
+--
+
+DROP TABLE IF EXISTS `time`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `time` (
+  `timeID` int NOT NULL AUTO_INCREMENT,
+  `time` time DEFAULT NULL,
+  PRIMARY KEY (`timeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `time`
+--
+
+LOCK TABLES `time` WRITE;
+/*!40000 ALTER TABLE `time` DISABLE KEYS */;
+INSERT INTO `time` VALUES (1,'08:00:00'),(2,'09:00:00'),(3,'10:00:00'),(4,'11:00:00'),(5,'13:00:00'),(6,'14:00:00'),(7,'15:00:00'),(8,'16:00:00');
+/*!40000 ALTER TABLE `time` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -221,7 +216,7 @@ CREATE TABLE `tokens` (
 
 LOCK TABLES `tokens` WRITE;
 /*!40000 ALTER TABLE `tokens` DISABLE KEYS */;
-INSERT INTO `tokens` VALUES ('1e65a24cfd9d4c34a10786e2baf59487'),('24fe134823984df6a3ff4a40f4ea7e7a'),('2ddd1a8984344a23ac39cacd4f055822'),('2f72d224414a4e95a7021e69e05e8760'),('40642ac958b14cd69090438cc7a56384'),('91e344575da142b1b19b2c7a7a6157a0'),('9e5be2db5bb34b54b7226fe566b4306d'),('a2818fec3afa483cb72bd71dad185884'),('bc1ca5be5f914a84a4683e3c35fbb28a'),('c32944090d4e40a085c95e40048c8781'),('cc420aece830469893e7d07033c0b2b8'),('d25b44e63dbf449fbdf19939a94a7b8a'),('d701483a71c44b1d9cea03ed14405d39'),('da3b68b0102749d58ff428b89827d005'),('de688afff4574cbba2d985afcedd5f3a'),('e1cc1b12d1584c8d84950fac0c07f327'),('e6b8c2a0f2ae4e60a3b9ebcb6fddde20'),('e92283b723094af0bef2fd088b58e4de'),('ea3ef09c31fe485d8404bbc99d7b4569'),('eb8c0daf90db4bf6a55b03fc6e3ac776');
+INSERT INTO `tokens` VALUES ('03728da0d01f41b78e9b7044ae968460'),('06944aea923e42b5b9bd3f821b403db9'),('13f4124765e74b34a78bdaf68667f15f'),('1e65a24cfd9d4c34a10786e2baf59487'),('21244071effb479392fb2a395598757a'),('24fe134823984df6a3ff4a40f4ea7e7a'),('2ddd1a8984344a23ac39cacd4f055822'),('2f72d224414a4e95a7021e69e05e8760'),('34082d048cc24c3faaeabf43590bc570'),('3ed8d0857a6d4d3496079191d0496e08'),('40642ac958b14cd69090438cc7a56384'),('420bb1e0ce0046b1ba4d84a219a499b0'),('574f1b09305e46e4854e907ba6a8a3d8'),('6941f1ea877341c78f90c310069651d5'),('6e5de3a53ac343d68fb896c6b28421a8'),('72fb21579888429fa7df5e3b6937b46a'),('76554518b66641ff97bea7f9f39dc263'),('7cf695fbe99e41c086ef64515e40bfeb'),('858035b0394140759828461226a1cf88'),('8b557ecf06f7405e9e998c4535db5098'),('90ef8f0e0598417290721bf5f8292d5a'),('91e344575da142b1b19b2c7a7a6157a0'),('9b9a14c8351e47b5979adde9898fa704'),('9c2c7d1fb9fc4d61ad9b113eeec2c017'),('9e5be2db5bb34b54b7226fe566b4306d'),('a2818fec3afa483cb72bd71dad185884'),('babdff8a3f6a43f1bd22cc9d7a99804b'),('bc1ca5be5f914a84a4683e3c35fbb28a'),('c21b764ad2c44e9db2a73aa992f2d42d'),('c32944090d4e40a085c95e40048c8781'),('c46e4ca38dca486e93f0c88a91629a2e'),('cc420aece830469893e7d07033c0b2b8'),('d25b44e63dbf449fbdf19939a94a7b8a'),('d701483a71c44b1d9cea03ed14405d39'),('d87478c14cb44d969815bd64ee2bd01e'),('da3b68b0102749d58ff428b89827d005'),('de688afff4574cbba2d985afcedd5f3a'),('e1cc1b12d1584c8d84950fac0c07f327'),('e6b8c2a0f2ae4e60a3b9ebcb6fddde20'),('e8d3c368623042e4a9d73de3945c7557'),('e92283b723094af0bef2fd088b58e4de'),('ea3ef09c31fe485d8404bbc99d7b4569'),('eb8c0daf90db4bf6a55b03fc6e3ac776'),('ef2f6ab6382844a6b1e79f7fa896cd58'),('f5654f11dfc94d1c930d719ed0e83d18'),('fc05f7dfce644c80befd57db411c8cbe');
 /*!40000 ALTER TABLE `tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -234,4 +229,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-26 22:08:32
+-- Dump completed on 2022-09-07 17:11:29
