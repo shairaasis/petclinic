@@ -24,11 +24,13 @@ public class CreateAppointment extends ActionSupport{
     private String error = "Random";
     private String successMessage;
     // < EMAIL
-    private String from = "pet.clinic.confirmation@gmail.com";
-    private String password = "ijopmxuhytcmzruv";
+    final private String from = "pet.clinic.confirmation@gmail.com";
+    final private String password = "ijopmxuhytcmzruv";
     private String to = "mad.dinar25@gmail.com";
-    private String subject = "test";
-    private String body = "creation confirmation test"; 
+    private String subject = "appointment creation (client) : pending for approval";
+    private String body = "creation confirmation test, wait for approval";
+    private String to2 = "madzoldyck925@gmail.com";
+    private String body2 = "appointment creation (vet) : pending";
     static Properties properties = new Properties();
     static {
         properties.put("mail.smtp.host", "smtp.gmail.com");
@@ -87,7 +89,7 @@ public class CreateAppointment extends ActionSupport{
         return SUCCESS;
     }
     public boolean saveAppointment(Appointment appointmentBean) throws Exception {
-        System.out.println("\n\n======SAve apoointment methof==\n\n");
+        System.out.println("\n\n======SAve appointment method==\n\n");
         System.out.println("=======\n\n\n"+appointmentBean.getDateOfAppointment()+"\n\n\n=========\n"+appointmentBean.getTimeOfAppointment()+"\n\n");
         System.out.println("===\n\n"+appointmentBean.getServiceId()+" "+ appointmentBean.getPetId()+"=======\n\n\n");
         String status = "pending";
@@ -102,22 +104,28 @@ public class CreateAppointment extends ActionSupport{
                 statement = connection.createStatement();
                 String sql = "INSERT INTO appointments (CUSTOMER_ID, PET_ID, VETERINARIAN_ID,SERVICE,SCHEDULE,status) VALUES('"+appointmentBean.getClientId()+"','"+appointmentBean.getPetId()+"','"+ appointmentBean.getVeterinarianId()+"','"+appointmentBean.getServiceId()+"','"+appointmentBean.getDateOfAppointment().concat(" "+appointmentBean.getTimeOfAppointment())+"','"+status+"')";
                 statement.executeUpdate(sql);
-                // EMAIL
-                Session session = Session.getDefaultInstance(properties,  
-                new javax.mail.Authenticator() {
-                protected PasswordAuthentication 
-                getPasswordAuthentication() {
-                return new PasswordAuthentication(from, password);
-                }
-            }
-            );
-    
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject(subject);
-            message.setText(body);
-            Transport.send(message);
+                // EMAIL to client
+                Session session = Session.getDefaultInstance(properties,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication 
+                        getPasswordAuthentication() {
+                            return new PasswordAuthentication(from, password);
+                        }
+                    }
+                );
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(from));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                message.setSubject(subject);
+                message.setText(body);
+                Transport.send(message);
+                // EMAIL to client />
+                // EMAIL to vet
+                message.setFrom(new InternetAddress(from));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to2));
+                message.setText(body2);
+                Transport.send(message);
+                // EMAIL to vet />
             return true;   
             } else {
                 error = "DB connection failed";
@@ -151,6 +159,46 @@ public class CreateAppointment extends ActionSupport{
     }
     public void setSuccessMessage(String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public static Properties getProperties() {
+        return properties;
+    }
+
+    public static void setProperties(Properties properties) {
+        Emailer.properties = properties;
     }
 
     
