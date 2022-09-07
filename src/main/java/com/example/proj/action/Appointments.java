@@ -54,7 +54,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status='pending'";
+                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status = 'pending' order by schedule ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -65,13 +65,13 @@ public class Appointments extends ActionSupport{
                     appointment.setPetId(rs.getInt(3));
                     appointment.setVeterinarianId(rs.getInt(4));
                     appointment.setServiceId(rs.getInt(5));
-                    appointment.setSchedule(rs.getString(6));
-                    appointment.setStatus(rs.getString(7));
-                    appointment.setSchedule(appointment.getSchedule().substring(0, 16));
-                    appointment.setCustomer(rs.getString(8));
-                    appointment.setVeterinarian(rs.getString(9));
-                    appointment.setPetName(rs.getString(10));
-                    appointment.setService(rs.getString(11));
+                    appointment.setSchedule(rs.getString(9));
+                    appointment.setTimeOfAppointment(rs.getInt(7));
+                    appointment.setStatus(rs.getString(8));
+                    appointment.setCustomer(rs.getString(10));
+                    appointment.setVeterinarian(rs.getString(11));
+                    appointment.setPetName(rs.getString(12));
+                    appointment.setService(rs.getString(13));
                     appointments.add(appointment);
                 }
                 
@@ -97,7 +97,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status='pending' and veterinarian_id = '"+getAccountId()+"' order by `schedule` ASC";
+                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,'',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,'', veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status='pending' and veterinarian_id = '"+getAccountId()+"' order by `schedule` ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -109,12 +109,12 @@ public class Appointments extends ActionSupport{
                     appointment.setVeterinarianId(rs.getInt(4));
                     appointment.setServiceId(rs.getInt(5));
                     appointment.setSchedule(rs.getString(6));
-                    appointment.setStatus(rs.getString(7));
-                    appointment.setSchedule(appointment.getSchedule().substring(0, 16));
-                    appointment.setCustomer(rs.getString(8));
-                    appointment.setVeterinarian(rs.getString(9));
-                    appointment.setPetName(rs.getString(10));
-                    appointment.setService(rs.getString(11));
+                    appointment.setTimeOfAppointment(rs.getInt(7));
+                    appointment.setStatus(rs.getString(8));
+                    appointment.setCustomer(rs.getString(9));
+                    appointment.setVeterinarian(rs.getString(10));
+                    appointment.setPetName(rs.getString(11));
+                    appointment.setService(rs.getString(12));
                     appointments.add(appointment);
                 }
                 
@@ -137,7 +137,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status='approved' and veterinarian_id = '"+getAccountId()+"' order by `schedule` ASC";
+                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where veterinarian_id ="+getAccountId()+ " and status = 'approved' order by schedule ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -148,13 +148,13 @@ public class Appointments extends ActionSupport{
                     appointment.setPetId(rs.getInt(3));
                     appointment.setVeterinarianId(rs.getInt(4));
                     appointment.setServiceId(rs.getInt(5));
-                    appointment.setSchedule(rs.getString(6));
-                    appointment.setStatus(rs.getString(7));
-                    appointment.setSchedule(appointment.getSchedule().substring(0, 16));
-                    appointment.setCustomer(rs.getString(8));
-                    appointment.setVeterinarian(rs.getString(9));
-                    appointment.setPetName(rs.getString(10));
-                    appointment.setService(rs.getString(11));
+                    appointment.setSchedule(rs.getString(9));
+                    appointment.setTimeOfAppointment(rs.getInt(7));
+                    appointment.setStatus(rs.getString(8));
+                    appointment.setCustomer(rs.getString(10));
+                    appointment.setVeterinarian(rs.getString(11));
+                    appointment.setPetName(rs.getString(12));
+                    appointment.setService(rs.getString(13));
                     appointments.add(appointment);
                 }
                 
