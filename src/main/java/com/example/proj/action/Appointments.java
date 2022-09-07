@@ -29,6 +29,7 @@ public class Appointments extends ActionSupport{
     private String concat = "', '";
     private int accountId;
     private String error;
+    private static String formError = "";
     public ArrayList<String> listOfServices = new ArrayList<String>();
     ArrayList<PetService> services = new ArrayList<PetService>();
     private PetService serviceBean;
@@ -169,6 +170,7 @@ public class Appointments extends ActionSupport{
     }
     public String clickCreateAppointment() throws Exception{
         createAppointment = "true";
+        formError="";
         return SUCCESS;
     }
     public String customerAppointments() throws Exception {
@@ -185,7 +187,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS schedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where customer_id ="+getAccountId()+ " and status = 'pending'";
+                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where customer_id ="+getAccountId()+ " and status = 'pending' order by schedule ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -288,8 +290,17 @@ public class Appointments extends ActionSupport{
          return SUCCESS;
     }
     public String getTimeAvailable() throws Exception{
+        createAppointment = "true";
         appointmentBean = getAppointmentBean();
         accountId = appointmentBean.getClientId();
+        setFormError("Method goes no if statements");
+        if(appointmentBean.getDateOfAppointment().length() == 0) {
+            Appointments.setFormError("Date is null");
+            formError = "The preferred date of appointment is required.";
+        }else if(appointmentBean.getVeterinarian().equals("-1")) {
+            formError = "Please choose the veterinarian you want to book.";
+
+        }else if(appointmentBean.getDateOfAppointment().length() != 0 && !appointmentBean.getVeterinarian().equals("-1")) {
         appointmentBean.setDateOfAppointment(appointmentBean.getDateOfAppointment().substring(0, 10));
         getTimetable();
         listOfServices();
@@ -332,6 +343,8 @@ public class Appointments extends ActionSupport{
          }
 
          return SUCCESS;
+        }
+        return "input";
     }
     public String createAppointment() throws Exception{
         appointmentBean = getAppointmentBean();
@@ -762,6 +775,18 @@ public class Appointments extends ActionSupport{
 
     public HashMap<Integer, String> getListOfTimeAvailable() {
         return listOfTimes;
+    }
+
+
+
+    public String getFormError() {
+        return formError;
+    }
+
+
+
+    public static void setFormError(String formError) {
+        Appointments.formError = formError;
     }
 
 
