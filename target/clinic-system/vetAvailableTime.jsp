@@ -18,30 +18,49 @@
     <sx:head />
     <style>
     #cancel:hover{
-        background-color: #d22a2a!important;
-    }
-    #myBtn{
-        padding: 5px;
-        color: white;
-        background-color: #13a052e5;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-    #myBtn:hover{
-        background-color: #0e783e!important;
-    }
-    .tdLabel{
-        display: none;
-    }
-    .tdInput{
-        margin-left: 0px;
-    }
-    .wwFormTable {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+			background-color: #d22a2a!important;
+		}
+		#myBtn{
+			padding: 5px;
+			color: white;
+			background-color: #13a052e5;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+		}
+		#myBtn:hover{
+			background-color: #0e783e!important;
+		}
+		.tdLabel{
+			display: none;
+		}
+		.tdInput{
+			margin-left: 0px;
+		}
+		.wwFormTable {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.getTimeAvailableForm{
+			text-align: center;
+			margin: 0px auto;
+			width: 50%;
+			display: block;
+		}
+		select#veterinarian{
+			padding: 10px; font-size: medium;
+		}
+		input{
+			padding: 10px;font-size: medium;
+		}
+		#dateIcon{
+			width: 34px;
+			height: 40px;
+		}.formButton {
+			text-align: left;
+			display: grid;
+		}
     </style>
         <title>Vet Available Time</title>
 </head>

@@ -139,7 +139,11 @@
         <!-- Get Available time of Vet on the date Selected -->
         <action name="getTimeAvailable" class="com.example.proj.action.Appointments" method="getTimeAvailable">
             <result name="success">/vetAvailableTime.jsp</result>
-            <result name="input">/error.jsp</result>
+            <result name="input" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${accountId}</param>
+            <param name="createAppointment">${createAppointment}</param>
+            </result>
             <result name="error">/error.jsp</result>
         </action>
 
