@@ -7,6 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+// EMAIL
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+// EMAIL > 
 import com.example.proj.model.Appointment;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -14,6 +23,24 @@ public class CreateAppointment extends ActionSupport{
     static Appointment appointmentBean;
     private String error = "Random";
     private String successMessage;
+    // < EMAIL
+    private String from = "pet.clinic.confirmation@gmail.com";
+    private String password = "ijopmxuhytcmzruv";
+    private String to = "mad.dinar25@gmail.com";
+    private String subject = "test";
+    private String body = "creation confirmation test"; 
+    static Properties properties = new Properties();
+    static {
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.starttls.required", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    }
+    // EMAIL >
+
     public String execute() throws Exception{
         appointmentBean = getAppointmentBean();
         appointmentBean.setDateOfAppointment(appointmentBean.getDateOfAppointment().substring(0, 10));
@@ -50,14 +77,14 @@ public class CreateAppointment extends ActionSupport{
                 System.out.println("===\n\n"+appointmentBean.getServiceId()+" "+ appointmentBean.getPetId()+"=======\n\n\n");
         
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
     public boolean saveAppointment(Appointment appointmentBean) throws Exception {
         System.out.println("\n\n======SAve apoointment methof==\n\n");
@@ -75,18 +102,34 @@ public class CreateAppointment extends ActionSupport{
                 statement = connection.createStatement();
                 String sql = "INSERT INTO appointments (CUSTOMER_ID, PET_ID, VETERINARIAN_ID,SERVICE,SCHEDULE,status) VALUES('"+appointmentBean.getClientId()+"','"+appointmentBean.getPetId()+"','"+ appointmentBean.getVeterinarianId()+"','"+appointmentBean.getServiceId()+"','"+appointmentBean.getDateOfAppointment().concat(" "+appointmentBean.getTimeOfAppointment())+"','"+status+"')";
                 statement.executeUpdate(sql);
-                return true;
+                // EMAIL
+                Session session = Session.getDefaultInstance(properties,  
+                new javax.mail.Authenticator() {
+                protected PasswordAuthentication 
+                getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+                }
+            }
+            );
+    
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+            message.setText(body);
+            Transport.send(message);
+            return true;   
             } else {
                 error = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
-             error = e.toString();
-             return false;  
-         } finally {
+        } catch (Exception e) {
+            error = e.toString();
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
 
 
