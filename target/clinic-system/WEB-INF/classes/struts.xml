@@ -5,7 +5,7 @@
 
 <struts>
 
-    <!-- <constant name="struts.devMode" value="true" /> -->
+    <constant name="struts.devMode" value="true" />
     <constant name="struts.convention.action.suffix" value="Controller"/>
     <constant name="struts.convention.action.mapAllMatches" value="true"/>
     <constant name="struts.convention.default.parent.package" value="rest-default"/>

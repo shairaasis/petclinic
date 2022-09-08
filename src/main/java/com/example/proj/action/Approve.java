@@ -16,6 +16,14 @@ import java.util.ArrayList;
 import com.example.proj.model.Appointment;
 import com.opensymphony.xwork2.ActionSupport;
 
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 public class Approve extends ActionSupport{
     ArrayList<Appointment> appointments = new ArrayList<Appointment>();
     private Appointment appointment;
@@ -24,6 +32,24 @@ public class Approve extends ActionSupport{
     private String error;
     private String appointmentStatus;
     private String accountId;
+
+    final private String from = "pet.clinic.confirmation@gmail.com";
+    final private String password = "ijopmxuhytcmzruv";
+    private String to = null;
+    private String subject = "approved appointment";
+    private String body = "Sending this message to the client to notify about the approved appointment.";
+    static Properties properties = new Properties();
+    static {
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.starttls.required", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    }
+    
+
     public String execute() throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -87,6 +113,8 @@ public class Approve extends ActionSupport{
                 String sql = "update appointments set status='approved' where appointment_id =" +getAppointmentId();
                 statement.executeUpdate(sql);
                 appointmentStatus = "Appointment approved!";
+                // EMAIL
+                emailApproved();
                 String sql1 = "SELECT appointments.*, CONCAT(customer_name.first_name,"+ getConcat() +",customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,"+getConcat()+", veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service, customerEmail.email as customerEmail, veterinarianEmail.email as veterinarianEmail FROM appointments inner join accounts as customerEmail on appointments.customer_id = customerEmail.account_id inner join accounts as veterinarianEmail on appointments.veterinarian_id = veterinarianEmail.account_id INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where appointment_id='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql1);
                 ResultSet rs= preparedStatement.executeQuery();
@@ -132,13 +160,40 @@ public class Approve extends ActionSupport{
                 error = "DB connection failed";
                 return error;
             }
-         } catch (Exception e) {
-             error = e.toString();
-             return error;  
-         } finally {
+        } catch (Exception e) {
+            error = e.toString();
+            return error;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
+    }
+
+    public String emailApproved(){
+        String ret = SUCCESS;
+        try {
+            Session session = Session.getDefaultInstance(properties,  
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication 
+                    getPasswordAuthentication() {
+                        return new PasswordAuthentication(from, password);
+                    }
+                }
+            );
+            // EMAIL to client
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setSubject(getSubject());
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
+            message.setText(getBody());
+            Transport.send(message);
+            // EMAIL to client />
+            } catch(Exception e) {
+                ret = ERROR;
+                e.printStackTrace();
+                System.out.println(e);
+            }
+        return ret;
     }
     public String approvedClientAppointments() throws SQLException{
         Connection connection = null;
@@ -171,14 +226,14 @@ public class Approve extends ActionSupport{
                 }
                 return SUCCESS;
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
     public ArrayList<Appointment> getAppointments() {
         return appointments;
@@ -229,6 +284,38 @@ public class Approve extends ActionSupport{
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 
     

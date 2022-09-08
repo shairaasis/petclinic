@@ -16,6 +16,16 @@ import com.example.proj.model.Pet;
 import com.example.proj.model.PetService;
 import com.opensymphony.xwork2.ActionSupport;
 
+// EMAIL
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+// EMAIL > 
+
 public class Appointments extends ActionSupport{
     LocalDate now = LocalDate.now(); 
     private String numOfAppointments;
@@ -45,6 +55,30 @@ public class Appointments extends ActionSupport{
     private HashMap<Integer, String> listOfTimes = new HashMap<Integer, String>();
     public HashMap<String, Integer> veterinarianId = new HashMap<String, Integer>();
     public HashMap<String, Integer> timeId = new HashMap<String, Integer>();
+
+    // < EMAIL
+    PreparedStatement preparedStatement = null;
+    ResultSet rs = null;
+    final private String from = "pet.clinic.confirmation@gmail.com";
+    final private String password = "ijopmxuhytcmzruv";
+    private String to = null;
+    private int toID;
+    private String to2 = null;
+    private String subject = "appointment creation : pending appointment";
+    private String body = "(client) creation confirmation , please wait for approval";
+    private String body2 = "(vet)(add) appointment creation  : pending for your approval";
+    
+    static Properties properties = new Properties();
+    static {
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.starttls.required", "true");
+        // properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        // properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    }
+    // EMAIL >
     public String execute() throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -76,14 +110,14 @@ public class Appointments extends ActionSupport{
                 }
                 
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
 
     
@@ -119,14 +153,14 @@ public class Appointments extends ActionSupport{
                 }
                 
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
     public String vetApprovedAppointments() throws Exception {
         Connection connection = null;
@@ -159,14 +193,14 @@ public class Appointments extends ActionSupport{
                 }
                 
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
     public String clickCreateAppointment() throws Exception{
         createAppointment = "true";
@@ -212,14 +246,14 @@ public class Appointments extends ActionSupport{
                     numOfAppointments = "No approved Appointments. Wait for pending appointments to be approved.";
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
 
     private String getTimetable() {
@@ -240,14 +274,14 @@ public class Appointments extends ActionSupport{
                     listOfTimes.put(rs.getInt(1), rs.getString(2));
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
             error = e.toString();
             return error;
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
-         return SUCCESS;
+        }
+        return SUCCESS;
     }
     
 
@@ -279,15 +313,15 @@ public class Appointments extends ActionSupport{
                     listOfPets.add(pet.getPetName());
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
             error = e.toString();
-            return error;
-         } finally {
+        return error;
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
     public String getTimeAvailable() throws Exception{
         createAppointment = "true";
@@ -331,18 +365,17 @@ public class Appointments extends ActionSupport{
                     vetAppointments.add(vetAppointment);
                     listOfTimes.remove(vetAppointment.getTimeOfAppointment());
                     
-                   
                 }
                 timeIsAvailable = "yes";
             } 
-         } catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
         }
         return "input";
     }
@@ -353,6 +386,64 @@ public class Appointments extends ActionSupport{
         } else {
             return error;
         }
+    }
+    public String emailConfirmationClient(){
+        String ret = SUCCESS;
+        try {
+            Session session = Session.getDefaultInstance(properties,  
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication 
+                    getPasswordAuthentication() {
+                        return new PasswordAuthentication(from, password);
+                    }
+                }
+            );
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
+            message.setSubject(getSubject());
+            message.setText(getBody());
+            Transport.send(message);
+            System.out.println("SENT");
+            // EMAIL to client />
+            // EMAIL to vet
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo2()));
+            message.setText(getBody2());
+            Transport.send(message);
+            // EMAIL to vet />
+            } catch(Exception e) {
+                ret = ERROR;
+                e.printStackTrace();
+                System.out.println(e);
+            }
+        return ret;
+    }
+
+    public String emailConfirmationVetAd(){
+        String ret = SUCCESS;
+        try {
+            Session session = Session.getDefaultInstance(properties,  
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication 
+                    getPasswordAuthentication() {
+                        return new PasswordAuthentication(from, password);
+                    }
+                }
+            );
+            // EMAIL to vet
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setSubject(getSubject());
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo2()));
+            message.setText(getBody2());
+            Transport.send(message);
+            // EMAIL to vet />
+            } catch(Exception e) {
+                ret = ERROR;
+                e.printStackTrace();
+                System.out.println(e);
+            }
+        return ret;
     }
     // public Appointment getAppointmentData(Appointment appointmentBean)throws SQLException{
     //     Connection connection = null;
@@ -403,18 +494,44 @@ public class Appointments extends ActionSupport{
                 String sql = "INSERT INTO appointments (CUSTOMER_ID, PET_ID, VETERINARIAN_ID,SERVICE,SCHEDULE, timeID, status) VALUES((select account_id from accounts where account_id ='"+appointmentBean.getClientId()+"'),(select pet_id from pets where pet_name = '"+appointmentBean.getPetName()+"' AND owner_id = '"+appointmentBean.getClientId()+"'),(select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) = '"+ appointmentBean.getVeterinarian()+"'),(select service_id from services where service = '"+appointmentBean.getService()+"'),'"+appointmentBean.getDateOfAppointment()+"', '"+appointmentBean.getTimeOfAppointment()+"','"+status+"')";
                 statement.executeUpdate(sql);
                 appointmentStatus = "Appointment is scheduled. Please wait for approval.";
+                // < EMAIL
+                sql = " SELECT email FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, appointmentBean.getClientId());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    setTo(rs.getString(1));
+                    emailConfirmationClient();
+                }
+                sql = "select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) =?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, appointmentBean.getVeterinarian());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setToID(rs.getInt(1));
+                }
+                sql = "select email from accounts where account_id=? OR account_type_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getToID());
+                preparedStatement.setInt(2, 1);
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTo2(rs.getString(1));
+                    emailConfirmationVetAd();
+                }
+                // EMAIL />
                 return true;
             } else {
                 error = "DB connection failed";
                 return false;
             }
-         } catch (SQLException e) {
-             error = e.toString();
-             return false;  
-         } finally {
+        } catch (SQLException e) {
+            error = e.toString();
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
     public String listOfServices() throws Exception{
         Connection connection = null;
@@ -438,12 +555,12 @@ public class Appointments extends ActionSupport{
                     listOfServices.add(service.getService());
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
         return SUCCESS;
     }
     public String listOfCustomers() throws Exception{
@@ -472,12 +589,12 @@ public class Appointments extends ActionSupport{
                     listOfCustomers.add(""+customer.getFirstName()+" "+ customer.getLastName());
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
         return SUCCESS;
     }
     public String listOfVeterinarians() throws Exception{
@@ -507,12 +624,12 @@ public class Appointments extends ActionSupport{
                     veterinarianId.put(""+veterinarian.getFirstName()+" "+ veterinarian.getLastName(),veterinarian.getAccountId());
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
         return SUCCESS;
     }
 
@@ -787,6 +904,66 @@ public class Appointments extends ActionSupport{
 
     public static void setFormError(String formError) {
         Appointments.formError = formError;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+    public String getTo2() {
+        return to2;
+    }
+    public void setTo2(String to2) {
+        this.to2 = to2;
+    }
+    public String getBody2() {
+        return body2;
+    }
+    public void setBody2(String body2) {
+        this.body2 = body2;
+    }
+
+    public static Properties getProperties() {
+        return properties;
+    }
+
+    public static void setProperties(Properties properties) {
+        Appointments.properties = properties;
+    }
+
+    public int getToID() {
+        return toID;
+    }
+
+    public void setToID(int toID) {
+        this.toID = toID;
     }
 
 
