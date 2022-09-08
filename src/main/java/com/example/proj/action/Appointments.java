@@ -298,7 +298,7 @@ public class Appointments extends ActionSupport{
             Appointments.setFormError("Date is null");
             formError = "The preferred date of appointment is required.";
         }else if(appointmentBean.getVeterinarian().equals("-1")) {
-            formError = "Please choose the veterinarian you want to book.";
+            formError = "Please choose the name of the veterinarian you want to book.";
 
         }else if(appointmentBean.getDateOfAppointment().length() != 0 && !appointmentBean.getVeterinarian().equals("-1")) {
         appointmentBean.setDateOfAppointment(appointmentBean.getDateOfAppointment().substring(0, 10));
