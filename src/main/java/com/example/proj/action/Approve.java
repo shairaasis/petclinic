@@ -27,7 +27,12 @@ public class Approve extends ActionSupport{
     private String error;
     private String appointmentStatus;
     private String accountId;
+    private int customerID;
 
+   
+
+    PreparedStatement preparedStatement = null;
+    ResultSet rs = null;
     final private String from = "pet.clinic.confirmation@gmail.com";
     final private String password = "ijopmxuhytcmzruv";
     private String to = null;
@@ -98,6 +103,20 @@ public class Approve extends ActionSupport{
                 String sql = "update appointments set status='approved' where appointment_id =" +getAppointmentId();
                 statement.executeUpdate(sql);
                 appointmentStatus = "Appointment approved!";
+                sql = " SELECT customer_id FROM appointments WHERE appointment_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, getAppointmentId());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setCustomerID(rs.getInt(1));
+                }
+                sql = " SELECT email FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getCustomerID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTo(rs.getString(1));
+                }
                 emailApproved();
                 if(accountId != null){
                     return "vetApproved";
@@ -257,6 +276,14 @@ public class Approve extends ActionSupport{
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
     }
 
     

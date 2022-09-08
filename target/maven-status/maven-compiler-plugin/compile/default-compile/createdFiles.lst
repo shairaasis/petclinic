@@ -24,5 +24,4 @@ com\example\proj\action\Veterinarian.class
 com\example\proj\model\Appointment.class
 com\example\proj\action\Pets.class
 com\example\proj\action\Client.class
-com\example\proj\action\Statement.class
 com\example\proj\model\PetService.class

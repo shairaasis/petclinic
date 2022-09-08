@@ -22,12 +22,13 @@
 			background-color: #d22a2a!important;
 		}
 		#myBtn{
-			padding: 5px;
+			padding: 10px;
 			color: white;
 			background-color: #13a052e5;
 			border-radius: 5px;
 			border: none;
 			cursor: pointer;
+			margin-top: 10px;
 		}
 		#myBtn:hover{
 			background-color: #0e783e!important;
@@ -42,18 +43,31 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			margin-top: 1em;;
 		}
 		.getTimeAvailableForm{
 			text-align: center;
 			margin: 0px auto;
-			width: 50%;
+			width: 100%;
 			display: block;
+			border-style: groove;
+		    padding: 40px;
+			border-radius: 10px;
+			border-color: 2px #0e783e;
+			background-color: #0e783e0a;
+			float: center;
+			margin: 10px 0px;
+
 		}
-		select#veterinarian{
+		select#veterinarian, select#service, select#pet{
 			padding: 10px; font-size: medium;
+			width: 100%; margin-bottom: 0.5em;
 		}
 		input{
 			padding: 10px;font-size: medium;
+			width: 55em;
+			height: 3em;
+			margin-bottom: 0.5em;
 		}
 		#dateIcon{
 			width: 34px;
@@ -61,7 +75,9 @@
 		}.formButton {
 			text-align: left;
 			display: grid;
+			display: grid;
 		}
+		
 	  </style>
     </head>
 <body>
@@ -173,23 +189,24 @@
 					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
 				<a href="${clickCreateAppointment}">
-					<button id=""><i class='bx bx-plus-circle bx-s'></i> Create Appointment</button>
+					<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create Appointment</button>
 				</a>
+				<br>
 				<s:set var="createAppointment" value="createAppointment"/>
 				<s:if test='%{#createAppointment == "true"}'>
 				<div class="getTimeAvailableForm">
-				<h2>Schedule an appointment</h2>
-							<s:form action="getTimeAvailable" id="form" style="width: 100%;">
-								<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-								<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
-								<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-									list="%{veterinarianId.entrySet()}"
-									name="appointmentBean.veterinarian" listKey="key"
-									listValue="key"/>
-									<p style="color:red;"><s:property value="formError"></s:property></p>
-								<s:submit id="btn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
-							</s:form>
-						</div>	
+					<h2>Schedule Appointment</h2>
+						<s:form action="getTimeAvailable" id="form" style="width: 100%;">
+							<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+							<p style="color:red;"><s:property value="formError"></s:property></p>
+							<s:select label="Please select the name of Veterinarian." headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
+								list="%{veterinarianId.entrySet()}"
+								name="appointmentBean.veterinarian" listKey="key"
+								listValue="key"/>
+							<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
+							<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
+						</s:form>
+				</div>	
             	</s:if>
 				<s:set var="timeIsAvailable" value="timeIsAvailable"/>
 							<s:if test='%{#timeIsAvailable == "yes"}'>

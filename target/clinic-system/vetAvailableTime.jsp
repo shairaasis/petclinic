@@ -17,16 +17,17 @@
     <link rel="stylesheet" href="css/admincss/modal.css">
     <sx:head />
     <style>
-    #cancel:hover{
-			background-color: #d22a2a!important;
+		#cancel:hover{
+				background-color: #d22a2a!important;
 		}
 		#myBtn{
-			padding: 5px;
+			padding: 10px;
 			color: white;
 			background-color: #13a052e5;
 			border-radius: 5px;
 			border: none;
 			cursor: pointer;
+			margin-top: 10px;
 		}
 		#myBtn:hover{
 			background-color: #0e783e!important;
@@ -45,14 +46,26 @@
 		.getTimeAvailableForm{
 			text-align: center;
 			margin: 0px auto;
-			width: 50%;
+			width: 100%;
 			display: block;
+			border-style: groove;
+		    padding: 40px;
+			border-radius: 10px;
+			border-color: 2px #0e783e;
+			background-color: #0e783e0a;
+			float: center;
+			margin: 10px 0px;
+
 		}
-		select#veterinarian{
+		select#veterinarian, select#service, select#pet{
 			padding: 10px; font-size: medium;
+			width: 100%; margin-bottom: 0.5em;
 		}
 		input{
 			padding: 10px;font-size: medium;
+			width: 55em;
+			height: 3em;
+			margin-bottom: 0.5em;
 		}
 		#dateIcon{
 			width: 34px;
@@ -60,7 +73,13 @@
 		}.formButton {
 			text-align: left;
 			display: grid;
+			display: grid;
 		}
+		/* tbody{
+			display: flex;
+			align-items: baseline;
+			justify-content: center;
+		} */
     </style>
         <title>Vet Available Time</title>
 </head>
@@ -171,33 +190,35 @@
 			</div>
 
 			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
-            <h2>Schedule an appointment</h2>
-            <s:form action="createAppointment" id="form" style="width: 100%;">
-                <s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-                <s:textfield name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
-                <s:textfield name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />
-                <div class="control-group">
-                    <s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
-                    list="%{listOfTimes.entrySet()}"
-                    name="appointmentBean.timeOfAppointment" listKey="key"
-                    listValue="value"/>
-                </div>
-                <div class="control-group">
-                    <s:select headerKey="-1" id="service" headerValue="Select Service"
-                    list="listOfServices" 
-                    name="appointmentBean.service" />
-                </div>
-                <div class="control-group">
-                <s:select headerKey="-1" id="pet" headerValue="Select Pet"
-                        list="listOfPets" 
-                        name="appointmentBean.petName" />
-                </div>
-
-                <s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
-            </s:form>
+			<div class="getTimeAvailableForm">
+				<h2>Schedule Appointment</h2>
+				<s:form action="createAppointment" id="form" style="width: 100%;">
+					<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+					<s:textfield name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
+					<s:textfield name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />
+					<div class="control-group">
+						<s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
+						list="%{listOfTimes.entrySet()}"
+						name="appointmentBean.timeOfAppointment" listKey="key"
+						listValue="value"/>
+					</div>
+					<div class="control-group">
+						<s:select headerKey="-1" id="service" headerValue="Select Service"
+						list="listOfServices" 
+						name="appointmentBean.service" />
+					</div>
+					<div class="control-group">
+					<s:select headerKey="-1" id="pet" headerValue="Select Pet"
+							list="listOfPets" 
+							name="appointmentBean.petName" />
+					</div>
+					<br>
+					<s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
+				</s:form>
+			</div>
 			
 
-            <h1>Veterinarian<s:property value="appointmentBean.veterinarian"/></h1>
+            <!-- <h1>Veterinarian<s:property value="appointmentBean.veterinarian"/></h1>
     <h1>DATE<s:property value="appointmentBean.dateOfAppointment"></s:property></h1>
     <h1>ACCOUNT ID<s:property value="accountId"></s:property></h1>
 
@@ -231,7 +252,7 @@
                 </tr>
             </s:iterator>
             </tbody>
-        </table>
+        </table> -->
 			
 		</main>
 		<!-- MAIN -->
@@ -240,6 +261,7 @@
 
 
     
-    
+    <script src="css/admincss/script.js"></script>
+	<script src="css/admincss/modal.js"></script>
 </body>
 </html>

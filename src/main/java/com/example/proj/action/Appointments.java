@@ -398,19 +398,14 @@ public class Appointments extends ActionSupport{
                     }
                 }
             );
+            // < EMAIL to client
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
             message.setSubject(getSubject());
             message.setText(getBody());
             Transport.send(message);
-            System.out.println("SENT");
             // EMAIL to client />
-            // EMAIL to vet
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo2()));
-            message.setText(getBody2());
-            Transport.send(message);
-            // EMAIL to vet />
             } catch(Exception e) {
                 ret = ERROR;
                 e.printStackTrace();
@@ -430,14 +425,14 @@ public class Appointments extends ActionSupport{
                     }
                 }
             );
-            // EMAIL to vet
+            // EMAIL to vet / admin
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setSubject(getSubject());
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo2()));
             message.setText(getBody2());
             Transport.send(message);
-            // EMAIL to vet />
+            // EMAIL to vet / admin />
             } catch(Exception e) {
                 ret = ERROR;
                 e.printStackTrace();
