@@ -9,13 +9,13 @@ import com.example.proj.model.Account;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Update extends ActionSupport {
-    private static Account accountBean = new Account();
+    private Account accountBean;
     private String accountId;
-    private String error;
-    
+    private String error = "";
+    private String updateStatus = "";
     public String execute() throws Exception{
-        
         accountBean = getAccountBean();
+
         Connection connection = null;
         Statement statement = null;
         try {
@@ -25,14 +25,15 @@ public class Update extends ActionSupport {
 
             if (connection != null) {
                 statement = connection.createStatement();
-                String sql = "update accounts set username ="+accountBean.getAccountType()+", first_name="+accountBean.getFirstName()+", last_name="+accountBean.getLastName()+", address="+accountBean.getAddress()+", email="+accountBean.getEmail()+", contact_no = "+ accountBean.getContactNo()+" where account_id =" +accountBean.getAccountId();
+                String sql = "update accounts set username ='"+accountBean.getUsername()+"', first_name='"+accountBean.getFirstName()+"', last_name='"+accountBean.getLastName()+"', address='"+accountBean.getAddress()+"', email='"+accountBean.getEmail()+"', contact_no = '"+ accountBean.getContactNo()+"' where account_id =" +getAccountId();
                 statement.executeUpdate(sql);
+                setUpdateStatus("Account update successful");
                 return SUCCESS;
             } else {
                 error = "DB connection failed";
-                return error;
+                return ERROR;
             }
-         } catch (Exception e) {
+         } catch (SQLException e) {
              error = e.toString();
              return error;  
          } finally {
@@ -49,20 +50,28 @@ public class Update extends ActionSupport {
         this.accountId = accountId;
     }
 
-    public static Account getAccountBean() {
-        return accountBean;
-    }
-
-    public static void setAccountBean(Account accountBean) {
-        Update.accountBean = accountBean;
-    }
-
     public String getError() {
         return error;
     }
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public Account getAccountBean() {
+        return accountBean;
+    }
+
+    public void setAccountBean(Account accountBean) {
+        this.accountBean = accountBean;
+    }
+
+    public String getUpdateStatus() {
+        return updateStatus;
+    }
+
+    public void setUpdateStatus(String updateStatus) {
+        this.updateStatus = updateStatus;
     }
     
     

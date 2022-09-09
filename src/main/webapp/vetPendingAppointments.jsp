@@ -41,6 +41,15 @@
 				</a>
 			</li>
 			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
+				</a>
+			</li>
+			<li>
 				<a href="#" style="pointer-events: none; cursor: default;" >
 					<i class='bx bxs-calendar'></i>
 					<span class="text">Appointments</span>

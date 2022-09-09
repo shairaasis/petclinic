@@ -15,7 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 public class Approve extends ActionSupport{
     ArrayList<Appointment> appointments = new ArrayList<Appointment>();
     private Appointment appointment;
-    private String appointmentId;
+    private int appointmentId;
     private String error;
     private String appointmentStatus;
     private String accountId;
@@ -142,14 +142,7 @@ public class Approve extends ActionSupport{
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
     }
-    public String getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(String appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
+    
     public String getError() {
         return error;
     }
@@ -172,6 +165,14 @@ public class Approve extends ActionSupport{
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
+    }
+
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     
