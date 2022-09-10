@@ -6,15 +6,6 @@
         <field-validator type="requiredstring">
             <message>Username is required.</message>
         </field-validator>
-        <!-- 
-        <field-validator type="email">
-            <message>Username must be an email.</message>
-        </field-validator>
-        <field-validator type="double">
-            <param name="minInclusive">10</param>
-            <param name="maxInclusive">100</param>
-            <message>Number needs to be between ${minInclusive} and ${maxInclusive} (inclusive)</message>           
-        </field-validator> -->
     </field>
     <field name="accountBean.password">
         <field-validator type="requiredstring">

@@ -14,6 +14,7 @@ public class Services1 extends ActionSupport{
     ArrayList<PetService> services = new ArrayList<PetService>();
     PetService service;
     private String error;
+    private int accountId;
 
     public String execute() throws Exception {
         Connection connection = null;
@@ -73,6 +74,14 @@ public class Services1 extends ActionSupport{
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
 
