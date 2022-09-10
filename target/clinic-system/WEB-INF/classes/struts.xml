@@ -28,37 +28,56 @@
             <result name="accountregistered" type="redirectAction">
             <param name="actionName">listaccounts</param>
             <param name="status">${status}</param>
+            <param name="accountId">${accountId}</param>
             </result>
         </action>
 
         <action name="login" class="com.example.proj.action.Login" method="execute">
             <interceptor-ref name="defaultStack"/>
-            <result name="admin">/admin.jsp</result>
-            <result name="veterinarian">/veterinarian.jsp</result>
+            <result name="admin" type="redirectAction">
+                <param name="actionName">admin</param>
+                <param name="accountId">${accountBean.accountId}</param>
+            </result>
+            <result name="veterinarian" type="redirectAction">
+                <param name="actionName">veterinarian</param>
+                <param name="accountId">${accountBean.accountId}</param>
+            </result>
             <result name="input">/login.jsp</result>
             <result name="error">/error.jsp</result>
             <result name="client" type="redirectAction">
-            <param name="actionName">client</param>
-            <param name="accountId">${accountBean.accountId}</param>
+                <param name="actionName">client</param>
+                <param name="accountId">${accountBean.accountId}</param>
             </result>
         </action>
 
+        <action name="veterinarian" class="com.example.proj.action.Veterinarian">
+            <result name="success">/veterinarian.jsp</result>
+        </action>
+
+        <action name="client" class="com.example.proj.action.Client">
+            <result name="success">/client.jsp</result>
+        </action>
         
+        <action name="admin" class="com.example.proj.action.Admin">
+            <result name="success">/admin.jsp</result>
+        </action>
 
         <action name="logout" class="com.example.proj.action.Login" method="logout">
             <result name="success">/login.jsp</result>
+            <result name="input">/login.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
 
         <action name="pets" class="com.example.proj.action.Pets">
             <result name="success">/pets.jsp</result>
         </action>
-        <action name="client" class="com.example.proj.action.Client">
-            <result name="success">/client.jsp</result>
-        </action>
+    
         
         <action name="listaccounts" class="com.example.proj.action.Accounts">
             <interceptor-ref name="defaultStack"/>
+            <result name="success">/accounts.jsp</result>
+        </action>
+        <action name="filterAccount" class="com.example.proj.action.Accounts" method="filterAccount">
             <result name="success">/accounts.jsp</result>
         </action>
 
@@ -67,13 +86,18 @@
             <result name="success" type="redirectAction">
                 <param name="actionName">listaccounts</param>
                 <param name="status">${status}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
 
-        <action name="update" class="com.example.proj.action.Update" method="execute">
+        
+
+        <action name="updateAccount" class="com.example.proj.action.Update" method="execute">
             <result name="success" type="redirectAction">
-            <param name="actionName">listaccounts</param>
+                <param name="actionName">profile</param>
+                <param name="accountId">${accountId}</param>
+                <param name="updateStatus">${updateStatus}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
@@ -86,14 +110,19 @@
             <result name="input">/error.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
-
+<!-- View all pending appointments -->
         <action name="appointments" class="com.example.proj.action.Appointments" method="execute">
             <result name="success">/appointments.jsp</result>
+        </action>
+
+         <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
+            <result name="success">/vetPendingAppointments.jsp</result>
         </action>
 
         <action name="addService" class="com.example.proj.action.AddService" method="execute">
             <result name="success" type="redirectAction">
             <param name="actionName">services</param>
+            <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>
         </action>
@@ -105,6 +134,35 @@
         <action name="customerAppointments" class="com.example.proj.action.Appointments" method="customerAppointments">
             <result name="success">/pendingclientappointments.jsp</result>
         </action>
+        <!-- Profile Page -->
+        <action name="profile" class="com.example.proj.action.Accounts" method="viewProfile">
+            <result name="success">/profile.jsp</result>
+        </action>
+        
+        <action name="clickCreateAppointment" class="com.example.proj.action.Appointments" method="clickCreateAppointment">
+            <result name="success" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${accountId}</param>
+            <param name="createAppointment">${createAppointment}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="vetAvailableTime" class="com.example.proj.action.Appointments" method="vetAvailableTime">
+            <result name="success">/vetAvailableTime.jsp</result>
+        </action>
+        <!-- Get Available time of Vet on the date Selected -->
+        <action name="getTimeAvailable" class="com.example.proj.action.Appointments" method="getTimeAvailable">
+            <result name="success">/vetAvailableTime.jsp</result>
+            <result name="input" type="redirectAction">
+            <param name="actionName">customerAppointments</param>
+            <param name="accountId">${accountId}</param>
+            <param name="createAppointment">${createAppointment}</param>
+            </result>
+            <result name="error">/error.jsp</result>
+        </action>
+
         <action name="createAppointment" class="com.example.proj.action.Appointments" method="createAppointment">
             <result name="success" type="redirectAction">
             <param name="actionName">customerAppointments</param>
@@ -114,28 +172,42 @@
             <result name="input">/error.jsp</result>
             <result name="error">/error.jsp</result>
         </action>
+
         <!-- cancel appointment by client -->
-        <action name="cancel" class="com.example.proj.action.Cancel" method="execute">
+        <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
             <result name="success" type="redirectAction">
-            <param name="actionName">customerAppointments</param>
-            <param name="accountId">${accountId}</param>
-            <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="actionName">customerAppointments</param>
+                <param name="accountId">${accountId}</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
         <!-- cancel appointment by admin -->
         <action name="cancelAppointment" class="com.example.proj.action.Cancel" method="execute">
             <result name="success" type="redirectAction">
-            <param name="actionName">approvedAppointments</param>
-            <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="actionName">approvedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="vetAppointmentCancelled" type="redirectAction">
+                <param name="actionName">vetApprovedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
-        <!-- approve an appointment by admin -->
+    
+
+
+        <!-- approve an appointment by admin and vet-->
         <action name="approve" class="com.example.proj.action.Approve" method="approveAppointment">
             <result name="success" type="redirectAction">
-            <param name="actionName">approvedAppointments</param>
-            <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="actionName">approvedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="vetApproved" type="redirectAction">
+                <param name="actionName">vetApprovedAppointments</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
@@ -150,6 +222,12 @@
             <result name="error">/error.jsp</result>            
         </action>
 
+        <!-- view all approved appointments by vet -->
+        <action name="vetApprovedAppointments" class="com.example.proj.action.Appointments" method="vetApprovedAppointments">
+            <result name="success">/vetApprovedAppointments.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
         <action name="deletePet" class="com.example.proj.action.Delete" method="deletePet">
             <result name="success" type="redirectAction">
             <param name="actionName">pets</param>
@@ -161,10 +239,12 @@
         <action name="deleteService" class="com.example.proj.action.Delete" method="deleteService">
             <result name="success" type="redirectAction">
             <param name="actionName">services</param>
+        
+            <param name="accountId">${accountId}</param>
             </result>           
             <result name="error" type="redirectAction">
             <param name="actionName">services</param>
-            <param name="error=">${error}</param>
+            <param name="error">${error}</param>
             </result>           
         </action>
 

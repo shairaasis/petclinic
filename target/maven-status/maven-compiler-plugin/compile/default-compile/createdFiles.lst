@@ -9,11 +9,15 @@ com\example\proj\action\Accounts.class
 com\example\proj\model\Account.class
 com\example\proj\action\Cancel.class
 com\example\proj\model\Pet.class
+com\example\proj\model\Time.class
 com\example\proj\action\Approve.class
 com\example\proj\action\AddService.class
+com\example\proj\action\VetAvailableTime.class
 com\example\proj\action\Delete.class
 com\example\proj\action\Register.class
+com\example\proj\action\Veterinarian.class
 com\example\proj\model\Appointment.class
 com\example\proj\action\Pets.class
 com\example\proj\action\Client.class
 com\example\proj\model\PetService.class
+com\example\proj\action\Admin.class
