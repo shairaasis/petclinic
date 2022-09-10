@@ -75,8 +75,6 @@ public class Appointments extends ActionSupport{
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.starttls.required", "true");
-        // properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        // properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
     // EMAIL >
     public String execute() throws Exception {
