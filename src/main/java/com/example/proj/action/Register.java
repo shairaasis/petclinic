@@ -21,6 +21,7 @@ public class Register extends ActionSupport {
     private String status;
     private String encryptedPassword;
     private int typeOfAccount;
+    private int accountId;
 
     public String execute() throws Exception {
         accountBean = getAccountBean();
@@ -142,6 +143,14 @@ public class Register extends ActionSupport {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
     

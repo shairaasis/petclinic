@@ -28,12 +28,16 @@
             <result name="accountregistered" type="redirectAction">
             <param name="actionName">listaccounts</param>
             <param name="status">${status}</param>
+            <param name="accountId">${accountId}</param>
             </result>
         </action>
 
         <action name="login" class="com.example.proj.action.Login" method="execute">
             <interceptor-ref name="defaultStack"/>
-            <result name="admin">/admin.jsp</result>
+            <result name="admin" type="redirectAction">
+                <param name="actionName">admin</param>
+                <param name="accountId">${accountBean.accountId}</param>
+            </result>
             <result name="veterinarian" type="redirectAction">
                 <param name="actionName">veterinarian</param>
                 <param name="accountId">${accountBean.accountId}</param>
@@ -50,6 +54,14 @@
             <result name="success">/veterinarian.jsp</result>
         </action>
 
+        <action name="client" class="com.example.proj.action.Client">
+            <result name="success">/client.jsp</result>
+        </action>
+        
+        <action name="admin" class="com.example.proj.action.Admin">
+            <result name="success">/admin.jsp</result>
+        </action>
+
         <action name="logout" class="com.example.proj.action.Login" method="logout">
             <result name="success">/login.jsp</result>
             <result name="input">/login.jsp</result>
@@ -59,12 +71,7 @@
         <action name="pets" class="com.example.proj.action.Pets">
             <result name="success">/pets.jsp</result>
         </action>
-        <action name="client" class="com.example.proj.action.Client">
-            <result name="success">/client.jsp</result>
-        </action>
-        <action name="client" class="com.example.proj.action.Client">
-            <result name="success">/client.jsp</result>
-        </action>
+    
         
         <action name="listaccounts" class="com.example.proj.action.Accounts">
             <interceptor-ref name="defaultStack"/>
@@ -79,15 +86,18 @@
             <result name="success" type="redirectAction">
                 <param name="actionName">listaccounts</param>
                 <param name="status">${status}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
 
         
 
-        <action name="update" class="com.example.proj.action.Update" method="execute">
+        <action name="updateAccount" class="com.example.proj.action.Update" method="execute">
             <result name="success" type="redirectAction">
-            <param name="actionName">listaccounts</param>
+                <param name="actionName">profile</param>
+                <param name="accountId">${accountId}</param>
+                <param name="updateStatus">${updateStatus}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
@@ -112,6 +122,7 @@
         <action name="addService" class="com.example.proj.action.AddService" method="execute">
             <result name="success" type="redirectAction">
             <param name="actionName">services</param>
+            <param name="accountId">${accountId}</param>
             </result>
             <result name="error">/error.jsp</result>
         </action>
@@ -123,6 +134,11 @@
         <action name="customerAppointments" class="com.example.proj.action.Appointments" method="customerAppointments">
             <result name="success">/pendingclientappointments.jsp</result>
         </action>
+        <!-- Profile Page -->
+        <action name="profile" class="com.example.proj.action.Accounts" method="viewProfile">
+            <result name="success">/profile.jsp</result>
+        </action>
+        
         <action name="clickCreateAppointment" class="com.example.proj.action.Appointments" method="clickCreateAppointment">
             <result name="success" type="redirectAction">
             <param name="actionName">customerAppointments</param>
@@ -160,9 +176,9 @@
         <!-- cancel appointment by client -->
         <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
             <result name="success" type="redirectAction">
-            <param name="actionName">customerAppointments</param>
-            <param name="accountId">${accountId}</param>
-            <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="actionName">customerAppointments</param>
+                <param name="accountId">${accountId}</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
             </result>
             <result name="error">/error.jsp</result>            
         </action>
@@ -223,10 +239,12 @@
         <action name="deleteService" class="com.example.proj.action.Delete" method="deleteService">
             <result name="success" type="redirectAction">
             <param name="actionName">services</param>
+        
+            <param name="accountId">${accountId}</param>
             </result>           
             <result name="error" type="redirectAction">
             <param name="actionName">services</param>
-            <param name="error=">${error}</param>
+            <param name="error">${error}</param>
             </result>           
         </action>
 

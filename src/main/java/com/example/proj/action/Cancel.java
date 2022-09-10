@@ -29,7 +29,7 @@ public class Cancel extends ActionSupport{
         final private String password = "ijopmxuhytcmzruv";
         private String to = null;
         
-        private int toID;
+        private int toID;   
         private String to2 = null;
         private String subject = "appointment creation : pending appointment";
         private String body = "(client) creation confirmation , please wait for approval";

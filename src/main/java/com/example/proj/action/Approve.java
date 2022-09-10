@@ -23,13 +23,11 @@ import javax.mail.internet.MimeMessage;
 public class Approve extends ActionSupport{
     ArrayList<Appointment> appointments = new ArrayList<Appointment>();
     private Appointment appointment;
-    private String appointmentId;
+    private int appointmentId;
     private String error;
     private String appointmentStatus;
     private String accountId;
     private int customerID;
-
-   
 
     PreparedStatement preparedStatement = null;
     ResultSet rs = null;
@@ -80,14 +78,14 @@ public class Approve extends ActionSupport{
                     appointments.add(appointment);
                 }
             } 
-         } catch (Exception e) {
+        } catch (Exception e) {
 
-         } finally {
+        } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
 
-         return SUCCESS;
+        return SUCCESS;
     }
 
     public String approveAppointment() throws SQLException, IOException, InterruptedException{
@@ -105,7 +103,7 @@ public class Approve extends ActionSupport{
                 appointmentStatus = "Appointment approved!";
                 sql = " SELECT customer_id FROM appointments WHERE appointment_id=?";
                 preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, getAppointmentId());
+                preparedStatement.setInt(1, getAppointmentId());
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){
                     setCustomerID(rs.getInt(1));
@@ -214,14 +212,7 @@ public class Approve extends ActionSupport{
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
     }
-    public String getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(String appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
+    
     public String getError() {
         return error;
     }
@@ -286,6 +277,11 @@ public class Approve extends ActionSupport{
         this.customerID = customerID;
     }
 
-    
-    
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
 }
