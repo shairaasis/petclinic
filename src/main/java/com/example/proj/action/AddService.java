@@ -12,6 +12,7 @@ public class AddService extends ActionSupport{
     
     private static PetService serviceBean;
     private String error;
+    private int accountId;
 
     public String execute() throws Exception{
         serviceBean = getServiceBean();
@@ -64,6 +65,14 @@ public class AddService extends ActionSupport{
 
     public static void setServiceBean(PetService service) {
         AddService.serviceBean = service;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
 }

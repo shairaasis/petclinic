@@ -16,6 +16,4 @@ com\example\proj\action\Register.class
 com\example\proj\model\Appointment.class
 com\example\proj\action\Pets.class
 com\example\proj\action\Client.class
-com\example\proj\action\CreateAppointment.class
-com\example\proj\action\Statement.class
 com\example\proj\model\PetService.class

@@ -79,6 +79,17 @@
 		}
 		
 	  </style>
+	  <script>
+		function myFunction() {
+			var answer;
+			answer = window.confirm("Click okay to cancel this appointment.\nYou can't cancel an appointment that is scheduled today.");
+			if (answer == true) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		</script>
     </head>
 <body>
   <!-- SIDEBAR -->
@@ -95,6 +106,15 @@
 				<a href="${client}">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
 				</a>
 			</li>
 			<li>
@@ -305,8 +325,9 @@
 										<s:param name="accountId" value="accountId"></s:param>
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
                                     </s:url>
-                                    <s:a href="%{cancel}"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
-                                    <i class='bx bx-x bx-sm'></i></button></s:a>					
+                                    <s:a href="%{cancel}" onclick="return myFunction();"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
+                                    <i class='bx bx-x bx-sm'></i></button></s:a>	
+										
                                 </td>
                             </tr>
                         </s:iterator>
