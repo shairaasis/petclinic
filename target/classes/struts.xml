@@ -141,13 +141,23 @@
             <result name="error">/error.jsp</result>
         </action>
 
-         <!-- Update Appointment -->
+        <!-- Update Appointment -->
         <action name="updateAppointment" class="com.example.proj.action.Appointments" method="updateAppointment">
             <result name="success" type="redirectAction">
                 <param name="actionName">customerAppointments</param>
                 <param name="accountId">${accountId}</param>
                 <param name="appointmentId">${appointmentId}</param>
                 <param name="clickUpdateAppointment">${clickUpdateAppointment}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+        <!-- Reschedule Appointment -->
+        <action name="reschedule" class="com.example.proj.action.Appointments" method="reschedule">
+            <result name="success" type="redirectAction">
+                <param name="actionName">customerAppointments</param>
+                <param name="accountId">${accountId}</param>
+                <param name="successMessage">${successMessage}</param>
             </result>
             <result name="input">/error.jsp</result>
             <result name="error">/error.jsp</result>            
@@ -161,6 +171,7 @@
             <result name="success">/vetAvailableTime.jsp</result>
             <result name="input" type="redirectAction">
             <param name="actionName">customerAppointments</param>
+            <param name="listOfTimes">listOfTimes</param>
             <param name="accountId">${accountId}</param>
             <param name="createAppointment">${createAppointment}</param>
             </result>
@@ -176,6 +187,7 @@
             <result name="input" type="redirectAction">
             <param name="actionName">getTimeAvailable</param>
             <param name="accountId">${appointmentBean.clientId}</param>
+            <param name="timeIsAvailable">${timeIsAvailable}</param>
             <param name="appointmentBean">${appointmentBean}</param>
             </result>
             <result name="error">/error.jsp</result>

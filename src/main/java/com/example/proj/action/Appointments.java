@@ -27,7 +27,7 @@ public class Appointments extends ActionSupport{
     private String createAppointment = "false";
     private String clickUpdateAppointment = "false";
     private String timeIsAvailable = "no";
-    private String concat = "', '";
+    private String successMessage = "";
     private int accountId;
     private String error;
     private static String formError = "";
@@ -374,7 +374,6 @@ public class Appointments extends ActionSupport{
                     
                    
                 }
-                timeIsAvailable = "yes";
             } 
          } catch (SQLException e) {
             e.printStackTrace();
@@ -536,9 +535,42 @@ public class Appointments extends ActionSupport{
         return SUCCESS;
     }
 
-    public String vetAvailableTime(){
+    public String vetAvailableTime() throws Exception{
+        listOfServices();
+        listOfVeterinarians();
+        listOfPets();
         return SUCCESS;
     }
+
+    public String reschedule() throws Exception{
+        appointmentBean = getAppointmentBean();
+        String status = "pending";
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+            if (connection != null) {
+                statement = connection.createStatement();
+                
+                String sql = "update appointments set timeID ='"+appointmentBean.getTimeOfAppointment()+"', schedule = '"+appointmentBean.getDateOfAppointment()+"', status='"+status+"' where appointment_id =" +appointmentBean.getAppointmentId();
+                statement.executeUpdate(sql);
+                setSuccessMessage("You have rescheduled an appointment!\nPlease wait for approval.");
+                return SUCCESS;
+            } else {
+                error = "DB connection failed";
+                return ERROR;
+            }
+         } catch (SQLException e) {
+             error = e.toString();
+             return error;  
+         } finally {
+            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+    }
+
     
 
     public ArrayList<String> getListOfPets() {
@@ -648,15 +680,6 @@ public class Appointments extends ActionSupport{
         this.appointment = appointment;
     }
 
-
-    public String getConcat() {
-        return concat;
-    }
-
-
-    public void setConcat(String concat) {
-        this.concat = concat;
-    }
 
     public int getAccountId() {
         return accountId;
@@ -831,6 +854,18 @@ public class Appointments extends ActionSupport{
 
     public void setClickUpdateAppointment(String clickUpdateAppointment) {
         this.clickUpdateAppointment = clickUpdateAppointment;
+    }
+
+
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
     }
 
 

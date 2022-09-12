@@ -4,22 +4,21 @@
 <%@ taglib prefix="sj" uri="/struts-dojo-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html> 
-    <head>
-      <meta charset="UTF-8">
-	  <link href="assets/img/favicon-16x16.png" rel="icon">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="assets/img/favicon-16x16.png" rel="icon">
 
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Boxicons -->
-      <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-      <!-- My CSS -->
-      <link rel="stylesheet" href="css/admincss/style.css">
-	  <link rel="stylesheet" href="css/admincss/modal.css">
-      <title>Pending Appointments</title>
-	  <sx:head />
-	  <style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="css/admincss/style.css">
+    <link rel="stylesheet" href="css/admincss/modal.css">
+    <sx:head />
+    <style>
 		#cancel:hover{
-			background-color: #d22a2a!important;
+				background-color: #d22a2a!important;
 		}
 		#myBtn{
 			padding: 10px;
@@ -43,7 +42,6 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			margin-top: 1em;;
 		}
 		.getTimeAvailableForm{
 			text-align: center;
@@ -77,22 +75,16 @@
 			display: grid;
 			display: grid;
 		}
-		
-	  </style>
-	  <script>
-		function myFunction() {
-			var answer;
-			answer = window.confirm("Click okay to cancel this appointment.");
-			if (answer == true) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		</script>
-    </head>
+		/* tbody{
+			display: flex;
+			align-items: baseline;
+			justify-content: center;
+		} */
+    </style>
+        <title>Vet Available Time</title>
+</head>
 <body>
-  <!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -161,7 +153,7 @@
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
-  <!-- CONTENT -->
+    <!-- CONTENT -->
 	<section id="content">
 		<!-- NAVBAR -->
 		<nav>
@@ -186,6 +178,10 @@
 		<!-- NAVBAR -->
     <!-- MAIN -->
 		<main>
+			
+
+
+			
 			<div class="head-title">
 				<div class="left">
 					<h1>Appointments</h1>
@@ -195,83 +191,97 @@
 						</li>
 						<li><i class='bx bx-chevron-right' ></i></li>
 						<li>
-							<a class="active" href="#">Pending Appointments</a>
+							<a class="active" href="#">Create Appointment</a>
 						</li>
 					</ul>
 				</div>
+				
 			</div>
-							<h1><s:property value="appointmentId"></s:property></h1>
-							<h1><s:property value="appointmentBean.petId"></s:property></h1>
-							<h1><s:property value="petId"></s:property></h1>
-							<h1><s:property value="%{petId}"></s:property></h1>
-							<h1><s:property value="appointmentId"></s:property></h1>
-							<h1><s:property value="appointmentBean.petId"></s:property></h1>
-							<h1><s:property value="appointmentId"></s:property></h1>
-							<h1><s:property value="appointmentBean.petId"></s:property></h1>
-							<h1><s:property value="appointmentId"></s:property></h1>
-							<h1><s:property value="appointmentBean.petId"></s:property></h1>
 
-				<div class="getTimeAvailableForm">
-					<h2>Schedule Appointment</h2>
-						<s:form action="getTimeAvailable" id="form" style="width: 100%;">
-							<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-							<s:textfield name="appointmentBean.appointmentId" value="%{appointmentBean.appointmentId}" disabled="true" />
-							<s:textfield name="appointmentBean.petId" value="%{appointmentBean.petId}" disabled="true" />
-							<s:textfield name="appointmentBean.petName" value="%{appointmentBean.petName}" disabled="true" />
-							<h1><s:property value="appointmentId"></s:property></h1>
-							<h1><s:property value="appointmentBean.petName"></s:property></h1>
-							
-							<h1><s:property value="petName"></s:property></h1>
-							<s:textfield name="appointmentBean.customer" value="%{appointmentBean.customer}" disabled="true" />
+			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
+				<s:set var="timeIsAvailable" value="timeIsAvailable"/>
+				<s:if test='%{#timeIsAvailable == "yes"}'>
+					<div class="getTimeAvailableForm">
+						<s:form action="createAppointment" id="form" style="width: 100%;">
+							<h2>Schedule Appointment</h2>
 							<p style="color:red;"><s:property value="formError"></s:property></p>
-							<s:select label="Please select the name of Veterinarian." headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-								list="%{veterinarianId.entrySet()}"
-								name="appointmentBean.veterinarian" listKey="key"
-								listValue="key"/>
-							<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
-							<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
+							<p style="color:red;"><s:property value="%{formError}"></s:property></p>
+							<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+							<s:textfield name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
+							<s:textfield name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />
+							<div class="control-group">
+								<s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
+								list="%{listOfTimes.entrySet()}"
+								name="appointmentBean.timeOfAppointment" listKey="key"
+								listValue="value"/>
+							</div>
+							<div class="control-group">
+								<s:select headerKey="-1" id="service" headerValue="Select Service"
+								list="listOfServices" 
+								name="appointmentBean.service" />
+							</div>
+							<div class="control-group">
+							<s:select headerKey="-1" id="pet" headerValue="Select Pet"
+									list="listOfPets" 
+									name="appointmentBean.petName" />
+							</div>
+							<br>
+							<s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
 						</s:form>
-				</div>	
-            	
-
-
-
-
-
-
-
+					</div>
+				</s:if>
+				
 				<s:set var="clickUpdateAppointment" value="clickUpdateAppointment"/>
 				<s:if test='%{#clickUpdateAppointment == "true"}'>
-					<div class="getTimeAvailableForm">
-						<h2>Reschedule Appointment</h2>
-							<s:form action="updateAppointment" id="form" style="width: 100%;">
-								<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-								<p style="color:red;"><s:property value="formError"></s:property></p>
-								<s:textfield label="Owner" name="appointmentBean.customer" value="%{appointmentBean.customer}" disabled="true" />
-								<s:textfield label="Pet Name" name="appointmentBean.petName" value="%{appointmentBean.petName}" disabled="true" />
-								<s:textfield label="Service" name="appointmentBean.service" value="%{appointmentBean.service}" disabled="true" />
-								<s:textfield label="Current Date" value="%{appointmentBean.schedule}" disabled="true" />
-								<s:textfield label="Current Time" value="%{appointmentBean.timeOfAppointment}" disabled="true" />
-								
-								<p style="color:red;">Please select veterinarian time and choose the new date you prefer*</p>
-								<s:select label="Please select the name of Veterinarian." headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-									list="%{veterinarianId.entrySet()}"
-									name="appointmentBean.veterinarian" listKey="key"
-									listValue="key"/>
-								<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
-								<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
-							</s:form>
-					</div>	
+					<h1>TEST ONLY - UPDATE FORM APPEARS HERE</h1>
+					<h1>Veterinarian<s:property value="appointmentBean.veterinarian"/></h1>
+    				<h1>DATE<s:property value="appointmentBean.dateOfAppointment"></s:property></h1>
 				</s:if>
 
-		
+            <!-- <h1>Veterinarian<s:property value="appointmentBean.veterinarian"/></h1>
+    <h1>DATE<s:property value="appointmentBean.dateOfAppointment"></s:property></h1>
+    <h1>ACCOUNT ID<s:property value="accountId"></s:property></h1>
+
+  
+        <table>
+            <thead>
+                <tr>
+                    <th>Appointment ID</th>
+                    <th>Customer ID</th>
+                    <th>Pet ID</th>
+                    <th>Vet ID </th>
+                    <th>Service</th>
+                    <th>Schedule</th>
+                    <th>Time of Appointment</th>
+                    <th>Status</th>
+                    <th>Veterinarian</th>
+                </tr>
+            </thead>
+            <tbody>
+            <s:iterator value="vetAppointments" var="vetAppointment">  
+                <tr>
+                    <td><s:property value="appointmentId"/></td>
+                    <td><s:property value="clientId"/></td>
+                    <td><s:property value="petId"/></td>
+                    <td><s:property value="veterinarianId"/></td>
+                    <td><s:property value="serviceId"/></td>
+                    <td><s:property value="schedule"/></td>
+                    <td><s:property value="timeOfAppointment"/></td>
+                    <td><span class="status completed"><s:property value="status"/></span></td>
+                    <td><s:property value="veterinarian"/></td>
+                </tr>
+            </s:iterator>
+            </tbody>
+        </table> -->
+			
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-  </div>
 
-  <script src="css/admincss/script.js"></script>
-  <script src="css/admincss/modal.js"></script>
+
+    
+    <script src="css/admincss/script.js"></script>
+	<script src="css/admincss/modal.js"></script>
 </body>
 </html>
