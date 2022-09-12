@@ -238,6 +238,8 @@
 					<div class="getTimeAvailableForm">
 						<s:form action="reschedule" id="form" style="width: 100%;">
 							<h2>Reschedule Appointment</h2>
+  
+                            	<s:hidden name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarianId}"/>
 								<s:hidden name="appointmentBean.appointmentId" value="%{appointmentBean.appointmentId}" />
 								<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
 								<s:hidden name="accountId" value="%{accountId}" />
@@ -247,7 +249,7 @@
 								<s:textfield label="Service" value="%{appointmentBean.service}" disabled="true" />
 								
 								<s:textfield id="schedule" value="%{appointmentBean.schedule}" disabled="true" />
-
+								<s:textfield label="Veterinarian" name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
 								<s:textfield id="newDate" label="Service" name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />								<div class="control-group">
 									
 									<s:select headerKey="-1" id="veterinarian" headerValue="Select Time"

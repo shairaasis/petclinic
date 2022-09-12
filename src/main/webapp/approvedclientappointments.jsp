@@ -175,7 +175,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<p><s:property value="%{numOfAppointments}"/></p>
                         <s:iterator value="appointments" var="appointment">  
                             <tr>
 								<td><s:property value="petName"/></td>
