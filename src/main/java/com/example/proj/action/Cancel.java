@@ -31,17 +31,19 @@ public class Cancel extends ActionSupport{
         
         private int toID;   
         private String to2 = null;
-        private String subject = "appointment creation : pending appointment";
-        private String body = "(client) creation confirmation , please wait for approval";
-        private String body2 = "(vet)(add) appointment creation  : pending for your approval";
+        private String subject = "TEST appointment cancellation";
+        private String body2 = "TEST : should be received by client";
+        private String body = "TEST : should be received by vet";
         
         static Properties properties = new Properties();
         static {
             properties.put("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.port", "587");
+            properties.put("mail.smtp.port", "465");
             properties.put("mail.smtp.auth", "true");
             properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.starttls.required", "true");
+            properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         }
         // EMAIL >
 
@@ -55,10 +57,32 @@ public class Cancel extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
+
+                String sql = " SELECT customer_id FROM appointments WHERE appointment_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getAppointmentId());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setToID(rs.getInt(1));
+                    System.out.println("clientid : " + getToID());
+                }
+                preparedStatement.close();
+                sql = " SELECT email FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getToID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTo(rs.getString(1));
+                    System.out.println("clientemail : " + getTo());
+                }
+                emailCancelVetAd();
+                sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.executeUpdate();
                 appointmentStatus ="Appointment is cancelled.";
+
+                // EMAIL
+                
                 if( accountId == null){
                     return SUCCESS;
                 }
@@ -67,8 +91,8 @@ public class Cancel extends ActionSupport{
 		} catch (Exception e) {
 
         } finally {
-           if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
-           if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         }
 
         return ERROR;
@@ -83,10 +107,29 @@ public class Cancel extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
+                String sql = " SELECT veterinarian_id FROM appointments WHERE appointment_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getAppointmentId());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setToID(rs.getInt(1));
+                    System.out.println("vet ID : " + getToID());
+                }
+                preparedStatement.close();
+                sql = " SELECT email FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getToID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTo(rs.getString(1));
+                    System.out.println("vetemail : " + getTo());
+                }
+                emailCancelClient();
+                sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.executeUpdate();
                 appointmentStatus ="Appointment is cancelled.";
+                
                 return SUCCESS;
             }
 		} catch (Exception e) {
@@ -98,8 +141,7 @@ public class Cancel extends ActionSupport{
 
         return ERROR;
 	}
-
-    public String emailCancelVetAd(){
+    public String emailCancelClient(){
         String ret = SUCCESS;
         try {
             Session session = Session.getDefaultInstance(properties,  
@@ -114,10 +156,39 @@ public class Cancel extends ActionSupport{
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setSubject(getSubject());
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo2()));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
+            message.setText(getBody());
+            Transport.send(message);
+            System.out.println("myEMAIL 1st");
+            // EMAIL to vet / admin />
+            } catch(Exception e) {
+                ret = ERROR;
+                e.printStackTrace();
+                System.out.println(e);
+            }
+        return ret;
+    }
+
+    public String emailCancelVetAd(){
+        String ret = SUCCESS;
+        try {
+            Session session = Session.getDefaultInstance(properties,  
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication 
+                    getPasswordAuthentication() {
+                        return new PasswordAuthentication(from, password);
+                    }
+                }
+            );
+            // EMAIL to client
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setSubject(getSubject());
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
             message.setText(getBody2());
             Transport.send(message);
-            // EMAIL to vet / admin />
+            System.out.println("myEMAIL 2nd");
+            // EMAIL to client 
             } catch(Exception e) {
                 ret = ERROR;
                 e.printStackTrace();
@@ -201,8 +272,13 @@ public class Cancel extends ActionSupport{
 
     public static void setProperties(Properties properties) {
         Cancel.properties = properties;
-    }
-    
+    }    
 
-    
+    public int getToID() {
+        return toID;
+    }
+
+    public void setToID(int toID) {
+        this.toID = toID;
+    }
 }

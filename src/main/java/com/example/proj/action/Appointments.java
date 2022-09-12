@@ -64,17 +64,19 @@ public class Appointments extends ActionSupport{
     private String to = null;
     private int toID;
     private String to2 = null;
-    private String subject = "appointment creation : pending appointment";
+    private String subject = "TEST SETTINGS appointment creation : pending appointment";
     private String body = "(client) creation confirmation , please wait for approval";
     private String body2 = "(vet)(add) appointment creation  : pending for your approval";
     
     static Properties properties = new Properties();
     static {
         properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.starttls.required", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
     // EMAIL >
     public String execute() throws Exception {

@@ -12,6 +12,7 @@ com\example\proj\action\Accounts.class
 com\example\proj\model\Account.class
 com\example\proj\action\Cancel.class
 com\example\proj\action\Approve$1.class
+com\example\proj\action\Cancel$2.class
 com\example\proj\model\Pet.class
 com\example\proj\model\Time.class
 com\example\proj\action\Approve.class
