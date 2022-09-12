@@ -25,6 +25,7 @@ public class Appointments extends ActionSupport{
     Appointment appointment;
     Appointment vetAppointment;
     private String createAppointment = "false";
+    private String clickUpdateAppointment = "false";
     private String timeIsAvailable = "no";
     private String concat = "', '";
     private int accountId;
@@ -45,6 +46,8 @@ public class Appointments extends ActionSupport{
     private HashMap<Integer, String> listOfTimes = new HashMap<Integer, String>();
     public HashMap<String, Integer> veterinarianId = new HashMap<String, Integer>();
     public HashMap<String, Integer> timeId = new HashMap<String, Integer>();
+    private int appointmentId;
+
     public String execute() throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -173,6 +176,46 @@ public class Appointments extends ActionSupport{
         formError="";
         return SUCCESS;
     }
+    public String updateAppointment() throws Exception{
+        appointmentBean.setAppointmentId(appointmentId);
+        appointmentBean.setClientId(accountId);
+        listOfVeterinarians();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+
+            if (connection != null) {
+                String sql = "SELECT appointments.*, concat(DATE_FORMAT(schedule, '%a, %b %d %Y'),' - ', time_format(time, '%r')) AS currentSchedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id inner join time on appointments.timeID = time.timeID where appointment_id ="+appointmentBean.getAppointmentId();
+                preparedStatement = connection.prepareStatement(sql);
+                ResultSet rs= preparedStatement.executeQuery();
+                while(rs.next()) {
+                    appointmentBean.setAppointmentId(rs.getInt(1));
+                    appointmentBean.setClientId(rs.getInt(2));
+                    appointmentBean.setPetId(rs.getInt(3));
+                    appointmentBean.setVeterinarianId(rs.getInt(4));
+                    appointmentBean.setServiceId(rs.getInt(5));
+                    appointmentBean.setSchedule(rs.getString(9));
+                    appointmentBean.setTimeOfAppointment(rs.getInt(7));
+                    appointmentBean.setStatus(rs.getString(8));
+                    appointmentBean.setCustomer(rs.getString(10));
+                    appointmentBean.setVeterinarian(rs.getString(11));
+                    appointmentBean.setPetName(rs.getString(12));
+                    appointmentBean.setService(rs.getString(13));
+                }
+                setClickUpdateAppointment("true");
+            } 
+         } catch (Exception e) {
+
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+
+        return SUCCESS;
+    }
     public String customerAppointments() throws Exception {
         // getTimetable();
         listOfServices();
@@ -290,12 +333,9 @@ public class Appointments extends ActionSupport{
          return SUCCESS;
     }
     public String getTimeAvailable() throws Exception{
-        createAppointment = "true";
         appointmentBean = getAppointmentBean();
         accountId = appointmentBean.getClientId();
-        setFormError("Method goes no if statements");
         if(appointmentBean.getDateOfAppointment().length() == 0) {
-            Appointments.setFormError("Date is null");
             formError = "The preferred date of appointment is required.";
         }else if(appointmentBean.getVeterinarian().equals("-1")) {
             formError = "Please choose the name of the veterinarian you want to book.";
@@ -306,6 +346,7 @@ public class Appointments extends ActionSupport{
         listOfServices();
         listOfVeterinarians();
         listOfPets();
+        setFormError("");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -348,47 +389,25 @@ public class Appointments extends ActionSupport{
     }
     public String createAppointment() throws Exception{
         appointmentBean = getAppointmentBean();
-        if(saveAppointment(appointmentBean) == true) {
-            return "success";
-        } else {
-            return error;
+        if(appointmentBean.getTimeOfAppointment() < 0 ){
+            formError = "Please Select the time of Appointment. * All fields are required.";
+        }else if(appointmentBean.getService().equals("-1")){
+            formError = "Please Select the type of Service. * All fields are required.";
+        }else if(appointmentBean.getPetName().equals("-1")){
+            formError = "Please Select the name of your pet. * All fields are required.";
         }
-    }
-    // public Appointment getAppointmentData(Appointment appointmentBean)throws SQLException{
-    //     Connection connection = null;
-    //     PreparedStatement preparedStatement = null;
-    //     try {
-    //         String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
-    //         Class.forName("com.mysql.jdbc.Driver");
-    //         connection = DriverManager.getConnection(URL, "root", "password");
-
-    //         if (connection != null) {
-    //             String sql = "select accounts.account_id, CONCAT(accounts.first_name, ' ', accounts.last_name) AS Veterinarian, services.service_id, services.service, pets.pet_id, pets.pet_name FROM accounts, services, pets where CONCAT(accounts.first_name, ' ', accounts.last_name) ="+ appointmentBean.getVeterinarian()+" and service ="+appointmentBean.getService()+" and pet_name =" +appointmentBean.getPetName();
-    //             preparedStatement = connection.prepareStatement(sql);
-    //             ResultSet rs= preparedStatement.executeQuery();
-
-    //             while(rs.next()){  
-    //                 appointmentBean.setVeterinarianId(rs.getInt(1));
-    //                 appointmentBean.setVeterinarian(rs.getString(2));
-    //                 appointmentBean.setServiceId(rs.getInt(3));
-    //                 appointmentBean.setService(rs.getString(4));
-    //                 appointmentBean.setPetId(rs.getInt(5));
-    //                 appointmentBean.setPetName(rs.getString(6));
-    //             }
-    //             System.out.println("\n\n======get appointment data method==\n\n");
-    //             System.out.println("=======\n\n\n"+appointmentBean.getDateOfAppointment()+"\n\n\n=========\n"+appointmentBean.getTimeOfAppointment()+"\n\n");
-    //             System.out.println("===\n\n"+appointmentBean.getServiceId()+" "+ appointmentBean.getPetId()+"=======\n\n\n");
         
-    //         } 
-    //      } catch (Exception e) {
-
-    //      } finally {
-    //         if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
-    //         if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-    //      }
-
-    //      return appointmentBean;
-    // }
+        else{
+            if(saveAppointment(appointmentBean) == true) {
+                return "success";
+            } else {
+                return error;
+            }
+        }
+        return INPUT;
+        
+    }
+    
     public boolean saveAppointment(Appointment appointmentBean) throws Exception {
         String status = "pending";
         Connection connection = null;
@@ -416,6 +435,7 @@ public class Appointments extends ActionSupport{
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
          }
     }
+
     public String listOfServices() throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -788,6 +808,31 @@ public class Appointments extends ActionSupport{
     public static void setFormError(String formError) {
         Appointments.formError = formError;
     }
+
+
+
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+
+
+    public String getClickUpdateAppointment() {
+        return clickUpdateAppointment;
+    }
+
+
+
+    public void setClickUpdateAppointment(String clickUpdateAppointment) {
+        this.clickUpdateAppointment = clickUpdateAppointment;
+    }
+
 
 
 }

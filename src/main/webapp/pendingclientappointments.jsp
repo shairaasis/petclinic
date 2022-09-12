@@ -82,7 +82,7 @@
 	  <script>
 		function myFunction() {
 			var answer;
-			answer = window.confirm("Click okay to cancel this appointment.\nYou can't cancel an appointment that is scheduled today.");
+			answer = window.confirm("Click okay to cancel this appointment. ");
 			if (answer == true) {
 				return true;
 			} else {
@@ -212,6 +212,29 @@
 					<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create Appointment</button>
 				</a>
 				<br>
+				<s:set var="clickUpdateAppointment" value="clickUpdateAppointment"/>
+				<s:if test='%{#clickUpdateAppointment == "true"}'>
+					<div class="getTimeAvailableForm">
+						<h2>Reschedule Appointment</h2>
+							<s:form action="updateAppointment" id="form" style="width: 100%;">
+								<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+								<p style="color:red;"><s:property value="formError"></s:property></p>
+								<s:textfield label="Owner" name="appointmentBean.customer" value="%{appointmentBean.customer}" disabled="true" />
+								<s:textfield label="Pet Name" name="appointmentBean.petName" value="%{appointmentBean.petName}" disabled="true" />
+								<s:textfield label="Service" name="appointmentBean.service" value="%{appointmentBean.service}" disabled="true" />
+								<s:textfield label="Current Schedule" value="%{appointmentBean.schedule}" disabled="true" />
+								
+								<p style="color:red;">Please select veterinarian name and choose the date you prefer*</p>
+								<s:select label="Please select the name of Veterinarian." headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
+									list="%{veterinarianId.entrySet()}"
+									name="appointmentBean.veterinarian" listKey="key"
+									listValue="key"/>
+								<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
+								<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
+							</s:form>
+					</div>	
+				</s:if>
+				
 				<s:set var="createAppointment" value="createAppointment"/>
 				<s:if test='%{#createAppointment == "true"}'>
 				<div class="getTimeAvailableForm">
@@ -228,6 +251,8 @@
 						</s:form>
 				</div>	
             	</s:if>
+				
+				
 				<s:set var="timeIsAvailable" value="timeIsAvailable"/>
 							<s:if test='%{#timeIsAvailable == "yes"}'>
 								<s:property value="veterinarian"/>
@@ -321,6 +346,13 @@
                                 <td><s:property value="schedule"/></td>
 								<td><span class="status completed"><s:property value="status"/></span></td>
                                 <td>
+									<s:url action="updateAppointment" var="updateAppointment">
+										<s:param name="accountId" value="accountId"></s:param>
+										<s:param name="appointmentId" value="appointmentId"></s:param>
+									</s:url>
+									<s:a href="%{updateAppointment}"><button id="update" title="Update" type="button" style="cursor: pointer;padding: 3px; background-color: green; border: none; border-radius: 5px; color: white; ">
+										<i class='bx bxs-pencil bx-sm' ></i></button></s:a>
+									
                                     <s:url action="cancel" var="cancel">
 										<s:param name="accountId" value="accountId"></s:param>
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
@@ -336,6 +368,8 @@
 				</div>
 				
 			</div>
+
+			
 		</main>
 		<!-- MAIN -->
 	</section>

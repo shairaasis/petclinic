@@ -101,6 +101,15 @@
 				</a>
 			</li>
 			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
+				</a>
+			</li>
+			<li>
 				<a href="#" style="pointer-events: none; cursor: default;" >
 					<i class='bx bxs-calendar'></i>
 					<span class="text">Appointments</span>
@@ -191,8 +200,10 @@
 
 			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
 			<div class="getTimeAvailableForm">
-				<h2>Schedule Appointment</h2>
 				<s:form action="createAppointment" id="form" style="width: 100%;">
+					<h2>Schedule Appointment</h2>
+					<p style="color:red;"><s:property value="formError"></s:property></p>
+					<p style="color:red;"><s:property value="%{formError}"></s:property></p>
 					<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
 					<s:textfield name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
 					<s:textfield name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />
