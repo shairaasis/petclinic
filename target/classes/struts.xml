@@ -92,15 +92,7 @@
         </action>
 
         
-
-        <action name="updateAccount" class="com.example.proj.action.Update" method="execute">
-            <result name="success" type="redirectAction">
-                <param name="actionName">profile</param>
-                <param name="accountId">${accountId}</param>
-                <param name="updateStatus">${updateStatus}</param>
-            </result>
-            <result name="error">/error.jsp</result>            
-        </action>
+       
 
         <action name="registerpet" class="com.example.proj.action.Pets" method="registerPet">
             <result name="success" type="redirectAction">
@@ -115,7 +107,7 @@
             <result name="success">/appointments.jsp</result>
         </action>
 
-         <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
+        <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
             <result name="success">/vetPendingAppointments.jsp</result>
         </action>
 
@@ -149,6 +141,28 @@
             <result name="error">/error.jsp</result>
         </action>
 
+        <!-- Update Appointment -->
+        <action name="updateAppointment" class="com.example.proj.action.Appointments" method="updateAppointment">
+            <result name="success" type="redirectAction">
+                <param name="actionName">customerAppointments</param>
+                <param name="accountId">${accountId}</param>
+                <param name="appointmentId">${appointmentId}</param>
+                <param name="clickUpdateAppointment">${clickUpdateAppointment}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+        <!-- Reschedule Appointment -->
+        <action name="reschedule" class="com.example.proj.action.Appointments" method="reschedule">
+            <result name="success" type="redirectAction">
+                <param name="actionName">customerAppointments</param>
+                <param name="accountId">${accountId}</param>
+                <param name="successMessage">${successMessage}</param>
+            </result>
+            <result name="input">/error.jsp</result>
+            <result name="error">/error.jsp</result>            
+        </action>
+
         <action name="vetAvailableTime" class="com.example.proj.action.Appointments" method="vetAvailableTime">
             <result name="success">/vetAvailableTime.jsp</result>
         </action>
@@ -157,6 +171,7 @@
             <result name="success">/vetAvailableTime.jsp</result>
             <result name="input" type="redirectAction">
             <param name="actionName">customerAppointments</param>
+            <param name="listOfTimes">listOfTimes</param>
             <param name="accountId">${accountId}</param>
             <param name="createAppointment">${createAppointment}</param>
             </result>
@@ -169,8 +184,22 @@
             <param name="accountId">${appointmentBean.clientId}</param>
             <param name="appointmentStatus">${appointmentStatus}</param>
             </result>
-            <result name="input">/error.jsp</result>
+            <result name="input" type="redirectAction">
+            <param name="actionName">getTimeAvailable</param>
+            <param name="accountId">${appointmentBean.clientId}</param>
+            <param name="timeIsAvailable">${timeIsAvailable}</param>
+            <param name="appointmentBean">${appointmentBean}</param>
+            </result>
             <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="cancel" class="com.example.proj.action.Cancel" method="cancelledByClient">
+            <result name="success" type="redirectAction">
+                <param name="actionName">customerAppointments</param>
+                <param name="accountId">${accountId}</param>
+                <param name="appointmentStatus">${appointmentStatus}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
         </action>
 
         <!-- cancel appointment by client -->
@@ -246,6 +275,12 @@
             <param name="actionName">services</param>
             <param name="error">${error}</param>
             </result>           
+        </action>
+
+        <!-- Email function  -->
+        <action name = "Emailer" class = "com.example.proj.action.Emailer" method = "execute">
+            <result name = "success">/TestSuccess.jsp</result>
+            <result name = "error">/TestError.jsp</result>
         </action>
 
 

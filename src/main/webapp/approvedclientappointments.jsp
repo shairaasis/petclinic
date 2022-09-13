@@ -25,6 +25,17 @@
 			background-color: #13a053!important;;
 		}
 	  </style>
+	  <script>
+		function myFunction() {
+			var answer;
+			answer = window.confirm("Click okay to cancel this appointment.");
+			if (answer == true) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		</script>
     </head>
 <body>
   <!-- SIDEBAR -->
@@ -164,7 +175,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<p><s:property value="%{numOfAppointments}"/></p>
                         <s:iterator value="appointments" var="appointment">  
                             <tr>
 								<td><s:property value="petName"/></td>
@@ -173,12 +183,19 @@
                                 <td><s:property value="schedule"/></td>
 								<td><span class="status"><s:property value="status"/></span></td>
                                 <td>
-                                    <s:url action="cancel" var="cancel">
+									<s:url action="updateAppointment" var="updateAppointment">
+										<s:param name="accountId" value="accountId"></s:param>
+										<s:param name="appointmentId" value="appointmentId"></s:param>
+									</s:url>
+									<s:a href="%{updateAppointment}"><button id="update" title="Reschedule" type="button" style="cursor: pointer;padding: 3px; background-color: green; border: none; border-radius: 5px; color: white; ">
+										<i class='bx bxs-pencil bx-sm' ></i></button></s:a>
+										
+									<s:url action="cancel" var="cancel">
 										<s:param name="accountId" value="accountId"></s:param>
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
                                     </s:url>
-                                    <s:a href="%{cancel}"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
-                                    <i class='bx bx-x bx-sm'></i></button></s:a>					
+                                    <s:a href="%{cancel}" onclick="return myFunction();"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
+                                    <i class='bx bx-x bx-sm'></i></button></s:a>	
                                 </td>
                             </tr>
                         </s:iterator>
