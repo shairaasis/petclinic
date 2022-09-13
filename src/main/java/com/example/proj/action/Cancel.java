@@ -21,6 +21,21 @@ public class Cancel extends ActionSupport{
     private String accountId;
     private int appointmentId;
     private String appointmentStatus;
+    private int customerID;
+    private int petID;
+    private int vetID;
+    private int service;
+    private String eSchedule;
+    private int eTime;
+    private String clientName;
+    private String petName;
+    private String vetFName;
+    private String vetLName;
+    private String serviceName;
+    private String dateOfAppointment;
+    private String timeOfAppointment;
+
+    
 
         // < EMAIL
         PreparedStatement preparedStatement = null;
@@ -31,19 +46,16 @@ public class Cancel extends ActionSupport{
         
         private int toID;   
         private String to2 = null;
-        private String subject = "TEST appointment cancellation";
-        private String body2 = "TEST : should be received by client";
-        private String body = "TEST : should be received by vet";
+        private String subject = null;
+        private String body2 = null;
+        private String body = null;
         
         static Properties properties = new Properties();
         static {
-            properties.put("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.port", "465");
             properties.put("mail.smtp.auth", "true");
             properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.starttls.required", "true");
-            properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.port", "587");
         }
         // EMAIL >
 
@@ -55,26 +67,60 @@ public class Cancel extends ActionSupport{
 			String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, "root", "password");
-
             if (connection != null) {
-
-                String sql = " SELECT customer_id FROM appointments WHERE appointment_id=?";
+                String sql = " SELECT customer_id, pet_id, veterinarian_id, service, schedule, timeID  FROM appointments WHERE appointment_id=?";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, getAppointmentId());
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){
-                    setToID(rs.getInt(1));
-                    System.out.println("clientid : " + getToID());
+                    setCustomerID(rs.getInt(1));
+                    setPetID(rs.getInt(2));
+                    setVetID(rs.getInt(3));
+                    setService(rs.getInt(4));
+                    seteSchedule(rs.getString(5));
+                    seteTime(rs.getInt(6));
                 }
                 preparedStatement.close();
-                sql = " SELECT email FROM accounts WHERE account_id=?";
+                sql = "SELECT email, first_name FROM accounts WHERE account_id=?";
                 preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setInt(1, getToID());
+                preparedStatement.setInt(1, getCustomerID());
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){
                     setTo(rs.getString(1));
-                    System.out.println("clientemail : " + getTo());
+                    setClientName(rs.getString(2));
                 }
+                sql = "SELECT pet_name FROM pets WHERE pet_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getPetID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setPetName(rs.getString(1));
+                }
+                sql = "SELECT email, first_name, last_name FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getVetID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTo2(rs.getString(1));
+                    setVetFName(rs.getString(2));
+                    setVetLName(rs.getString(3));
+                }
+                sql = "SELECT service FROM services WHERE service_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getService());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setServiceName(rs.getString(1));
+                }
+                sql = "SELECT time FROM time WHERE timeID=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, geteTime());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTimeOfAppointment(rs.getString(1));
+                }
+                setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was canceled.");
+                setBody("Hello "+getClientName()+",\n \n We're sorry to inform you that your scheduled appointment was cancelled due to some various reasons. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName()+"\n \n We still hope to see you soon.");
                 emailCancelVetAd();
                 sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql);
@@ -107,23 +153,59 @@ public class Cancel extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = " SELECT veterinarian_id FROM appointments WHERE appointment_id=?";
+                String sql = " SELECT customer_id, pet_id, veterinarian_id, service, schedule, timeID  FROM appointments WHERE appointment_id=?";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, getAppointmentId());
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){
-                    setToID(rs.getInt(1));
-                    System.out.println("vet ID : " + getToID());
+                    setCustomerID(rs.getInt(1));
+                    setPetID(rs.getInt(2));
+                    setVetID(rs.getInt(3));
+                    setService(rs.getInt(4));
+                    seteSchedule(rs.getString(5));
+                    seteTime(rs.getInt(6));
                 }
                 preparedStatement.close();
-                sql = " SELECT email FROM accounts WHERE account_id=?";
+                sql = "SELECT email, first_name FROM accounts WHERE account_id=?";
                 preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setInt(1, getToID());
+                preparedStatement.setInt(1, getCustomerID());
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){
                     setTo(rs.getString(1));
-                    System.out.println("vetemail : " + getTo());
+                    setClientName(rs.getString(2));
                 }
+                sql = "SELECT pet_name FROM pets WHERE pet_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getPetID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setPetName(rs.getString(1));
+                }
+                sql = "SELECT email, first_name, last_name FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getVetID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTo2(rs.getString(1));
+                    setVetFName(rs.getString(2));
+                    setVetLName(rs.getString(3));
+                }
+                sql = "SELECT service FROM services WHERE service_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getService());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setServiceName(rs.getString(1));
+                }
+                sql = "SELECT time FROM time WHERE timeID=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, geteTime());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setTimeOfAppointment(rs.getString(1));
+                }
+                setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was canceled.");
+                setBody2("Hello Admins and "+getVetFName() +" " + getVetLName() + ",\n \n We're sorry to inform you that your approved appointment was cancelled by "+ getClientName() +" due to some various reasons. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName());
                 emailCancelClient();
                 sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql);
@@ -156,10 +238,9 @@ public class Cancel extends ActionSupport{
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setSubject(getSubject());
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
-            message.setText(getBody());
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo2()));
+            message.setText(getBody2());
             Transport.send(message);
-            System.out.println("myEMAIL 1st");
             // EMAIL to vet / admin />
             } catch(Exception e) {
                 ret = ERROR;
@@ -185,9 +266,8 @@ public class Cancel extends ActionSupport{
             message.setFrom(new InternetAddress(from));
             message.setSubject(getSubject());
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(getTo()));
-            message.setText(getBody2());
+            message.setText(getBody());
             Transport.send(message);
-            System.out.println("myEMAIL 2nd");
             // EMAIL to client 
             } catch(Exception e) {
                 ret = ERROR;
@@ -280,5 +360,109 @@ public class Cancel extends ActionSupport{
 
     public void setToID(int toID) {
         this.toID = toID;
+    }
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
+    }
+
+    public int getPetID() {
+        return petID;
+    }
+
+    public void setPetID(int petID) {
+        this.petID = petID;
+    }
+
+    public int getVetID() {
+        return vetID;
+    }
+
+    public void setVetID(int vetID) {
+        this.vetID = vetID;
+    }
+
+    public int getService() {
+        return service;
+    }
+
+    public void setService(int service) {
+        this.service = service;
+    }
+
+    public String geteSchedule() {
+        return eSchedule;
+    }
+
+    public void seteSchedule(String eSchedule) {
+        this.eSchedule = eSchedule;
+    }
+
+    public int geteTime() {
+        return eTime;
+    }
+
+    public void seteTime(int eTime) {
+        this.eTime = eTime;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getPetName() {
+        return petName;
+    }
+
+    public void setPetName(String petName) {
+        this.petName = petName;
+    }
+
+    public String getVetFName() {
+        return vetFName;
+    }
+
+    public void setVetFName(String vetFName) {
+        this.vetFName = vetFName;
+    }
+
+    public String getVetLName() {
+        return vetLName;
+    }
+
+    public void setVetLName(String vetLName) {
+        this.vetLName = vetLName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getDateOfAppointment() {
+        return dateOfAppointment;
+    }
+
+    public void setDateOfAppointment(String dateOfAppointment) {
+        this.dateOfAppointment = dateOfAppointment;
+    }
+
+    public String getTimeOfAppointment() {
+        return timeOfAppointment;
+    }
+
+    public void setTimeOfAppointment(String timeOfAppointment) {
+        this.timeOfAppointment = timeOfAppointment;
     }
 }

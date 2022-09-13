@@ -59,25 +59,33 @@ public class Appointments extends ActionSupport{
     // < EMAIL
     PreparedStatement preparedStatement = null;
     ResultSet rs = null;
+    private String clientName;
     final private String from = "pet.clinic.confirmation@gmail.com";
     final private String password = "ijopmxuhytcmzruv";
     private String to = null;
     private int toID;
     private String to2 = null;
-    private String subject = "TEST SETTINGS appointment creation : pending appointment";
-    private String body = "(client) creation confirmation , please wait for approval";
-    private String body2 = "(vet)(add) appointment creation  : pending for your approval";
-    
+    private String subject = null;
+    private String body = null;
+    private String body2 = null;
     static Properties properties = new Properties();
     static {
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.starttls.required", "true");
-        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
     }
+    // 
+    //     properties.put("mail.smtp.host", "smtp.gmail.com");
+    //     properties.put("mail.smtp.port", "465");
+    //     properties.put("mail.smtp.auth", "true");
+    //     properties.put("mail.smtp.starttls.enable", "true");
+    //     properties.put("mail.smtp.starttls.required", "true");
+    //     properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    //     properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    // 
+
+    
     // EMAIL >
     public String execute() throws Exception {
         Connection connection = null;
@@ -490,14 +498,18 @@ public class Appointments extends ActionSupport{
                 statement.executeUpdate(sql);
                 appointmentStatus = "Appointment is scheduled. Please wait for approval.";
                 // < EMAIL
-                sql = " SELECT email FROM accounts WHERE account_id=?";
+                
+                sql = " SELECT email, first_name FROM accounts WHERE account_id=?";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, appointmentBean.getClientId());
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){ 
                     setTo(rs.getString(1));
-                    emailConfirmationClient();
+                    setClientName(rs.getString(2));
                 }
+                setSubject("Pending For Approval: Appointment for "+ appointmentBean.getPetName() +" on " +appointmentBean.getDateOfAppointment()+" was created.");
+                setBody("Hello "+getClientName()+",\n \n This is with reference to your appointment that was created. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+appointmentBean.getTimeOfAppointment()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n You will receive a confirmation email once approved. Thank you.");
+                emailConfirmationClient();
                 sql = "select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) =?";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, appointmentBean.getVeterinarian());
@@ -510,6 +522,7 @@ public class Appointments extends ActionSupport{
                 preparedStatement.setInt(1, getToID());
                 preparedStatement.setInt(2, 1);
                 rs = preparedStatement.executeQuery();
+                setBody2("Hello Admins and "+appointmentBean.getVeterinarian()+", \n \n Requesting for your approval. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+appointmentBean.getTimeOfAppointment()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n Thank you.");
                 while (rs.next()){
                     setTo2(rs.getString(1));
                     emailConfirmationVetAd();
@@ -959,6 +972,14 @@ public class Appointments extends ActionSupport{
 
     public void setToID(int toID) {
         this.toID = toID;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
 
