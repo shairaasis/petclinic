@@ -21,6 +21,9 @@ public class Login extends ActionSupport implements SessionAware{
     public String errorMessage;
     private static String encryptedPassword; 
     private String token;
+    private String logoutToken = null;
+    String sql;
+    PreparedStatement preparedStatement;
 
 
     private static Account accountBean;
@@ -32,11 +35,14 @@ public class Login extends ActionSupport implements SessionAware{
             saveToken(token);
             userSession.put("token", token);
             if(accountBean.getAccountType() == 1){
+                userSession.put("accountType", "admin");
                 return "admin";
             }else if(accountBean.getAccountType() == 2){
+                userSession.put("accountType", "veterinarian");
                 return "veterinarian";
 
             }else{
+                userSession.put("accountType", "client");
                 return "client";
             }
         }  
@@ -52,24 +58,29 @@ public class Login extends ActionSupport implements SessionAware{
     }
     public boolean validate (String username,String password){  
         boolean status=false;  
-         try{  
-          Class.forName("com.mysql.jdbc.Driver");  
-          Connection con=DriverManager.getConnection(  
-          "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC","root","password");  
-          setEncryptedPassword(encryptMD5(accountBean.getPassword()));
-          PreparedStatement ps=con.prepareStatement(  
+        try{  
+        Class.forName("com.mysql.jdbc.Driver");  
+        Connection con=DriverManager.getConnection(  
+        "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC","root","password");  
+        setEncryptedPassword(encryptMD5(accountBean.getPassword()));
+        PreparedStatement ps=con.prepareStatement(  
             "select * from accounts where username=? and password=?");  
-          ps.setString(1,username);  
-          ps.setString(2,encryptedPassword);  
-          ResultSet rs=ps.executeQuery();
-          status=rs.next();   
+        ps.setString(1,username);  
+        ps.setString(2,encryptedPassword);  
+        ResultSet rs=ps.executeQuery();
+        status=rs.next();   
             accountBean.setAccountId(rs.getInt(1));
             accountBean.setAccountType(rs.getInt(2));
             accountBean.setUsername(rs.getString(3));
             accountBean.setLastName(rs.getString(6));   
             accountBean.setFirstName(rs.getString(5)); 
             accountBean.setEmail(rs.getString(9));
-         }catch(Exception e){e.printStackTrace();}  
+            userSession.put("accountID", accountBean.getAccountId());
+            userSession.put("userName", accountBean.getUsername());
+            userSession.put("lastName", accountBean.getLastName());
+            userSession.put("firstName", accountBean.getFirstName());
+            userSession.put("eMail", accountBean.getEmail());
+        }catch(Exception e){e.printStackTrace();}  
         return status;  
     } 
     public static String encryptMD5(String password) throws NoSuchAlgorithmException {
@@ -90,23 +101,22 @@ public class Login extends ActionSupport implements SessionAware{
             String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, "root", "password");
-
             if (connection != null) {
                 statement = connection.createStatement();
-                String sql = "INSERT INTO tokens(token) VALUES('"+ getToken() +"')";
+                sql = "INSERT INTO tokens(token) VALUES('"+token+"')";
                 statement.executeUpdate(sql);
                 return true;
             } else {
                 errorMessage = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.toString();
-             return false;  
-         } finally {
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
     public boolean deleteToken() throws SQLException {
         Connection connection = null;
@@ -117,28 +127,29 @@ public class Login extends ActionSupport implements SessionAware{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                statement = connection.createStatement();
-                String sql = "DELETE from tokens where token='"+userSession.get("token")+"'";
-                statement.executeUpdate(sql);
+                logoutToken = (String) userSession.get("token");
+                sql = " DELETE FROM tokens where token=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, logoutToken);
+                preparedStatement.execute(); 
+                userSession.clear();
                 return true;
             } else {
                 errorMessage = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.toString();
-             return false;  
-         } finally {
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
 
 
     public String logout() throws SQLException{
         deleteToken();
-        userSession.remove("token");
-        userSession.clear();
         addActionMessage("You are logged out.");
         return SUCCESS;
     }
@@ -176,8 +187,15 @@ public class Login extends ActionSupport implements SessionAware{
 
     @Override
     public void setSession(Map<String, Object> session) {
-       userSession = session;
+        userSession = session;
         
+    }
+
+    public String getLogoutToken() {
+        return logoutToken;
+    }
+    public void setLogoutToken(String logoutToken) {
+        this.logoutToken = logoutToken;
     }
 
 }
