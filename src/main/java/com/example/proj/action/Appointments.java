@@ -61,7 +61,7 @@ public class Appointments extends ActionSupport{
     ResultSet rs = null;
     private String clientName;
     final private String from = "pet.clinic.confirmation@gmail.com";
-    final private String password = "ijopmxuhytcmzruv";
+    final private String password = "zwkyzxpremambkma";
     private String to = null;
     private int toID;
     private String to2 = null;
@@ -70,10 +70,17 @@ public class Appointments extends ActionSupport{
     private String body2 = null;
     static Properties properties = new Properties();
     static {
+        // properties.put("mail.smtp.auth", "true");
+        // properties.put("mail.smtp.starttls.enable", "true");
+        // properties.put("mail.smtp.host", "smtp.gmail.com");
+        // properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.starttls.required", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
     // 
     //     properties.put("mail.smtp.host", "smtp.gmail.com");
