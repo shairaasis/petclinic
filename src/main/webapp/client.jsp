@@ -176,7 +176,13 @@
                                 <td><s:property value="veterinarian"/></td>
                                 <td><s:property value="service"/></td>
                                 <td><s:property value="schedule"/></td>
-								<td><span class="status"><s:property value="status"/></span></td>
+								<s:set var="stat" value="status"/>
+								<s:if test='%{#stat == "pending"}'>
+									<td><span class="status pending" ><s:property value="status"/></span></td>
+								</s:if>
+								<s:else>
+									<td><span class="status completed" style="background-color: rgba(0, 128, 0, 0.831);"><s:property value="status"/></span></td>
+								</s:else>
                             </tr>
                         </s:iterator>
 						</tbody>
