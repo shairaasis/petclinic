@@ -37,6 +37,8 @@
     </head>
 <body>
   <!-- SIDEBAR -->
+	<s:set var = "token" value = "#session.token"/>
+	<s:if test="%{#token != null}">
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -356,5 +358,10 @@
   </div>
   <script src="css/admincss/script.js"></script>
   <script src="css/admincss/modal.js"></script>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE. 
+No Session.
+</s:else>
 </body>
 </html>
