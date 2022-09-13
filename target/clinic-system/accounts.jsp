@@ -264,12 +264,12 @@
 						<td><s:property value="contactNo"/></td>
 						<td><s:property value="email"/>
 						<td>
-							<s:url action="" var="update">
+							<!-- <s:url action="" var="update">
 								<s:param name="accountId" value="accountId"></s:param>
 							</s:url>
 							<s:a href="%{update}"><button id="update" title="Update" type="button" style="cursor: pointer;padding: 3px; background-color: green; border: none; border-radius: 5px; color: white; ">
 								<i class='bx bxs-pencil bx-sm' ></i></button></s:a>
-							
+							 -->
 							<s:url action="delete" var="delete">
 								<s:param name="accountIdToDelete" value="accountId"></s:param>
 								<s:param name="accountId" value="%{adminId}"></s:param>
