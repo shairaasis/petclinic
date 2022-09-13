@@ -64,7 +64,7 @@ public class Appointments extends ActionSupport{
     ResultSet rs = null;
     private String clientName;
     final private String from = "pet.clinic.confirmation@gmail.com";
-    final private String password = "ijopmxuhytcmzruv";
+    final private String password = "zwkyzxpremambkma";
     private String to = null;
     private int toID;
     private String to2 = null;

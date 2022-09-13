@@ -127,14 +127,60 @@
 
 			<ul class="box-info">
 				<li>
-					<i class='bx bxs-user'></i>
-						<span class="text">
-						<h3>Welcome back</h3>
-						<p>to PetClinic</p>
+					<i class='bx bxs-calendar-check' ></i>
+					<span class="text">
+						<h3><s:property value="%{petCount}"/></h3>
+						<p>Pets</p>
 					</span>
 				</li>
-				
+				<li>
+					<i class='bx bxs-group' ></i>
+					<span class="text">
+						<h3><s:property value="%{pendingAppointments}"/></h3>
+						<p>Pending Appointments</p>
+					</span>
+				</li>
+				<li>
+					<i class='bx bxs-dollar-circle' ></i>
+					<span class="text">
+						<h3><s:property value="%{approvedAppointments}"/></h3>
+						<p>Approved Appointments</p>
+					</span>
+				</li>
 			</ul>
+
+			<div class="table-data">
+				<div class="order">
+					<div class="head">
+						<h3>Upcoming Appointments</h3>
+						<!-- <i class='bx bx-search' ></i>
+						<i class='bx bx-filter' ></i> -->
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>Pet</th>
+                                <th>Veterinarian</th>
+                                <th>Service</th>
+                                <th>Schedule</th>
+                                <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+                        <s:iterator value="appointments" var="appointment">  
+                            <tr>
+                                <td><s:property value="petName"/></td>
+                                <td><s:property value="veterinarian"/></td>
+                                <td><s:property value="service"/></td>
+                                <td><s:property value="schedule"/></td>
+								<td><span class="status"><s:property value="status"/></span></td>
+                            </tr>
+                        </s:iterator>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
 
 		</main>
 		<!-- MAIN -->
