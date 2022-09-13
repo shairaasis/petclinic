@@ -68,6 +68,8 @@ public class Appointments extends ActionSupport{
     private String subject = null;
     private String body = null;
     private String body2 = null;
+    private String eTime = null;
+
     static Properties properties = new Properties();
     static {
         properties.put("mail.smtp.auth", "true");
@@ -75,17 +77,6 @@ public class Appointments extends ActionSupport{
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
     }
-    // 
-    //     properties.put("mail.smtp.host", "smtp.gmail.com");
-    //     properties.put("mail.smtp.port", "465");
-    //     properties.put("mail.smtp.auth", "true");
-    //     properties.put("mail.smtp.starttls.enable", "true");
-    //     properties.put("mail.smtp.starttls.required", "true");
-    //     properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-    //     properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-    // 
-
-    
     // EMAIL >
     public String execute() throws Exception {
         Connection connection = null;
@@ -507,8 +498,15 @@ public class Appointments extends ActionSupport{
                     setTo(rs.getString(1));
                     setClientName(rs.getString(2));
                 }
+                sql = " SELECT time FROM time WHERE timeID=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, appointmentBean.getTimeOfAppointment());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    seteTime(rs.getString(1));
+                }
                 setSubject("Pending For Approval: Appointment for "+ appointmentBean.getPetName() +" on " +appointmentBean.getDateOfAppointment()+" was created.");
-                setBody("Hello "+getClientName()+",\n \n This is with reference to your appointment that was created. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+appointmentBean.getTimeOfAppointment()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n You will receive a confirmation email once approved. Thank you.");
+                setBody("Hello "+getClientName()+",\n \n This is with reference to your appointment that was created. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+ geteTime() +" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n You will receive a confirmation email once approved. Thank you.");
                 emailConfirmationClient();
                 sql = "select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) =?";
                 preparedStatement = connection.prepareStatement(sql);
@@ -980,6 +978,14 @@ public class Appointments extends ActionSupport{
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String geteTime() {
+        return eTime;
+    }
+
+    public void seteTime(String eTime) {
+        this.eTime = eTime;
     }
 
 

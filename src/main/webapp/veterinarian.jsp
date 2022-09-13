@@ -3,18 +3,21 @@
 <!DOCTYPE html>
 <html> 
     <head>
-      <meta charset="UTF-8">
-	  <link href="assets/img/favicon-16x16.png" rel="icon">
+		<meta charset="UTF-8">
+		<link href="assets/img/favicon-16x16.png" rel="icon">
 
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Boxicons -->
-      <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-      <!-- My CSS -->
-      <link rel="stylesheet" href="css/admincss/style.css">
-      <title>Veterinarian</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Boxicons -->
+		<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+		<!-- My CSS -->
+		<link rel="stylesheet" href="css/admincss/style.css">
+		<title>Veterinarian</title>
     </head>
 <body>
-  <!-- SIDEBAR -->
+	<!-- SIDEBAR -->
+	<s:set var = "token" value = "#session.token"/>
+	<s:if test="%{#token != null}">
+	<s:if test="%{#session.accountType == 'veterinarian'}">
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -75,7 +78,7 @@
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
-  <!-- CONTENT -->
+	<!-- CONTENT -->
 	<section id="content">
 		<!-- NAVBAR -->
 		<nav>
@@ -141,5 +144,15 @@
   
   </div>
   <script src="css/admincss/script.js"></script>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE. 
+This page is only for Veterinarians.
+</s:else>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE.
+No Session.
+</s:else>
 </body>
 </html>
