@@ -155,7 +155,7 @@
                                 <td><s:property value="petName"/></td>
                                 <td><s:property value="customer"/></td>
                                 <td><s:property value="service"/></td>
-                                <td><s:property value="schedule"/> <s:property value="timeOfAppointment"/></td>
+                                <td><s:property value="schedule"/></td>
 								<td><span class="status completed"><s:property value="status"/></span></td>
                                 <td>
                                     <s:url action="cancelAppointment" var="cancelAppointment">
