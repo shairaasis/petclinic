@@ -11,6 +11,7 @@ import com.opensymphony.xwork2.ActionSupport;
 public class Update extends ActionSupport {
     private Account accountBean;
     private String accountId;
+    private String appointmentId;
     private String error = "";
     private String updateStatus = "";
     public String execute() throws Exception{
@@ -22,10 +23,11 @@ public class Update extends ActionSupport {
             String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, "root", "password");
-
+            String encryptedPassword = Login.encryptMD5(accountBean.getPassword());
             if (connection != null) {
                 statement = connection.createStatement();
-                String sql = "update accounts set username ='"+accountBean.getUsername()+"', first_name='"+accountBean.getFirstName()+"', last_name='"+accountBean.getLastName()+"', address='"+accountBean.getAddress()+"', email='"+accountBean.getEmail()+"', contact_no = '"+ accountBean.getContactNo()+"' where account_id =" +getAccountId();
+                
+                String sql = "update accounts set username ='"+accountBean.getUsername()+"', password = '"+encryptedPassword+"', first_name='"+accountBean.getFirstName()+"', last_name='"+accountBean.getLastName()+"', address='"+accountBean.getAddress()+"', email='"+accountBean.getEmail()+"', contact_no = '"+ accountBean.getContactNo()+"' where account_id =" +getAccountId();
                 statement.executeUpdate(sql);
                 setUpdateStatus("Account update successful");
                 return SUCCESS;
@@ -42,6 +44,7 @@ public class Update extends ActionSupport {
          }
     }
 
+    
     public String getAccountId() {
         return accountId;
     }
@@ -73,6 +76,13 @@ public class Update extends ActionSupport {
     public void setUpdateStatus(String updateStatus) {
         this.updateStatus = updateStatus;
     }
-    
+
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
     
 }

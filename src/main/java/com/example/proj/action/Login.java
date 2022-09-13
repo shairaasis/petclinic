@@ -19,11 +19,12 @@ import com.opensymphony.xwork2.ActionSupport;
 public class Login extends ActionSupport implements SessionAware{
     private Map<String, Object> userSession;
     public String errorMessage;
-    private String encryptedPassword; 
-    private String token = null;
+    private static String encryptedPassword; 
+    private String token;
     private String logoutToken = null;
     String sql;
     PreparedStatement preparedStatement;
+
 
     private static Account accountBean;
 
@@ -82,7 +83,7 @@ public class Login extends ActionSupport implements SessionAware{
         }catch(Exception e){e.printStackTrace();}  
         return status;  
     } 
-    private String encryptMD5(String password) throws NoSuchAlgorithmException {
+    public static String encryptMD5(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5"); 
         byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
         StringBuilder s = new StringBuilder();  
@@ -158,7 +159,7 @@ public class Login extends ActionSupport implements SessionAware{
         return encryptedPassword;
     }
     public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
+        Login.encryptedPassword = encryptedPassword;
     }
     public Account getAccountBean() {
         return accountBean;
