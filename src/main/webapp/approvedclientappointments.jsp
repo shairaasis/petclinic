@@ -183,6 +183,13 @@
                                 <td><s:property value="schedule"/></td>
 								<td><span class="status"><s:property value="status"/></span></td>
                                 <td>
+									<s:url action="updateAppointment" var="updateAppointment">
+										<s:param name="accountId" value="accountId"></s:param>
+										<s:param name="appointmentId" value="appointmentId"></s:param>
+									</s:url>
+									<s:a href="%{updateAppointment}"><button id="update" title="Reschedule" type="button" style="cursor: pointer;padding: 3px; background-color: green; border: none; border-radius: 5px; color: white; ">
+										<i class='bx bxs-pencil bx-sm' ></i></button></s:a>
+										
 									<s:url action="cancel" var="cancel">
 										<s:param name="accountId" value="accountId"></s:param>
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
