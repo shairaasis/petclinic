@@ -45,6 +45,9 @@
     </head>
 <body>
   <!-- SIDEBAR -->
+  <s:set var = "token" value = "#session.token"/>
+  <s:if test="%{#token != null}">
+	<s:if test="%{#session.accountType == 'admin'}">
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -261,12 +264,12 @@
 						<td><s:property value="contactNo"/></td>
 						<td><s:property value="email"/>
 						<td>
-							<s:url action="" var="update">
+							<!-- <s:url action="" var="update">
 								<s:param name="accountId" value="accountId"></s:param>
 							</s:url>
 							<s:a href="%{update}"><button id="update" title="Update" type="button" style="cursor: pointer;padding: 3px; background-color: green; border: none; border-radius: 5px; color: white; ">
 								<i class='bx bxs-pencil bx-sm' ></i></button></s:a>
-							
+							 -->
 							<s:url action="delete" var="delete">
 								<s:param name="accountIdToDelete" value="accountId"></s:param>
 								<s:param name="accountId" value="%{adminId}"></s:param>
@@ -291,6 +294,15 @@
 
   <script src="css/admincss/script.js"></script>
   <script src="css/admincss/modal.js"></script>
-
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE. 
+This page is only for Admins.
+</s:else>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE.  
+No Session.
+</s:else>
 </body>
 </html>
