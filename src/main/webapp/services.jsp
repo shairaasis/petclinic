@@ -48,10 +48,22 @@
 			<span class="text">PetClinic</span>
 		</a>
 		<ul class="side-menu top">
-			<li class="">
-				<a href="admin.jsp">
+			<li>
+				<s:url action="admin" var="admin">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${admin}">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
 				</a>
 			</li>
 			<li>
@@ -62,6 +74,7 @@
 			</li>
 			<li>
 				<s:url action="appointments" var="appointments">
+					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
 				<a href="${appointments}">
 					<span style="margin-left: 50px;" class="text">Pending</span>
@@ -69,19 +82,26 @@
 			</li>
 			<li>
 				<s:url action="approvedAppointments" var="approve">
+					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
 				<a href="${approve}">
 					<span style="margin-left: 50px;" class="text">Approved</span>
 				</a>
 			</li>
 			<li>
-				<a href="<s:url action='listaccounts' />">
-					<i class='bx bxs-user' ></i>
+				<s:url action="listaccounts" var="listaccounts">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${listaccounts}">
+					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Accounts</span>
 				</a>
 			</li>
 			<li class="active">
-				<a href="<s:url action='services' />">
+				<s:url action="services" var="services">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${services}">
 					<i class='bx bxs-clinic'></i>
 					<span class="text">Services</span>
 				</a>
@@ -151,7 +171,8 @@
 				<span class="close">&times;</span>
 				<br>
 							<h2 style="text-align: center;">Add Service</h2>
-							<s:form action="addService" id="form" style="width: 100%;">
+							<s:form action="addService" id="form" style="width: 100%;" method="GET">
+								<s:hidden name="accountId" value="%{accountId}" />
                                 <div class="control-group">
 									<s:textfield name="serviceBean.service" label="Service Name" class="form-control p-4" placeholder="Service" required="required" data-validation-required-message="Please enter service"/>
 									<p class="help-block text-danger"></p>
@@ -196,6 +217,7 @@
                                      -->
                                     <s:url action="deleteService" var="deleteService">
 										<s:param name="serviceId" value="serviceId"></s:param>
+										<s:param name="accountId" value="%{accountId}"></s:param>
                                     </s:url>
                                     <s:a href="%{deleteService}"><button id="cancel" title="Delete" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
 										<i class='bx bx-x bx-sm'></i></button></s:a>					

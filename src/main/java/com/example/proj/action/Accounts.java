@@ -13,9 +13,13 @@ public class Accounts extends ActionSupport{
     
     ArrayList<Account> accounts = new ArrayList<Account>();
     Account account;
+    Account accountBean = new Account();
     private String status;
     private int filter;
     private int account_type_id;
+    private int accountId;
+    private String activeAccount;
+    private String updateStatus;
     public String execute() throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -95,36 +99,47 @@ public class Accounts extends ActionSupport{
          return SUCCESS;
     }
 
-    // // / method for delete the record
-	// public String delete(int accountId){
-    //     Connection connection = null;
-    //     PreparedStatement preparedStatement = null;
-	// 	try {
-	// 		String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
-    //         Class.forName("com.mysql.jdbc.Driver");
-    //         connection = DriverManager.getConnection(URL, "root", "password");
+    // Fetch account
+    public String viewProfile() throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
 
-    //         if (connection != null) {
-    //             String sql = "DELETE FROM accounts WHERE account_id =?";
-    //             preparedStatement = connection.prepareStatement(sql);
-    //             preparedStatement.setInt(1, accountId);
-    //             preparedStatement.executeUpdate();
-    //             System.out.println("===========ACCOUNT DELETED =========******\n\n\n\n\n\n");
-    //             return SUCCESS;
-    //         }
-	// 	} catch (Exception e) {
-    //         return ERROR;
-    //     } finally {
-    //        if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
-    //        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-    //     }
-    //     return ERROR;
-	// }
+            if (connection != null) {
+                String sql = "SELECT * FROM accounts where account_id =" +getAccountId();
+                preparedStatement = connection.prepareStatement(sql);
+                ResultSet rs= preparedStatement.executeQuery();
+                while(rs.next()){ 
+                    accountBean.setAccountId(rs.getInt(1));
+                    accountBean.setAccountType(rs.getInt(2));
+                    accountBean.setUsername(rs.getString(3));
+                    accountBean.setLastName(rs.getString(6));   
+                    accountBean.setFirstName(rs.getString(5)); 
+                    accountBean.setEmail(rs.getString(8));
+                    accountBean.setAddress(rs.getString(7));
+                    accountBean.setContactNo(rs.getString(9)); 
 
-    
-    String getAccountId() {
-        return null;
+                    if(accountBean.getAccountType() == 1){
+                        activeAccount = "admin";
+                    }else if(accountBean.getAccountType() == 2){
+                        activeAccount = "veterinarian";
+                    }else if(accountBean.getAccountType() == 3){
+                        activeAccount = "customer";
+                    }
+                }
+            } 
+         } catch (Exception e) {
+
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+        return SUCCESS;
     }
+
 
     public ArrayList<Account> getAccounts() {
         return accounts;
@@ -170,6 +185,39 @@ public class Accounts extends ActionSupport{
         this.filter = filter;
     }
 
-    
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public Account getAccountBean() {
+        return accountBean;
+    }
+
+    public void setAccountBean(Account accountBean) {
+        this.accountBean = accountBean;
+    }
+
+    public String getActiveAccount() {
+        return activeAccount;
+    }
+
+    public void setActiveAccount(String activeAccount) {
+        this.activeAccount = activeAccount;
+    }
+
+    public String getUpdateStatus() {
+        return updateStatus;
+    }
+
+    public void setUpdateStatus(String updateStatus) {
+        this.updateStatus = updateStatus;
+    }
+
+
+
     
 }

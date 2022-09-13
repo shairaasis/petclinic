@@ -14,13 +14,18 @@ public class Appointment {
     private String schedule;
     private String status;
     private String dateOfAppointment;
-    private String timeOfAppointment;
+    private int timeOfAppointment;
     private String customerEmail;
     private String veterinarianEmail;
 
     public Appointment() {}
 
-    public Appointment(int appointmentId, int clientId,int petId, int veterinarianId, int serviceId, String schedule, String customer, String veterinarian, String petName, String service, String status, String dateOfAppointment, String timeOfAppointment, String customerEmail, String veterinarianEmail){
+    public Appointment(String dateOfAppointment, String veterinarian){
+        this.dateOfAppointment = dateOfAppointment;
+        this.veterinarian = veterinarian;
+    }
+
+    public Appointment(int appointmentId, int clientId,int petId, int veterinarianId, int serviceId, String schedule, String customer, String veterinarian, String petName, String service, String status, String dateOfAppointment, int timeOfAppointment, String customerEmail, String veterinarianEmail){
         this.appointmentId = appointmentId;
         this.clientId = clientId;
         this.petId = petId;
@@ -33,7 +38,7 @@ public class Appointment {
         this.schedule = schedule;
         this.status = status;
         this.dateOfAppointment = dateOfAppointment;
-        this.timeOfAppointment =timeOfAppointment;
+        this.timeOfAppointment = timeOfAppointment;
         this.customerEmail = customerEmail;
         this.veterinarianEmail = veterinarianEmail;
     }
@@ -146,13 +151,13 @@ public class Appointment {
         this.dateOfAppointment = dateOfAppointment;
     }
 
-    public String getTimeOfAppointment() {
-        return timeOfAppointment;
-    }
+    // public String getTimeOfAppointment() {
+    //     return timeOfAppointment;
+    // }
 
-    public void setTimeOfAppointment(String timeOfAppointment) {
-        this.timeOfAppointment = timeOfAppointment;
-    }
+    // public void setTimeOfAppointment(int i) {
+    //     this.timeOfAppointment = i;
+    // }
 
     public String getCustomerEmail() {
         return customerEmail;
@@ -168,6 +173,14 @@ public class Appointment {
 
     public void setVeterinarianEmail(String veterinarianEmail) {
         this.veterinarianEmail = veterinarianEmail;
+    }
+
+    public int getTimeOfAppointment() {
+        return timeOfAppointment;
+    }
+
+    public void setTimeOfAppointment(int timeOfAppointment) {
+        this.timeOfAppointment = timeOfAppointment;
     }
 
     

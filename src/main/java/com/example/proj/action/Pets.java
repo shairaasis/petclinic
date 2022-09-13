@@ -14,7 +14,6 @@ import com.opensymphony.xwork2.ActionSupport;
 public class Pets extends ActionSupport{
     private static Pet petBean = new Pet();
     private String error = "Random";
-    private String successMessage;
     private int accountId;
     ArrayList<Pet> pets = new ArrayList<Pet>();
     Pet pet;
@@ -95,7 +94,6 @@ public class Pets extends ActionSupport{
                 statement = connection.createStatement();
                 String sql = "INSERT INTO pets(owner_id, pet_name,date_of_birth, breed, coat_color) VALUES('"+petBean.getOwnerId()+"','"+petBean.getPetName()+"','"+petBean.getDateOfBirth()+"','"+petBean.getBreed()+"','"+petBean.getCoatColor()+"')";
                 statement.executeUpdate(sql);
-                successMessage = "Pet Successfully registered!";
                 return true;
             } else {
                 error = "DB connection failed";
@@ -143,7 +141,6 @@ public class Pets extends ActionSupport{
 
 
     public void setSuccessMessage(String successMessage) {
-        this.successMessage = successMessage;
     }
 
     

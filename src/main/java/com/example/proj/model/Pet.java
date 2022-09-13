@@ -1,7 +1,5 @@
 package com.example.proj.model;
 
-import java.sql.Date;
-
 public class Pet {
     public static Pet petBean;
     private int petId;

@@ -1,7 +1,5 @@
 package com.example.proj.action;
 
-import java.io.Console;
-
 import com.opensymphony.xwork2.ActionSupport;
 
 public class LoginToken extends ActionSupport{

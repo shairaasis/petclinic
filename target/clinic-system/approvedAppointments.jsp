@@ -30,10 +30,22 @@
 			<span class="text">PetClinic</span>
 		</a>
 		<ul class="side-menu top">
-			<li class="">
-				<a href="admin.jsp">
+			<li>
+				<s:url action="admin" var="admin">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${admin}">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
 				</a>
 			</li>
 			<li>
@@ -44,26 +56,34 @@
 			</li>
 			<li>
 				<s:url action="appointments" var="appointments">
+					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
 				<a href="${appointments}">
 					<span style="margin-left: 50px;" class="text">Pending</span>
 				</a>
 			</li>
-			<li  class="active">
+			<li class="active">
 				<s:url action="approvedAppointments" var="approve">
+					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
 				<a href="${approve}">
 					<span style="margin-left: 50px;" class="text">Approved</span>
 				</a>
 			</li>
 			<li>
-				<a href="<s:url action='listaccounts' />">
-					<i class='bx bxs-user' ></i>
+				<s:url action="listaccounts" var="listaccounts">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${listaccounts}">
+					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Accounts</span>
 				</a>
 			</li>
 			<li>
-				<a href="<s:url action='services' />">
+				<s:url action="services" var="services">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${services}">
 					<i class='bx bxs-clinic'></i>
 					<span class="text">Services</span>
 				</a>
@@ -131,9 +151,9 @@
 			<div class="table-data">
 				<div class="order">
 					<div class="head">
-						<h3>Appointments</h3>
+						<!-- <h3>Appointments</h3>
 						<i class='bx bx-search' ></i>
-						<i class='bx bx-filter' ></i>
+						<i class='bx bx-filter' ></i> -->
 					</div>
 					<table>
 						<thead>

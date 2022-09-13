@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="sx" uri="/struts-dojo-tags" %>
 <%@ taglib prefix="sj" uri="/struts-dojo-tags" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html> 
     <head>
@@ -22,12 +22,13 @@
 			background-color: #d22a2a!important;
 		}
 		#myBtn{
-			padding: 5px;
+			padding: 10px;
 			color: white;
 			background-color: #13a052e5;
 			border-radius: 5px;
 			border: none;
 			cursor: pointer;
+			margin-top: 10px;
 		}
 		#myBtn:hover{
 			background-color: #0e783e!important;
@@ -42,8 +43,53 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			margin-top: 1em;;
 		}
+		.getTimeAvailableForm{
+			text-align: center;
+			margin: 0px auto;
+			width: 100%;
+			display: block;
+			border-style: groove;
+		    padding: 40px;
+			border-radius: 10px;
+			border-color: 2px #0e783e;
+			background-color: #0e783e0a;
+			float: center;
+			margin: 10px 0px;
+
+		}
+		select#veterinarian, select#service, select#pet{
+			padding: 10px; font-size: medium;
+			width: 100%; margin-bottom: 0.5em;
+		}
+		input{
+			padding: 10px;font-size: medium;
+			width: 55em;
+			height: 3em;
+			margin-bottom: 0.5em;
+		}
+		#dateIcon{
+			width: 34px;
+			height: 40px;
+		}.formButton {
+			text-align: left;
+			display: grid;
+			display: grid;
+		}
+		
 	  </style>
+	  <script>
+		function myFunction() {
+			var answer;
+			answer = window.confirm("Click okay to cancel this appointment.\nYou can't cancel an appointment that is scheduled today.");
+			if (answer == true) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		</script>
     </head>
 <body>
   <!-- SIDEBAR -->
@@ -60,6 +106,15 @@
 				<a href="${client}">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
 				</a>
 			</li>
 			<li>
@@ -150,47 +205,93 @@
 				</div>
 				
 			</div>
-
-			
-			<!-- Trigger/Open The Modal -->
-			<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create an appointment</button>
-
-			<!-- The Modal -->
-			<div id="myModal" class="modal">
-
-			<!-- Modal content -->
-			<div class="modal-content">
-				<span class="close">&times;</span>
-				<div class="container">
-							<h2>Schedule an appointment</h2>
-							<s:form action="createAppointment" id="form" style="width: 100%;">
+				<s:url action="clickCreateAppointment" var="clickCreateAppointment">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${clickCreateAppointment}">
+					<button id="myBtn"><i class='bx bx-plus-circle bx-s'></i> Create Appointment</button>
+				</a>
+				<br>
+				<s:set var="createAppointment" value="createAppointment"/>
+				<s:if test='%{#createAppointment == "true"}'>
+				<div class="getTimeAvailableForm">
+					<h2>Schedule Appointment</h2>
+						<s:form action="getTimeAvailable" id="form" style="width: 100%;">
+							<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+							<p style="color:red;"><s:property value="formError"></s:property></p>
+							<s:select label="Please select the name of Veterinarian." headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
+								list="%{veterinarianId.entrySet()}"
+								name="appointmentBean.veterinarian" listKey="key"
+								listValue="key"/>
+							<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Choose preferred date (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{now}" startDate="%{now}" endDate="%{'2023-12-31'}" requiredLabel="true"/>							
+							<s:submit id="myBtn" value="Check Time Available" class="btn btn-primary py-3 px-5"/>								
+						</s:form>
+				</div>	
+            	</s:if>
+				<s:set var="timeIsAvailable" value="timeIsAvailable"/>
+							<s:if test='%{#timeIsAvailable == "yes"}'>
+								<s:property value="veterinarian"/>
+								<table>
+                                    <thead>
+                                        <tr>
+                                            <th>Appointment ID</th>
+                                            <th>Customer ID</th>
+                                            <th>Pet ID</th>
+                                            <th>Vet ID </th>
+                                            <th>Service</th>
+                                            <th>Schedule</th>
+                                            <th>Time of Appointment</th>
+                                            <th>Status</th>
+                                            <th>Veterinarian</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <s:iterator value="vetAppointments" var="vetAppointment">  
+                                        <tr>
+                                            <td><s:property value="appointmentId"/></td>
+                                            <td><s:property value="clientId"/></td>
+                                            <td><s:property value="petId"/></td>
+                                            <td><s:property value="veterinarianId"/></td>
+                                            <td><s:property value="serviceId"/></td>
+                                            <td><s:property value="schedule"/></td>
+                                            <td><s:property value="timeOfAppointment"/></td>
+                                            <td><span class="status completed"><s:property value="status"/></span></td>
+                                            <td><s:property value="veterinarian"/></td>
+                                        </tr>
+                                    </s:iterator>
+                                    </tbody>
+                                </table>
+							<s:form action="getTimeAvailable" id="form" style="width: 100%;">
 									<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-									<div id="service">
-									<s:select headerKey="-1" id="service" headerValue="Select Service"
+									<s:hidden name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" />
+									<div class="control-group">
+                                        <s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
+										list="%{listOfTime.entrySet()}"
+										name="appointmentBean.timeOfAppointment" listKey="key"
+										listValue="value"/>
+									</div>
+									<div class="control-group">
+                                        <s:select headerKey="-1" id="service" headerValue="Select Service"
 										list="listOfServices" 
 										name="appointmentBean.service" />
 									</div>
-										<div class="control-group">
-											<sx:datetimepicker name="appointmentBean.dateOfAppointment" labelposition="top" toggleType="fade" label="Date of Appointment (yyyy-MM-dd)" displayFormat="yyyy-MM-dd" value="%{'2022-07-01'}"/>
-										</div>
-										<div class="control-group">
-											<sx:datetimepicker type="time" labelposition="top" name="appointmentBean.timeOfAppointment" toggleType="fade" label="Time (HH:mm)" displayFormat="HH:mm" value="%{'10:00'}"/>
-										</div>
-										<div class="control-group">
-										<s:select headerKey="-1" id="veterinarian" headerValue="Select Veterinarian"
-											list="listOfVeterinarians" 
-											name="appointmentBean.veterinarian" />
-										</div>
-										<div class="control-group">
-										<s:select headerKey="-1" id="pet" headerValue="Select Pet"
+									<div class="control-group"></div>
+									<s:select headerKey="-1" id="pet" headerValue="Select Pet"
 											list="listOfPets" 
 											name="appointmentBean.petName" />
 										</div>
-								  	<s:submit id="myBtn" value="Schedule" class="btn btn-primary py-3 px-5"/>
+                                    <s:property value="appointmentBean.dateOfAppointment"></s:property>
+                                    <s:property value="appointmentBean.veterinarian"></s:property>
+									<!-- <select name="appointmentBean.veterinarian">
+										<c:forEach items="${veterinarianId}" var="vet">
+											<option value="${vet.key}">${country.value}</option>
+										</c:forEach>
+									</select> -->
+
+								  	<s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
 							</s:form>
-					</div>
-			</div>
-			</div>
+						</s:if>
+
 			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
 			
 			<div class="table-data">
@@ -224,8 +325,9 @@
 										<s:param name="accountId" value="accountId"></s:param>
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
                                     </s:url>
-                                    <s:a href="%{cancel}"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
-                                    <i class='bx bx-x bx-sm'></i></button></s:a>					
+                                    <s:a href="%{cancel}" onclick="return myFunction();"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
+                                    <i class='bx bx-x bx-sm'></i></button></s:a>	
+										
                                 </td>
                             </tr>
                         </s:iterator>

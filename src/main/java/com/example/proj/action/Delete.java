@@ -2,11 +2,13 @@ package com.example.proj.action;
 
 import java.sql.*;
 
+
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Delete extends ActionSupport{
     
     private int accountId;
+    private int accountIdToDelete;
     private int petId, serviceId;
     private String status;
     private String error;
@@ -14,8 +16,8 @@ public class Delete extends ActionSupport{
 
     // / method for delete the record
 	public String execute() throws Exception{
-        // HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-        // accountId = Integer.parseInt(request.getParameter(accountId));
+        
+        System.out.println("\n\n\n\n"+getAccountId()+"\n\n\n\n");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 		try {
@@ -24,7 +26,7 @@ public class Delete extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "DELETE FROM accounts WHERE account_id ='"+accountId+"'";
+                String sql = "DELETE FROM accounts WHERE account_id ='"+accountIdToDelete+"'";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.executeUpdate();
                 setStatus("Account deleted.");
@@ -128,6 +130,12 @@ public class Delete extends ActionSupport{
     }
     public void setStatus(String status) {
         this.status = status;
+    }
+    public int getAccountIdToDelete() {
+        return accountIdToDelete;
+    }
+    public void setAccountIdToDelete(int accountIdToDelete) {
+        this.accountIdToDelete = accountIdToDelete;
     }
 
     

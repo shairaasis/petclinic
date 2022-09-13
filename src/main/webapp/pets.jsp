@@ -51,6 +51,15 @@
 				</a>
 			</li>
 			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
+				</a>
+			</li>
+			<li>
 				<a href="#" style="pointer-events: none; cursor: default;" >
 					<i class='bx bxs-calendar'></i>
 					<span class="text">Appointments</span>
@@ -65,11 +74,15 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<s:url action="approvedClientAppointments" var="approve">
+                    <s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${approve}">
 					<span style="margin-left: 50px;" class="text">Approved</span>
 				</a>
 			</li>
-			<li class="active"><s:url action="pets" var="pets">
+			<li class="active">
+				<s:url action="pets" var="pets">
 					<s:param name="accountId" value="%{accountId}"></s:param>
 				</s:url>
 				<a href="${pets}">
