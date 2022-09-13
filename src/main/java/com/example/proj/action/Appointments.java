@@ -35,8 +35,9 @@ public class Appointments extends ActionSupport{
     Appointment appointment;
     Appointment vetAppointment;
     private String createAppointment = "false";
+    private String clickUpdateAppointment = "false";
     private String timeIsAvailable = "no";
-    private String concat = "', '";
+    private String successMessage = "";
     private int accountId;
     private String error;
     private static String formError = "";
@@ -55,6 +56,8 @@ public class Appointments extends ActionSupport{
     private HashMap<Integer, String> listOfTimes = new HashMap<Integer, String>();
     public HashMap<String, Integer> veterinarianId = new HashMap<String, Integer>();
     public HashMap<String, Integer> timeId = new HashMap<String, Integer>();
+    private int appointmentId;
+
 
     // < EMAIL
     PreparedStatement preparedStatement = null;
@@ -68,6 +71,8 @@ public class Appointments extends ActionSupport{
     private String subject = null;
     private String body = null;
     private String body2 = null;
+    private String eTime = null;
+
     static Properties properties = new Properties();
     static {
         // properties.put("mail.smtp.auth", "true");
@@ -82,17 +87,6 @@ public class Appointments extends ActionSupport{
         properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
-    // 
-    //     properties.put("mail.smtp.host", "smtp.gmail.com");
-    //     properties.put("mail.smtp.port", "465");
-    //     properties.put("mail.smtp.auth", "true");
-    //     properties.put("mail.smtp.starttls.enable", "true");
-    //     properties.put("mail.smtp.starttls.required", "true");
-    //     properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-    //     properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-    // 
-
-    
     // EMAIL >
     public String execute() throws Exception {
         Connection connection = null;
@@ -103,7 +97,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status = 'pending' order by schedule ASC";
+                String sql = "SELECT appointments.*, concat(DATE_FORMAT(schedule, '%a, %b %d %Y'),' ', time_format(time, '%h:%i %p')) AS currentSchedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id inner join time on appointments.timeID=time.timeID where status = 'pending' order by schedule ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -146,7 +140,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, CONCAT(customer_name.first_name,'',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,'', veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where status='pending' and veterinarian_id = '"+getAccountId()+"' order by `schedule` ASC";
+                String sql = "SELECT appointments.*, concat(DATE_FORMAT(schedule, '%a, %b %d %Y'),' ', time_format(time, '%h:%i %p')) AS currentSchedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id inner join time on appointments.timeID=time.timeID where status='pending' and veterinarian_id = '"+getAccountId()+"' order by `schedule` ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -157,13 +151,13 @@ public class Appointments extends ActionSupport{
                     appointment.setPetId(rs.getInt(3));
                     appointment.setVeterinarianId(rs.getInt(4));
                     appointment.setServiceId(rs.getInt(5));
-                    appointment.setSchedule(rs.getString(6));
+                    appointment.setSchedule(rs.getString(9));
                     appointment.setTimeOfAppointment(rs.getInt(7));
                     appointment.setStatus(rs.getString(8));
-                    appointment.setCustomer(rs.getString(9));
-                    appointment.setVeterinarian(rs.getString(10));
-                    appointment.setPetName(rs.getString(11));
-                    appointment.setService(rs.getString(12));
+                    appointment.setCustomer(rs.getString(10));
+                    appointment.setVeterinarian(rs.getString(11));
+                    appointment.setPetName(rs.getString(12));
+                    appointment.setService(rs.getString(13));
                     appointments.add(appointment);
                 }
                 
@@ -186,7 +180,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where veterinarian_id ="+getAccountId()+ " and status = 'approved' order by schedule ASC";
+                String sql = "SELECT appointments.*, concat(DATE_FORMAT(schedule, '%a, %b %d %Y'),' ', time_format(time, '%h:%i %p')) AS currentSchedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id inner join time on appointments.timeID=time.timeID where status='approved' and veterinarian_id = '"+getAccountId()+"' order by `schedule` ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -222,6 +216,46 @@ public class Appointments extends ActionSupport{
         formError="";
         return SUCCESS;
     }
+    public String updateAppointment() throws Exception{
+        appointmentBean.setAppointmentId(appointmentId);
+        appointmentBean.setClientId(accountId);
+        listOfVeterinarians();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+
+            if (connection != null) {
+                String sql = "SELECT appointments.*, concat(DATE_FORMAT(schedule, '%a, %b %d %Y'),' - ', time_format(time, '%r')) AS currentSchedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id inner join time on appointments.timeID = time.timeID where appointment_id ="+appointmentBean.getAppointmentId();
+                preparedStatement = connection.prepareStatement(sql);
+                ResultSet rs= preparedStatement.executeQuery();
+                while(rs.next()) {
+                    appointmentBean.setAppointmentId(rs.getInt(1));
+                    appointmentBean.setClientId(rs.getInt(2));
+                    appointmentBean.setPetId(rs.getInt(3));
+                    appointmentBean.setVeterinarianId(rs.getInt(4));
+                    appointmentBean.setServiceId(rs.getInt(5));
+                    appointmentBean.setSchedule(rs.getString(9));
+                    appointmentBean.setTimeOfAppointment(rs.getInt(7));
+                    appointmentBean.setStatus(rs.getString(8));
+                    appointmentBean.setCustomer(rs.getString(10));
+                    appointmentBean.setVeterinarian(rs.getString(11));
+                    appointmentBean.setPetName(rs.getString(12));
+                    appointmentBean.setService(rs.getString(13));
+                }
+                setClickUpdateAppointment("true");
+            } 
+         } catch (Exception e) {
+
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+
+        return SUCCESS;
+    }
     public String customerAppointments() throws Exception {
         // getTimetable();
         listOfServices();
@@ -236,7 +270,7 @@ public class Appointments extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT appointments.*, DATE_FORMAT(schedule, '%a, %b %d %Y') AS dateOfAppointment, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id where customer_id ="+getAccountId()+ " and status = 'pending' order by schedule ASC";
+                String sql = "SELECT appointments.*, concat(DATE_FORMAT(schedule, '%a, %b %d %Y'),' ', time_format(time, '%h:%i %p')) AS currentSchedule, CONCAT(customer_name.first_name,' ',customer_name.last_name) AS customer,CONCAT(veterinarian_name.first_name,' ', veterinarian_name.last_name) AS Veterinarian, pets.pet_name, services.service FROM appointments INNER JOIN accounts AS customer_name ON appointments.customer_id=customer_name.account_id INNER JOIN accounts AS veterinarian_name ON appointments.veterinarian_id = veterinarian_name.account_id INNER JOIN pets ON appointments.pet_id = pets.pet_id INNER JOIN services ON appointments.service = services.service_id inner join time on appointments.timeID=time.timeID where customer_id ="+getAccountId()+ " and status = 'pending' order by schedule ASC";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
 
@@ -339,12 +373,9 @@ public class Appointments extends ActionSupport{
         return SUCCESS;
     }
     public String getTimeAvailable() throws Exception{
-        createAppointment = "true";
         appointmentBean = getAppointmentBean();
         accountId = appointmentBean.getClientId();
-        setFormError("Method goes no if statements");
         if(appointmentBean.getDateOfAppointment().length() == 0) {
-            Appointments.setFormError("Date is null");
             formError = "The preferred date of appointment is required.";
         }else if(appointmentBean.getVeterinarian().equals("-1")) {
             formError = "Please choose the name of the veterinarian you want to book.";
@@ -355,6 +386,8 @@ public class Appointments extends ActionSupport{
         listOfServices();
         listOfVeterinarians();
         listOfPets();
+        setFormError("");
+        appointmentBean.setVeterinarianId(veterinarianId.get(appointmentBean.getVeterinarian()));
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -381,7 +414,6 @@ public class Appointments extends ActionSupport{
                     listOfTimes.remove(vetAppointment.getTimeOfAppointment());
                     
                 }
-                timeIsAvailable = "yes";
             } 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -396,11 +428,21 @@ public class Appointments extends ActionSupport{
     }
     public String createAppointment() throws Exception{
         appointmentBean = getAppointmentBean();
-        if(saveAppointment(appointmentBean) == true) {
-            return "success";
-        } else {
-            return error;
+        if(appointmentBean.getTimeOfAppointment() < 0 ){
+            formError = "Please Select the time of Appointment. * All fields are required.";
+        }else if(appointmentBean.getService().equals("-1")){
+            formError = "Please Select the type of Service. * All fields are required.";
+        }else if(appointmentBean.getPetName().equals("-1")){
+            formError = "Please Select the name of your pet. * All fields are required.";
+        }else{
+            if(saveAppointment(appointmentBean) == true) {
+                return "success";
+            } else {
+                return error;
+            }
         }
+        return INPUT;
+        
     }
     public String emailConfirmationClient(){
         String ret = SUCCESS;
@@ -479,17 +521,10 @@ public class Appointments extends ActionSupport{
     //             System.out.println("\n\n======get appointment data method==\n\n");
     //             System.out.println("=======\n\n\n"+appointmentBean.getDateOfAppointment()+"\n\n\n=========\n"+appointmentBean.getTimeOfAppointment()+"\n\n");
     //             System.out.println("===\n\n"+appointmentBean.getServiceId()+" "+ appointmentBean.getPetId()+"=======\n\n\n");
+
         
-    //         } 
-    //      } catch (Exception e) {
-
-    //      } finally {
-    //         if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
-    //         if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-    //      }
-
-    //      return appointmentBean;
-    // }
+        
+    
     public boolean saveAppointment(Appointment appointmentBean) throws Exception {
         String status = "pending";
         Connection connection = null;
@@ -514,8 +549,15 @@ public class Appointments extends ActionSupport{
                     setTo(rs.getString(1));
                     setClientName(rs.getString(2));
                 }
+                sql = " SELECT time FROM time WHERE timeID=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, appointmentBean.getTimeOfAppointment());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    seteTime(rs.getString(1));
+                }
                 setSubject("Pending For Approval: Appointment for "+ appointmentBean.getPetName() +" on " +appointmentBean.getDateOfAppointment()+" was created.");
-                setBody("Hello "+getClientName()+",\n \n This is with reference to your appointment that was created. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+appointmentBean.getTimeOfAppointment()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n You will receive a confirmation email once approved. Thank you.");
+                setBody("Hello "+getClientName()+",\n \n This is with reference to your appointment that was created. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+ geteTime() +" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n You will receive a confirmation email once approved. Thank you.");
                 emailConfirmationClient();
                 sql = "select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) =?";
                 preparedStatement = connection.prepareStatement(sql);
@@ -548,6 +590,7 @@ public class Appointments extends ActionSupport{
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         }
     }
+
     public String listOfServices() throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -648,9 +691,83 @@ public class Appointments extends ActionSupport{
         return SUCCESS;
     }
 
-    public String vetAvailableTime(){
+    public String vetAvailableTime() throws Exception{
+        listOfServices();
+        listOfVeterinarians();
+        listOfPets();
         return SUCCESS;
     }
+
+    public String reschedule() throws Exception{
+        appointmentBean = getAppointmentBean();
+        String status = "pending";
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+            if (connection != null) {
+                statement = connection.createStatement();
+                String sql = "update appointments set timeID ='"+appointmentBean.getTimeOfAppointment()+"', schedule = '"+appointmentBean.getDateOfAppointment()+"', status='"+status+"', veterinarian_id='"+appointmentBean.getVeterinarianId()+"' where appointment_id =" +appointmentBean.getAppointmentId();
+                statement.executeUpdate(sql);
+                setSuccessMessage("You have rescheduled an appointment!\nPlease wait for approval.");
+                sql = " SELECT customer_id FROM appointments WHERE appointment_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, appointmentBean.getAppointmentId());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    setToID(rs.getInt(1));
+                }
+                sql = " SELECT email, first_name FROM accounts WHERE account_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getToID());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    setTo(rs.getString(1));
+                    setClientName(rs.getString(2));
+                }
+                sql = " SELECT time FROM time WHERE timeID=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, appointmentBean.getTimeOfAppointment());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    seteTime(rs.getString(1));
+                }
+                setSubject("Pending For Approval: Appointment for "+ appointmentBean.getPetName() +" on " +appointmentBean.getDateOfAppointment()+" was rescheduled.");
+                setBody("Hello "+getClientName()+",\n \n This is with reference to your appointment that was rescheduled. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+ geteTime() +" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n You will receive a confirmation email once approved. Thank you.");
+                emailConfirmationClient();
+                sql = "select account_id from accounts where CONCAT(accounts.first_name, ' ', accounts.last_name) =?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, appointmentBean.getVeterinarian());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){
+                    setToID(rs.getInt(1));
+                }
+                sql = "select email from accounts where account_id=? OR account_type_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getToID());
+                preparedStatement.setInt(2, 1);
+                rs = preparedStatement.executeQuery();
+                setBody2("Hello Admins and "+appointmentBean.getVeterinarian()+", \n \n Requesting for your approval. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+appointmentBean.getTimeOfAppointment()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n Thank you.");
+                while (rs.next()){
+                    setTo2(rs.getString(1));
+                    emailConfirmationVetAd();
+                }
+                return SUCCESS;
+            } else {
+                error = "DB connection failed";
+                return ERROR;
+            }
+         } catch (SQLException e) {
+             error = e.toString();
+             return error;  
+         } finally {
+            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+    }
+
     
 
     public ArrayList<String> getListOfPets() {
@@ -760,15 +877,6 @@ public class Appointments extends ActionSupport{
         this.appointment = appointment;
     }
 
-
-    public String getConcat() {
-        return concat;
-    }
-
-
-    public void setConcat(String concat) {
-        this.concat = concat;
-    }
 
     public int getAccountId() {
         return accountId;
@@ -988,6 +1096,51 @@ public class Appointments extends ActionSupport{
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
+
+    public String geteTime() {
+        return eTime;
+    }
+
+    public void seteTime(String eTime) {
+        this.eTime = eTime;
+    }
+
+
+
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+
+
+    public String getClickUpdateAppointment() {
+        return clickUpdateAppointment;
+    }
+
+
+
+    public void setClickUpdateAppointment(String clickUpdateAppointment) {
+        this.clickUpdateAppointment = clickUpdateAppointment;
+    }
+
+
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
 
 
 }

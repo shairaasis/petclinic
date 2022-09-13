@@ -37,6 +37,8 @@
     </head>
 <body>
   <!-- SIDEBAR -->
+	<s:set var = "token" value = "#session.token"/>
+	<s:if test="%{#token != null}">
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -251,7 +253,7 @@
 						<h3></h3>
 						<button id="myBtn" type="button"><i class='bx bx-edit'></i>Update</button>
                         <!-- The Modal -->
-                    <div id="myModal" class="modal">
+                    	<div id="myModal" class="modal">
 
                         <!-- Modal content -->
                         <div class="modal-content">
@@ -261,10 +263,10 @@
                         <div class="container">
                             <h1>Update Account</h1>
                             <s:actionmessage />
-                            
                             <s:form action="updateAccount" id="form" style="width: 100%;">
                                     <s:hidden name="accountId" value="%{accountId}" />
                                     <s:hidden name="accountBean.accountType" value="%{accountType}"/>
+									<s:password name="accountBean.password" value="password" label="Password" required="required" data-validation-required-message="Please enter your password" />
                                     <s:textfield name="accountBean.username" label="Username" required="required" data-validation-required-message="Please enter your username" />
                                     <s:textfield name="accountBean.firstName" label="First Name" required="required" data-validation-required-message="Please enter your first name" />
                                     <s:textfield name="accountBean.lastName" label="Last Name" required="required" data-validation-required-message="Please enter your last name" />
@@ -275,7 +277,7 @@
                             </s:form>
                         </div>
                         </div>
-                    </div>
+                    	</div>
 					</div>
 					<table>
 						<thead>
@@ -356,5 +358,10 @@
   </div>
   <script src="css/admincss/script.js"></script>
   <script src="css/admincss/modal.js"></script>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE. 
+No Session.
+</s:else>
 </body>
 </html>
