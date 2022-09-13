@@ -28,6 +28,7 @@
 			border: none;
 			cursor: pointer;
 			margin-top: 10px;
+			width: 100%;
 		}
 		#myBtn:hover{
 			background-color: #0e783e!important;
@@ -85,6 +86,9 @@
 </head>
 <body>
     <!-- SIDEBAR -->
+	<s:set var = "token" value = "#session.token"/>
+	<s:if test="%{#token != null}">
+	<s:if test="%{#session.accountType == 'client'}">
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
@@ -98,6 +102,15 @@
 				<a href="${client}">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
 				</a>
 			</li>
 			<li>
@@ -190,69 +203,76 @@
 			</div>
 
 			<h3 style="color: green;"><s:property value="appointmentStatus"></s:property></h3>
-			<div class="getTimeAvailableForm">
-				<h2>Schedule Appointment</h2>
-				<s:form action="createAppointment" id="form" style="width: 100%;">
-					<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
-					<s:textfield name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
-					<s:textfield name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />
-					<div class="control-group">
-						<s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
-						list="%{listOfTimes.entrySet()}"
-						name="appointmentBean.timeOfAppointment" listKey="key"
-						listValue="value"/>
+				<s:set var="timeIsAvailable" value="timeIsAvailable"/>
+				<s:if test='%{#timeIsAvailable == "yes"}'>
+					<div class="getTimeAvailableForm">
+						<s:form action="createAppointment" id="form" style="width: 100%;">
+							<h2>Schedule Appointment</h2>
+							<s:hidden name="timeIsAvailable" value="yes" />
+							<p style="color:red;"><s:property value="formError"></s:property></p>
+							<p style="color:red;"><s:property value="%{formError}"></s:property></p>
+							<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+							<s:textfield name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
+							<s:textfield name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />
+							<div class="control-group">
+								<s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
+								list="%{listOfTimes.entrySet()}"
+								name="appointmentBean.timeOfAppointment" listKey="key"
+								listValue="value"/>
+							</div>
+							<div class="control-group">
+								<s:select headerKey="-1" id="service" headerValue="Select Service"
+								list="listOfServices" 
+								name="appointmentBean.service" />
+							</div>
+							<div class="control-group">
+							<s:select headerKey="-1" id="pet" headerValue="Select Pet"
+									list="listOfPets" 
+									name="appointmentBean.petName" />
+							</div>
+							<br>
+							<s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
+						</s:form>
 					</div>
-					<div class="control-group">
-						<s:select headerKey="-1" id="service" headerValue="Select Service"
-						list="listOfServices" 
-						name="appointmentBean.service" />
+				</s:if>
+				
+				<s:set var="clickUpdateAppointment" value="clickUpdateAppointment"/>
+				<s:if test='%{#clickUpdateAppointment == "true"}'>
+					<div class="getTimeAvailableForm">
+						<s:form action="reschedule" id="form" style="width: 100%;">
+							<h2>Reschedule Appointment</h2>
+  
+                            	<s:hidden name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarianId}"/>
+								<s:hidden name="appointmentBean.appointmentId" value="%{appointmentBean.appointmentId}" />
+								<s:hidden name="appointmentBean.clientId" value="%{accountId}" />
+								<s:hidden name="accountId" value="%{accountId}" />
+								<p style="color:red;"><s:property value="formError"></s:property></p>
+								<s:textfield label="Owner" value="%{appointmentBean.customer}" disabled="true" />
+								<s:textfield label="Pet Name" value="%{appointmentBean.petName}" disabled="true" />
+								<s:textfield label="Service" value="%{appointmentBean.service}" disabled="true" />
+								
+								<s:textfield id="schedule" value="%{appointmentBean.schedule}" disabled="true" />
+								<s:textfield label="Veterinarian" name="appointmentBean.veterinarianId" value="%{appointmentBean.veterinarian}" disabled="true" />
+								<s:textfield id="newDate" label="Service" name="appointmentBean.dateOfAppointment" value="%{appointmentBean.dateOfAppointment}" disabled="true" />								<div class="control-group">
+									
+									<s:select headerKey="-1" id="veterinarian" headerValue="Select Time"
+									list="%{listOfTimes.entrySet()}"
+									name="appointmentBean.timeOfAppointment" listKey="key"
+									listValue="value"/>
+								</div>
+							
+							<br>
+							<s:submit id="myBtn" value="Reschedule" class="btn btn-primary py-3 px-5"/>
+						</s:form>
 					</div>
-					<div class="control-group">
-					<s:select headerKey="-1" id="pet" headerValue="Select Pet"
-							list="listOfPets" 
-							name="appointmentBean.petName" />
-					</div>
-					<br>
-					<s:submit id="myBtn" value="Create" class="btn btn-primary py-3 px-5"/>
-				</s:form>
-			</div>
-			
+
+				</s:if>
 
             <!-- <h1>Veterinarian<s:property value="appointmentBean.veterinarian"/></h1>
     <h1>DATE<s:property value="appointmentBean.dateOfAppointment"></s:property></h1>
     <h1>ACCOUNT ID<s:property value="accountId"></s:property></h1>
 
   
-        <table>
-            <thead>
-                <tr>
-                    <th>Appointment ID</th>
-                    <th>Customer ID</th>
-                    <th>Pet ID</th>
-                    <th>Vet ID </th>
-                    <th>Service</th>
-                    <th>Schedule</th>
-                    <th>Time of Appointment</th>
-                    <th>Status</th>
-                    <th>Veterinarian</th>
-                </tr>
-            </thead>
-            <tbody>
-            <s:iterator value="vetAppointments" var="vetAppointment">  
-                <tr>
-                    <td><s:property value="appointmentId"/></td>
-                    <td><s:property value="clientId"/></td>
-                    <td><s:property value="petId"/></td>
-                    <td><s:property value="veterinarianId"/></td>
-                    <td><s:property value="serviceId"/></td>
-                    <td><s:property value="schedule"/></td>
-                    <td><s:property value="timeOfAppointment"/></td>
-                    <td><span class="status completed"><s:property value="status"/></span></td>
-                    <td><s:property value="veterinarian"/></td>
-                </tr>
-            </s:iterator>
-            </tbody>
-        </table> -->
 			
 		</main>
 		<!-- MAIN -->
@@ -263,5 +283,15 @@
     
     <script src="css/admincss/script.js"></script>
 	<script src="css/admincss/modal.js"></script>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE.
+This page is only for Clients.
+</s:else>
+</s:if>
+<s:else>
+REDIRECT THIS TO ERROR PAGE. 
+No Session.
+</s:else>
 </body>
 </html>
