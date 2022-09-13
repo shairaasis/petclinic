@@ -7,15 +7,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.Random;
 
 import com.example.proj.model.Account;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Register extends ActionSupport {
     
-    private static final long serialVersionUID = 1L;
-                                 
+    private static final long serialVersionUID = 1L;                           
     private static Account accountBean;
     private String error = "Random";
     private String status;
@@ -30,7 +29,7 @@ public class Register extends ActionSupport {
         {
             accountBean.setAccountType(1);
             if(saveToDB()) {
-                addActionMessage("You have successfuly created an account.");
+                addActionMessage("You have successfully created an account, Please log-in and verify your account. 4-Digit code will be sent to your Contact #.");
                 return "accountregistered";
             } else {
                 return ERROR;
@@ -79,13 +78,13 @@ public class Register extends ActionSupport {
                 error = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
-             error = e.toString();
-             return false;  
-         } finally {
+        } catch (Exception e) {
+            error = e.toString();
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
 
     private String encryptMD5(String password) throws NoSuchAlgorithmException {
@@ -98,6 +97,13 @@ public class Register extends ActionSupport {
         }  
         encryptedPassword = s.toString();
         return encryptedPassword;
+    }
+
+    private int fourDigitGenerator() { 
+        Random r = new Random();
+        String randomNumber = String.format("%04d", (Object) Integer.valueOf(r.nextInt(1001)));
+        System.out.println(randomNumber);
+        return 1;
     }
 
     public String getError() {
@@ -151,9 +157,5 @@ public class Register extends ActionSupport {
 
     public void setAccountId(int accountId) {
         this.accountId = accountId;
-    }
-
-    
-
-    
+    } 
 }

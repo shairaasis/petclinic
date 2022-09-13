@@ -21,23 +21,37 @@ public class Login extends ActionSupport implements SessionAware{
     public String errorMessage;
     private static String encryptedPassword; 
     private String token;
-
-
+    public String sql;
+    Connection connection = null;
+    PreparedStatement preparedStatement = null;
+    ResultSet rs;
+    private String accountStatus;
+    private int accountCode;
     private static Account accountBean;
+    private boolean fourDigitCode = false;
 
     public String execute() throws Exception {
         accountBean = getAccountBean();
-        if(validate(accountBean.getUsername(), accountBean.getPassword())){  
-            token = generateToken();
-            saveToken(token);
-            userSession.put("token", token);
-            if(accountBean.getAccountType() == 1){
-                return "admin";
-            }else if(accountBean.getAccountType() == 2){
-                return "veterinarian";
+        if(validate(accountBean.getUsername(), accountBean.getPassword())){
+            if (checkVerified(accountBean.getAccountId())){
+                token = generateToken();
+                saveToken(token);
+                userSession.put("token", token);
+                if(accountBean.getAccountType() == 1){
+                    return "admin";
 
-            }else{
-                return "client";
+                }else if(accountBean.getAccountType() == 2){
+                    return "veterinarian";
+    
+                }else{
+                    return "client";
+                }
+            }  
+            else {
+                System.out.println("Account is not verified, send code? to your number?");
+                setFourDigitCode(true);
+                errorMessage = "Account is yet not verified, send code to your number?";
+                return "input";
             }
         }  
         else{  
@@ -52,26 +66,50 @@ public class Login extends ActionSupport implements SessionAware{
     }
     public boolean validate (String username,String password){  
         boolean status=false;  
-         try{  
-          Class.forName("com.mysql.jdbc.Driver");  
-          Connection con=DriverManager.getConnection(  
-          "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC","root","password");  
-          setEncryptedPassword(encryptMD5(accountBean.getPassword()));
-          PreparedStatement ps=con.prepareStatement(  
+        try{  
+        Class.forName("com.mysql.jdbc.Driver");  
+        Connection con=DriverManager.getConnection(  
+        "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC","root","password");  
+        setEncryptedPassword(encryptMD5(accountBean.getPassword()));
+        PreparedStatement ps=con.prepareStatement(  
             "select * from accounts where username=? and password=?");  
-          ps.setString(1,username);  
-          ps.setString(2,encryptedPassword);  
-          ResultSet rs=ps.executeQuery();
-          status=rs.next();   
+        ps.setString(1,username);  
+        ps.setString(2,encryptedPassword);  
+        ResultSet rs=ps.executeQuery();
+        status=rs.next();
             accountBean.setAccountId(rs.getInt(1));
             accountBean.setAccountType(rs.getInt(2));
             accountBean.setUsername(rs.getString(3));
             accountBean.setLastName(rs.getString(6));   
             accountBean.setFirstName(rs.getString(5)); 
             accountBean.setEmail(rs.getString(9));
-         }catch(Exception e){e.printStackTrace();}  
+        } catch (Exception e) {e.printStackTrace(); }  
         return status;  
     } 
+    public boolean checkVerified(int accountID) {
+        boolean status2 = false;
+        try{
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+            sql = "SELECT status, code FROM verification WHERE account_id=?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, accountID);
+            System.out.println("madzAccountID: " + accountID);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                setAccountStatus(rs.getString(1));
+                setAccountCode(rs.getInt(2));
+            }
+            if (getAccountStatus().equals("Verified")) {status2 = true;}
+            else {status2 = false;}
+        } catch(Exception e){e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}}
+        return status2;
+    }
+
     public static String encryptMD5(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5"); 
         byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -100,13 +138,13 @@ public class Login extends ActionSupport implements SessionAware{
                 errorMessage = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.toString();
-             return false;  
-         } finally {
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
     public boolean deleteToken() throws SQLException {
         Connection connection = null;
@@ -125,13 +163,13 @@ public class Login extends ActionSupport implements SessionAware{
                 errorMessage = "DB connection failed";
                 return false;
             }
-         } catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.toString();
-             return false;  
-         } finally {
+            return false;  
+        } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+        }
     }
 
 
@@ -176,8 +214,25 @@ public class Login extends ActionSupport implements SessionAware{
 
     @Override
     public void setSession(Map<String, Object> session) {
-       userSession = session;
-        
+        userSession = session;
+    }
+    public String getAccountStatus() {
+        return accountStatus;
+    }
+    public void setAccountStatus(String accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+    public int getAccountCode() {
+        return accountCode;
+    }
+    public void setAccountCode(int accountCode) {
+        this.accountCode = accountCode;
+    }
+    public boolean isFourDigitCode() {
+        return fourDigitCode;
+    }
+    public void setFourDigitCode(boolean fourDigitCode) {
+        this.fourDigitCode = fourDigitCode;
     }
 
 }
