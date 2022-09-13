@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
@@ -21,6 +23,10 @@ public class Register extends ActionSupport {
     private String encryptedPassword;
     private int typeOfAccount;
     private int accountId;
+    private String temp4DCode;
+    PreparedStatement preparedStatement;
+    ResultSet rs;
+
 
     public String execute() throws Exception {
         accountBean = getAccountBean();
@@ -72,6 +78,23 @@ public class Register extends ActionSupport {
                 setEncryptedPassword(encryptMD5(accountBean.getPassword()));
                 String sql = "INSERT INTO accounts(account_type_id, username, password, first_name, last_name, address, email, contact_no) VALUES('"+accountBean.getAccountType()+"','"+accountBean.getUsername()+"','"+ getEncryptedPassword()+"','"+accountBean.getFirstName()+"','"+accountBean.getLastName()+"','"+accountBean.getAddress()+"', '"+accountBean.getEmail()+"', '"+accountBean.getContactNo()+"')";
                 statement.executeUpdate(sql);
+                statement.close();
+                setTemp4DCode(fourDigitGenerator());
+                sql = "SELECT account_id FROM accounts WHERE username=? and password=?";
+                preparedStatement = connection.prepareStatement(sql); 
+                preparedStatement.setString(1, accountBean.getUsername());  
+                preparedStatement.setString(2, getEncryptedPassword());  
+                System.out.println("username: " + accountBean.getUsername());
+                System.out.println("password: " + getEncryptedPassword());
+                rs = preparedStatement.executeQuery();
+                while (rs.next()){ 
+                    setAccountId(rs.getInt(1));
+                }
+                System.out.println("accountID: " +getAccountId());
+                System.out.println("code: " + getTemp4DCode());
+                statement = connection.createStatement();
+                String sql2 = "INSERT INTO verification(account_id, status, code) VALUES('"+getAccountId()+"','"+"Pending"+"','"+getTemp4DCode()+"')";
+                statement.executeUpdate(sql2);
                 status = "Account Successfully added!";
                 return true;
             } else {
@@ -99,11 +122,11 @@ public class Register extends ActionSupport {
         return encryptedPassword;
     }
 
-    private int fourDigitGenerator() { 
+    private String fourDigitGenerator() { 
         Random r = new Random();
         String randomNumber = String.format("%04d", (Object) Integer.valueOf(r.nextInt(1001)));
         System.out.println(randomNumber);
-        return 1;
+        return randomNumber;
     }
 
     public String getError() {
@@ -158,4 +181,11 @@ public class Register extends ActionSupport {
     public void setAccountId(int accountId) {
         this.accountId = accountId;
     } 
+    public String getTemp4DCode() {
+        return temp4DCode;
+    }
+
+    public void setTemp4DCode(String temp4dCode) {
+        temp4DCode = temp4dCode;
+    }
 }

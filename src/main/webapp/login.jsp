@@ -37,7 +37,7 @@
 </head>
 
 <body>
-    <!-- Topbar Start -->
+    <!-- Topbar Start -->    
     <s:set var = "token" value = "#session.token"/>
 	<s:if test="%{#token == null}">
     <div class="container-fluid" style="background-color:rgb(204 189 189 / 20%);">
@@ -110,7 +110,7 @@
             <p style="text-align: center;"><s:property value="status"/></p>
             <p style="text-align: center; color: red;"><s:property value="errorMessage"/></p>
             
-          <s:form action="login" style="width: 100%;">
+          <s:form action="login" style="width: 100%;"> 
             <div class="control-group">
               <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
               <p class="help-block text-danger"></p>
@@ -119,6 +119,12 @@
               <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
               <p class="help-block text-danger"></p>
             </div>
+            <s:set var="4dc" value="fourDigitCode"/>
+            <s:if test="%{#4dc == true}">
+                <s:form action = "sendCode">
+                    <s:submit value = "Send Verification Code" />
+                </s:form>
+            </s:if>
             <s:submit value="Log in" class="btn btn-primary py-3 px-5" style="float: right;"/>
             
           </s:form>
@@ -132,7 +138,7 @@
     </div>
 </s:if>
 <s:else> 
-REDIRECT THIS PAGE TO DASHBOARD.
+REDIRECT THIS PAGE TO DASHBOARD (user is still currently logged in).
 </s:else>
 </body>
 </html>
