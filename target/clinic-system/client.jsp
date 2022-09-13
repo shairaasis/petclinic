@@ -31,6 +31,15 @@
 				</a>
 			</li>
 			<li>
+				<s:url action="profile" var="profile">
+					<s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${profile}">
+					<i class='bx bxs-id-card'></i>
+					<span class="text">Profile</span>
+				</a>
+			</li>
+			<li>
 				<a href="#" style="pointer-events: none; cursor: default;" >
 					<i class='bx bxs-calendar'></i>
 					<span class="text">Appointments</span>
@@ -45,7 +54,10 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<s:url action="approvedClientAppointments" var="approve">
+                    <s:param name="accountId" value="%{accountId}"></s:param>
+				</s:url>
+				<a href="${approve}">
 					<span style="margin-left: 50px;" class="text">Approved</span>
 				</a>
 			</li>
@@ -124,115 +136,6 @@
 				
 			</ul>
 
-<!-- 
-			<div class="table-data">
-				<div class="order">
-					<div class="head">
-					 <h3>THIS IS CLIENT DASHBOARD</h3>
-                        <h1><s:property value="accountBean.accountId"/></h1>
-						<i class='bx bx-search' ></i>
-						<i class='bx bx-filter' ></i> 
-					</div>
-					 <table>
-						<thead>
-							<tr>
-								<th>User</th>
-								<th>Date Order</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status process">Process</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
-						</tbody>
-					</table> 
-				</div>
-			
-			</div>
- -->
-
-	<!--		<h1>ADD ACCOUNT</h1>
-  Add account 
-  <div class="w3-container">
-    <s:form action="register" id="form" style="width: 100%;">
-         <s:checkbox name="veterinarian" fieldValue="true" label="Veterinarian"/>
-        <s:checkbox name="client" fieldValue="true" label="Client"/>
-		<s:radio name="typeOfAccount" list="#{'1':'Admin','2':'Veterinarian','3':'Client'}" value="3" />
-        <div class="control-group">
-            <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.firstName" class="form-control p-4" placeholder="First Name" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.lastName" class="form-control p-4" placeholder="Last Name" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.address" class="form-control p-4" placeholder="Address" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.contactNo" class="form-control p-4" placeholder="Contact Number" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.email" class="form-control p-4" placeholder="Email" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <s:submit value="Add account" class="btn btn-primary py-3 px-5"/>
-          
-    </s:form>
-     <h3><s:property value="successMessage" /></h3> -->
-  
-      
-
-
-  </div>
 		</main>
 		<!-- MAIN -->
 	</section>
