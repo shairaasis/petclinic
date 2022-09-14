@@ -360,8 +360,10 @@
   <script src="css/admincss/modal.js"></script>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE. 
-No Session.
+	<%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>

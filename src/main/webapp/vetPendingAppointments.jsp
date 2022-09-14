@@ -132,46 +132,7 @@
 				</div>
 			</div>
 			
-			<!-- Trigger/Open The Modal 
-			<button id="myBtn">Create an appointment</button>
-			 The Modal 
-			<div id="myModal" class="modal">
-
-			 Modal content 
-			<div class="modal-content">
-				<span class="close">&times;</span>
-				<div class="container-fluid pt-5">
-					<div class="row justify-content-center">
-					<div class="col-12 col-sm-8 mb-5">
-						<div class="contact-form">
-							<h2>Schedule an appointment</h2>
-							<s:form action="update" id="form" style="width: 100%;">
-								
-								  <h2>
-									<s:select headerKey="-1" id="service" headerValue="Select Service"
-										list="listOfServices" 
-										name="appointmentBean.service" />
-									</h2> 
-									<h2>
-										<s:select headerKey="-1" id="client" headerValue="Select Client"
-											list="listOfCustomers" 
-											name="appointmentBean.customer" />
-										</h2> 
-
-										<h2>
-											<s:select headerKey="-1" id="client" headerValue="Select Veterinarian"
-												list="listOfVeterinarians" 
-												name="appointmentBean.veterinarian" />
-											</h2> 
-								  <s:submit value="Schedule" class="btn btn-primary py-3 px-5"/>
-							</s:form>
-						</div>
-					</div>
-					</div>
-				</div>
-			</div>
-			</div>-->
-
+			
 			
 
 			<div class="table-data">
@@ -231,13 +192,13 @@
   <script src="css/admincss/modal.js"></script>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE.
-This page is only for Veterinarians.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
-<s:else>
-REDIRECT THIS TO ERROR PAGE.
-No Session.
+<s:else><%
+String redirectURL = "login.jsp";
+response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>

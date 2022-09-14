@@ -139,78 +139,69 @@
 
 			<ul class="box-info">
 				<li>
-					<i class='bx bxs-user'></i>
-						<span class="text">
-						<h3>Admin</h3>
-						<p>dashboard</p>
-					</span>
-				</li>
-				<!-- <li>
 					<i class='bx bxs-group' ></i>
 					<span class="text">
-						<h3>834</h3>
+						<h3><s:property value="%{clients}"/></h3>
 						<p>Clients</p>
 					</span>
 				</li>
 				<li>
-					<i class='bx bxs-dollar-circle' ></i>
+					<i class='bx bxs-calendar-check' ></i>
 					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Sales</p>
+						<h3><s:property value="%{approvedAppointments}"/></h3>
+						<p>Approved Appointments</p>
 					</span>
-				</li> -->
+				</li>
+				<li>
+					<i class='bx bxs-coin-stack'></i>
+					<span class="text">
+						<h3><s:property value="%{totalSales}"/></h3>
+						<p>Sales</p>
+					</span>
+				</li>
 			</ul>
 
 
 			<div class="table-data">
+				<div class="order">
+					<div class="head">
+						<h3><s:property value="%{today}"/><br>Appointments</h3>
+						<!-- <i class='bx bx-search' ></i>
+						<i class='bx bx-filter' ></i> -->
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>Pet</th>
+                                <th>Veterinarian</th>
+                                <th>Service</th>
+                                <th>Schedule</th>
+                                <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+                        <s:iterator value="appointments" var="appointment">  
+                            <tr>
+                                <td><s:property value="petName"/></td>
+                                <td><s:property value="veterinarian"/></td>
+                                <td><s:property value="service"/></td>
+                                <td><s:property value="schedule"/></td>
+								<s:set var="stat" value="status"/>
+								<s:if test='%{#stat == "pending"}'>
+									<td><span class="status pending" ><s:property value="status"/></span></td>
+								</s:if>
+								<s:else>
+									<td><span class="status completed" style="background-color: rgba(0, 128, 0, 0.831);"><s:property value="status"/></span></td>
+								</s:else>
+                            </tr>
+                        </s:iterator>
+						</tbody>
+					</table>
+				</div>
 				
 			</div>
 
 
-		  <!--	<h1>ADD ACCOUNT</h1>
- Add account 
-  <div class="w3-container">
-    <s:form action="register" id="form" style="width: 100%;">
-        <s:checkbox name="veterinarian" fieldValue="true" label="Veterinarian"/>
-        <s:checkbox name="client" fieldValue="true" label="Client"/>
-		<s:radio name="typeOfAccount" list="#{'1':'Admin','2':'Veterinarian','3':'Client'}" value="3" />
-        <div class="control-group">
-            <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.firstName" class="form-control p-4" placeholder="First Name" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.lastName" class="form-control p-4" placeholder="Last Name" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.address" class="form-control p-4" placeholder="Address" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.contactNo" class="form-control p-4" placeholder="Contact Number" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <div class="control-group">
-            <s:textfield name="accountBean.email" class="form-control p-4" placeholder="Email" required="required" data-validation-required-message="Please enter your name" />
-            <p class="help-block text-danger"></p>
-          </div>
-          <s:submit value="Add account" class="btn btn-primary py-3 px-5"/>
-          
-    </s:form>
-    <h3><s:property value="successMessage" /></h3>
-  
-      
-
-
-  </div> -->
 		</main>
 		<!-- MAIN -->
 	</section>
@@ -222,13 +213,14 @@
   <script src="css/admincss/script.js"></script>
 </s:if>
 <s:else> 
-REDIRECT THIS TO ERROR PAGE. 
-This page is only for Admins.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
 <s:else> 
-REDIRECT THIS TO ERROR PAGE. 
-No Session.
+	<%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>

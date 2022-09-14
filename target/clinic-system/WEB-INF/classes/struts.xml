@@ -22,7 +22,7 @@
 
         <action name="register" class="com.example.proj.action.Register" method="execute">
             <interceptor-ref name="defaultStack"/>
-            <result name="success">/login.jsp</result>
+            <result name="success">/verification.jsp</result>
             <result name="input">/register.jsp</result>
             <result name="error">/error.jsp</result>
             <result name="accountregistered" type="redirectAction">
@@ -48,6 +48,14 @@
                 <param name="actionName">client</param>
                 <param name="accountId">${accountBean.accountId}</param>
             </result>
+            <result name="Pending">/verification.jsp</result>
+        </action>
+
+        <action name="verify" class="com.example.proj.action.Login" method="verify">
+            <result name="Verified">login.jsp</result>
+            <result name="Pending">/verification.jsp</result>
+            <result name="input">/login.jsp</result>
+            <result name="error">/error.jsp</result>
         </action>
 
         <action name="veterinarian" class="com.example.proj.action.Veterinarian">
