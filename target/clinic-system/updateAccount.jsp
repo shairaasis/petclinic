@@ -159,65 +159,10 @@
   <script src="css/admincss/script.js"></script>
   <script src="css/admincss/modal.js"></script>
 </s:if>
-<s:else>
-REDIRECT THIS TO ERROR PAGE. 
-No Session.
+<s:else><%
+String redirectURL = "login.jsp";
+response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-<p>REGISTRATION FORM HERE</p>
-	<div class="container-fluid pt-5">
-		<div class="d-flex flex-column text-center mb-5 pt-5">
-		  <h4 class="text-secondary mb-4">Register</h4>
-		  <h1 class="display-5 m-0">Create an account and <span class="text-primary"> let's make your pets happy!</span></h1>
-		</div>
-		<div class="row justify-content-center">
-		  <div class="col-12 col-sm-8 mb-5">
-			<div class="contact-form">
-		  
-			<s:form action="UpdateAccount" id="contactForm" style="width: 100%;">
-			  <div class="control-group">
-				<s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" value="" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <div class="control-group">
-				<s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <div class="control-group">
-				<s:textfield name="accountBean.firstName" class="form-control p-4" placeholder="First Name" required="required" data-validation-required-message="Please enter your name" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <div class="control-group">
-				<s:textfield name="accountBean.lastName" class="form-control p-4" placeholder="Last Name" required="required" data-validation-required-message="Please enter your name" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <div class="control-group">
-				<s:textfield name="accountBean.address" class="form-control p-4" placeholder="Address" required="required" data-validation-required-message="Please enter your name" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <div class="control-group">
-				<s:textfield name="accountBean.contactNo" class="form-control p-4" placeholder="Contact Number" required="required" data-validation-required-message="Please enter your name" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <div class="control-group">
-				<s:textfield name="accountBean.email" class="form-control p-4" placeholder="Email" required="required" data-validation-required-message="Please enter your name" />
-				<p class="help-block text-danger"></p>
-			  </div>
-			  <s:submit value="Update" class="btn btn-primary py-3 px-5" style="float: right;"/>
-			  
-			</s:form>
-			</div>
-		  </div>
-		</div>
-	  </div>

@@ -296,6 +296,13 @@
             <result name = "error">/TestError.jsp</result>
         </action>
 
+        <action name = "generateReport" class = "com.example.proj.action.Admin" method = "generateReport">
+            <result name = "success">/TestSuccess.jsp</result>
+            <result name = "error">/TestError.jsp</result>
+        </action>
+
+        
+
 
     </package>
 
