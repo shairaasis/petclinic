@@ -84,6 +84,7 @@ public class Login extends ActionSupport implements SessionAware{
             accountBean.setFirstName(rs.getString(5)); 
             accountBean.setEmail(rs.getString(9));
             userSession.put("accountID", accountBean.getAccountId());
+            userSession.put("accountType", accountBean.getAccountType());
             userSession.put("userName", accountBean.getUsername());
             userSession.put("lastName", accountBean.getLastName());
             userSession.put("firstName", accountBean.getFirstName());

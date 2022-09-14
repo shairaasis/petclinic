@@ -102,7 +102,7 @@ public class Admin extends ActionSupport{
             connection = DriverManager.getConnection(URL, "root", "password");
 
             if (connection != null) {
-                String sql = "SELECT COUNT(*) FROM appointments where status = 'pending'";
+                String sql = "SELECT COUNT(*) FROM appointments where status = 'approved'";
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
                 while(rs.next()){
