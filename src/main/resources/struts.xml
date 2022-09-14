@@ -110,6 +110,16 @@
         <action name="vetPendingAppointments" class="com.example.proj.action.Appointments" method="vetPendingAppointments">
             <result name="success">/vetPendingAppointments.jsp</result>
         </action>
+        
+        <action name="updateAccount" class="com.example.proj.action.Update" method="execute">
+            <result name="success" type="redirectAction">
+            <param name="actionName">listaccounts</param>
+                <param name="actionName">profile</param>
+                <param name="accountId">${accountId}</param>
+                <param name="updateStatus">${updateStatus}</param>
+            </result>
+            <result name="error">/error.jsp</result>            
+        </action>
 
         <action name="addService" class="com.example.proj.action.AddService" method="execute">
             <result name="success" type="redirectAction">
