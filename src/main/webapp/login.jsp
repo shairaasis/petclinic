@@ -107,6 +107,11 @@
                 
             </div>
             </s:if>
+            <s:set var = "noSession" value = "noSession"/>
+	        <s:if test="%{#noSession != null}">
+                <p><%=request.getParameter("noSession") %></p>
+            </s:if>
+            
             <p style="text-align: center;"><s:property value="status"/></p>
             <p style="text-align: center; color: red;"><s:property value="errorMessage"/></p>
             
@@ -132,7 +137,7 @@
     </div>
 </s:if>
 <s:else> 
-REDIRECT THIS PAGE TO DASHBOARD.
+    REDIRECT THIS PAGE TO DASHBOARD.
 </s:else>
 </body>
 </html>

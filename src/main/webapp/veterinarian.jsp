@@ -191,13 +191,13 @@
   <script src="css/admincss/script.js"></script>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE. 
-This page is only for Veterinarians.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE.
-No Session.
+	<jsp:forward page="login.jsp"> 
+	<jsp:param name="noSession" value="Session Timeout. Please log in again." /> 
+	</jsp:forward>
 </s:else>
 </body>
 </html>
