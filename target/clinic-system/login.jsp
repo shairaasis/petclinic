@@ -38,8 +38,8 @@
 
 <body>
     <!-- Topbar Start -->
-    <!-- <s:set var = "token" value = "#session.token"/>
-	<s:if test="%{#token == null}"> -->
+    <s:set var = "token" value = "#session.token"/>
+	<s:if test="%{#token == null}">
     <div class="container-fluid" style="background-color:rgb(204 189 189 / 20%);">
         
         <div class="row py-3 px-lg-5">
@@ -130,9 +130,9 @@
         </div>
       </div>
     </div>
-<!-- </s:if>
+</s:if>
 <s:else> 
 REDIRECT THIS PAGE TO DASHBOARD.
-</s:else> -->
+</s:else>
 </body>
 </html>
