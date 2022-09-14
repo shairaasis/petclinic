@@ -20,6 +20,10 @@
             <result>/index.jsp</result>
         </action>
 
+        <action name="loginPage" class="com.example.proj.action.Login" method="execute">
+            <result>/login.jsp</result>
+        </action>
+
         <action name="register" class="com.example.proj.action.Register" method="execute">
             <interceptor-ref name="defaultStack"/>
             <result name="success">/verification.jsp</result>
@@ -32,7 +36,8 @@
             </result>
         </action>
 
-        <action name="login" class="com.example.proj.action.Login" method="execute">
+
+        <action name="login" class="com.example.proj.action.Login" method="login">
             <interceptor-ref name="defaultStack"/>
             <result name="admin" type="redirectAction">
                 <param name="actionName">admin</param>
@@ -66,7 +71,7 @@
             <result name="success">/client.jsp</result>
         </action>
         
-        <action name="admin" class="com.example.proj.action.Admin">
+        <action name="admin" class="com.example.proj.action.Admin" method="execute">
             <result name="success">/admin.jsp</result>
         </action>
 

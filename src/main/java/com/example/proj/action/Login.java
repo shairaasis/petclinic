@@ -34,6 +34,12 @@ public class Login extends ActionSupport implements SessionAware{
     private int verifyAccountID;
 
     public String execute() throws Exception {
+        
+        
+        return SUCCESS;
+    }
+
+    public String login() throws Exception{
         accountBean = getAccountBean();
         if(validate(accountBean.getUsername(), accountBean.getPassword())){
             if (checkVerified(accountBean.getAccountId())){
@@ -63,8 +69,10 @@ public class Login extends ActionSupport implements SessionAware{
         else{  
             errorMessage = "Login failed. Username and/or password is incorrect.";
             return "input";  
-        } 
+        }
     }
+
+
     private String generateToken(){
         token = UUID.randomUUID().toString().replaceAll("-", "");
         return token;
