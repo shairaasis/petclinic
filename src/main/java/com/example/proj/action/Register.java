@@ -9,7 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Random;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 
 import com.example.proj.model.Account;
 import com.opensymphony.xwork2.ActionSupport;
@@ -26,6 +27,10 @@ public class Register extends ActionSupport {
     private int temp4DCode;
     PreparedStatement preparedStatement;
     ResultSet rs;
+    private String contactNum;
+
+    public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
 
 
     public String execute() throws Exception {
@@ -82,7 +87,7 @@ public class Register extends ActionSupport {
                 statement.executeUpdate(sql);
                 statement.close();
                 setTemp4DCode(fourDigitGenerator());
-                sql = "SELECT account_id FROM accounts WHERE username=? and password=?";
+                sql = "SELECT account_id, contact_no FROM accounts WHERE username=? and password=?";
                 preparedStatement = connection.prepareStatement(sql); 
                 preparedStatement.setString(1, accountBean.getUsername());  
                 preparedStatement.setString(2, getEncryptedPassword());  
@@ -91,13 +96,22 @@ public class Register extends ActionSupport {
                 rs = preparedStatement.executeQuery();
                 while (rs.next()){ 
                     setAccountId(rs.getInt(1));
+                    setContactNum(rs.getString(2));
                 }
                 System.out.println("accountID: " +getAccountId());
                 System.out.println("code: " + getTemp4DCode());
                 statement = connection.createStatement();
                 String sql2 = "INSERT INTO verification(account_id, status, code) VALUES('"+getAccountId()+"','"+"Pending"+"','"+getTemp4DCode()+"')";
                 statement.executeUpdate(sql2);
-                status = "Account Successfully added!";
+                status = "Account Successfully added, Please verify your account with the 4-Digit Code that was sent to your Contact #.";
+                Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+                String myNum = getContactNum();
+                Message message = Message.creator(
+                    new com.twilio.type.PhoneNumber(myNum),
+                    new com.twilio.type.PhoneNumber("+19253970189"),
+                        "Your Pet Clinic 4-Digit Code: " + getTemp4DCode())
+                    .create();
+                System.out.println(message.getSid());
                 return true;
             } else {
                 error = "DB connection failed";
@@ -189,5 +203,13 @@ public class Register extends ActionSupport {
 
     public void setTemp4DCode(int temp4dCode) {
         temp4DCode = temp4dCode;
+    }
+    
+    public String getContactNum() {
+        return contactNum;
+    }
+
+    public void setContactNum(String contactNum) {
+        this.contactNum = contactNum;
     }
 }

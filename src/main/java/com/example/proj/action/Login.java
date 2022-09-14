@@ -190,7 +190,7 @@ public class Login extends ActionSupport implements SessionAware{
     }
 
     public String verify() {
-        String stats = ERROR;
+        String stats = "Pending";
         Statement statement;
         try{
             System.out.println("VERIFICATION");
@@ -224,6 +224,10 @@ public class Login extends ActionSupport implements SessionAware{
                 System.out.println("YOU ARE NOW VERIFIED");
                 addActionMessage("You are now verified, Please log-in using your Username and Password.");
             }
+            else {
+                errorMessage = "Incorrect Username/4-Digit Code";
+            }
+
             return stats;
         }
     } catch (Exception e) {

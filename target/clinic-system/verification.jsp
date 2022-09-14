@@ -110,20 +110,16 @@
             
           <s:form action="verify" style="width: 100%;">
             <div class="control-group">
-                <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
+                <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your username" />
                 <p class="help-block text-danger"></p>
               </div> 
             <div class="control-group">
-              <s:textfield name="fourDigitCode" value ="" class="form-control p-4" placeholder="Your 4-Digit Code" required="required" data-validation-required-message="Please enter your name" />
+              <s:textfield name="fourDigitCode" value ="" class="form-control p-4" placeholder="Your 4-Digit Code" required="required" data-validation-required-message="Please enter your 4-Digit Code" />
               <p class="help-block text-danger"></p>
             </div>
-            <s:submit value="Log In" class="btn btn-primary py-3 px-5" style="float: right;"/>
+            <s:submit value="Verify Account" class="btn btn-primary py-3 px-5" style="float: right;"/>
             
           </s:form>
-          <div class="redirect" style="float: right; text-align: right; ">
-            <!-- <a href="#">Register with LoginRadius</a><br> -->
-            <a href="register.jsp">Forgot your account? Register here</a>
-          </div>
           </div>
         </div>
       </div>
