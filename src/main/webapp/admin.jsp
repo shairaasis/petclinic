@@ -137,7 +137,10 @@
 				
 			</div>
 			<s:form action = "generateReport">
-				<s:submit value ="REPORT" ></s:submit>
+				<s:submit value ="GENERATE REPORT" ></s:submit>
+			</s:form>
+			<s:form action = "sendReport">
+				<s:submit value ="SEND REPORT" ></s:submit>
 			</s:form>
 
 			<ul class="box-info">
