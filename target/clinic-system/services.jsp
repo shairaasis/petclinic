@@ -242,13 +242,14 @@
   <script src="css/admincss/modal.js"></script>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE. 
-This page is only for Admins.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE. 
-No Session.
+	<%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>

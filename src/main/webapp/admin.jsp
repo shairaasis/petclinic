@@ -136,6 +136,9 @@
 				</div>
 				
 			</div>
+			<s:form action = "generateReport">
+				<s:submit value ="REPORT" ></s:submit>
+			</s:form>
 
 			<ul class="box-info">
 				<li>

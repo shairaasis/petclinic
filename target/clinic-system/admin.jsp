@@ -136,6 +136,9 @@
 				</div>
 				
 			</div>
+			<s:form action = "generateReport">
+				<s:submit value ="REPORT" ></s:submit>
+			</s:form>
 
 			<ul class="box-info">
 				<li>
@@ -148,8 +151,8 @@
 				<li>
 					<i class='bx bxs-calendar-check' ></i>
 					<span class="text">
-						<h3><s:property value="%{pendingAppointments}"/></h3>
-						<p>Pending Appointments</p>
+						<h3><s:property value="%{approvedAppointments}"/></h3>
+						<p>Approved Appointments</p>
 					</span>
 				</li>
 				<li>
@@ -213,13 +216,14 @@
   <script src="css/admincss/script.js"></script>
 </s:if>
 <s:else> 
-REDIRECT THIS TO ERROR PAGE. 
-This page is only for Admins.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
 <s:else> 
-REDIRECT THIS TO ERROR PAGE. 
-No Session.
+	<%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>

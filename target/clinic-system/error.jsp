@@ -16,7 +16,10 @@
     <h1><s:property value="%{accountIdToDelete}"></s:property></h1>
     </s:if>
     <s:else> 
-    No Session.
+        <%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
     </s:else>
 </body>
 </html>
