@@ -37,7 +37,7 @@
 </head>
 
 <body>
-    <!-- Topbar Start -->
+    <!-- Topbar Start -->    
     <s:set var = "token" value = "#session.token"/>
 	<s:if test="%{#token == null}">
     <div class="container-fluid" style="background-color:rgb(204 189 189 / 20%);">
@@ -107,16 +107,21 @@
                 
             </div>
             </s:if>
+            <s:set var = "noSession" value = "noSession"/>
+	        <s:if test="%{#noSession != null}">
+                <p><%=request.getParameter("noSession") %></p>
+            </s:if>
+            
             <p style="text-align: center;"><s:property value="status"/></p>
             <p style="text-align: center; color: red;"><s:property value="errorMessage"/></p>
             
-          <s:form action="login" style="width: 100%;">
+          <s:form action="login" style="width: 100%;"> 
             <div class="control-group">
-              <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
+              <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your username" />
               <p class="help-block text-danger"></p>
             </div>
             <div class="control-group">
-              <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
+              <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your password" />
               <p class="help-block text-danger"></p>
             </div>
             <s:submit value="Log in" class="btn btn-primary py-3 px-5" style="float: right;"/>
@@ -132,7 +137,7 @@
     </div>
 </s:if>
 <s:else> 
-REDIRECT THIS PAGE TO DASHBOARD.
+REDIRECT THIS PAGE TO DASHBOARD (user is still currently logged in).
 </s:else>
 </body>
 </html>

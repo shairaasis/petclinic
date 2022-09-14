@@ -221,6 +221,7 @@
                                 <td>
                                     <s:url action="approve" var="approve">
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
+										<s:param name="accountId" value="accountId"></s:param>
                                     </s:url>
                                     <s:a href="%{approve}"><button id="approve" title="Approve" type="button" style="cursor: pointer;padding: 3px; background-color: #15ac59d2; border: none; border-radius: 5px; color: white;">
 									<i class='bx bxs-checkbox-checked bx-sm'></i></button></s:a>
@@ -248,13 +249,14 @@
   <script src="css/admincss/modal.js"></script>
 </s:if>
 <s:else> 
-REDIRECT THIS TO ERROR PAGE. 
-This page is only for Admins.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE.  
-No Session.
+	<%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
 </s:else>
 </body>
 </html>

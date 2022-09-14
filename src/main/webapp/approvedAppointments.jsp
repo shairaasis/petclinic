@@ -180,6 +180,7 @@
                                 <td>
                                     
                                     <s:url action="cancelAppointment" var="cancelAppointment">
+										<s:param name="accountId" value="accountId"></s:param>
                                         <s:param name="appointmentId" value="appointmentId"></s:param>
                                     </s:url>
                                     <s:a href="%{cancelAppointment}"><button id="cancel" title="Cancel" type="button" style="cursor: pointer;padding: 3px; background-color: #d22a2ae0; border: none; border-radius: 5px; color: white; ">
@@ -200,15 +201,16 @@
 
   <script src="css/admincss/script.js"></script>
   <script src="css/admincss/modal.js"></script>
-</s:if>
-<s:else>
-REDIRECT THIS TO ERROR PAGE. 		 
-This page is only for Admins.
-</s:else>
-</s:if>
-<s:else>
-REDIRECT THIS TO ERROR PAGE.  
-No Session.
-</s:else>
+	</s:if>
+	<s:else>
+		<s:include value="/access-denied.jsp"></s:include>
+	</s:else>
+	</s:if>
+	<s:else>
+		<%
+	String redirectURL = "login.jsp";
+	response.sendRedirect(redirectURL);
+%>
+	</s:else>
 </body>
 </html>

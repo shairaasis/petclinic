@@ -20,9 +20,13 @@
             <result>/index.jsp</result>
         </action>
 
+        <action name="loginPage" class="com.example.proj.action.Login" method="execute">
+            <result>/login.jsp</result>
+        </action>
+
         <action name="register" class="com.example.proj.action.Register" method="execute">
             <interceptor-ref name="defaultStack"/>
-            <result name="success">/login.jsp</result>
+            <result name="success">/verification.jsp</result>
             <result name="input">/register.jsp</result>
             <result name="error">/error.jsp</result>
             <result name="accountregistered" type="redirectAction">
@@ -32,7 +36,8 @@
             </result>
         </action>
 
-        <action name="login" class="com.example.proj.action.Login" method="execute">
+
+        <action name="login" class="com.example.proj.action.Login" method="login">
             <interceptor-ref name="defaultStack"/>
             <result name="admin" type="redirectAction">
                 <param name="actionName">admin</param>
@@ -48,6 +53,14 @@
                 <param name="actionName">client</param>
                 <param name="accountId">${accountBean.accountId}</param>
             </result>
+            <result name="Pending">/verification.jsp</result>
+        </action>
+
+        <action name="verify" class="com.example.proj.action.Login" method="verify">
+            <result name="Verified">login.jsp</result>
+            <result name="Pending">/verification.jsp</result>
+            <result name="input">/login.jsp</result>
+            <result name="error">/error.jsp</result>
         </action>
 
         <action name="veterinarian" class="com.example.proj.action.Veterinarian">
@@ -58,7 +71,7 @@
             <result name="success">/client.jsp</result>
         </action>
         
-        <action name="admin" class="com.example.proj.action.Admin">
+        <action name="admin" class="com.example.proj.action.Admin" method="execute">
             <result name="success">/admin.jsp</result>
         </action>
 
@@ -211,10 +224,11 @@
             </result>
             <result name="error">/error.jsp</result>            
         </action>
-        <!-- cancel appointment by admin -->
+        <!-- cancel appointment by admin and vet -->
         <action name="cancelAppointment" class="com.example.proj.action.Cancel" method="execute">
             <result name="success" type="redirectAction">
                 <param name="actionName">approvedAppointments</param>
+                <param name="accountId">${accountId}</param>
                 <param name="appointmentStatus">${appointmentStatus}</param>
             </result>
             <result name="vetAppointmentCancelled" type="redirectAction">
@@ -232,6 +246,7 @@
             <result name="success" type="redirectAction">
                 <param name="actionName">approvedAppointments</param>
                 <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="vetApproved" type="redirectAction">
                 <param name="actionName">vetApprovedAppointments</param>
@@ -282,6 +297,13 @@
             <result name = "success">/TestSuccess.jsp</result>
             <result name = "error">/TestError.jsp</result>
         </action>
+
+        <action name = "generateReport" class = "com.example.proj.action.Admin" method = "generateReport">
+            <result name = "success">/TestSuccess.jsp</result>
+            <result name = "error">/TestError.jsp</result>
+        </action>
+
+        
 
 
     </package>

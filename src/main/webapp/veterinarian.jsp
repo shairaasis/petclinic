@@ -121,15 +121,60 @@
 			</div>
 
 			<ul class="box-info">
+				
 				<li>
-					<i class='bx bxs-user'></i>
-						<span class="text">
-						<h3>Welcome back</h3>
-						<p>to PetClinic</p>
+					<i class='bx bxs-calendar-check' ></i>
+					<span class="text">
+						<h3><s:property value="%{pendingAppointments}"/></h3>
+						<p>Pending Appointments</p>
 					</span>
 				</li>
-				
+				<li>
+					<i class='bx bxs-calendar-check' ></i>
+					<span class="text">
+						<h3><s:property value="%{approvedAppointments}"/></h3>
+						<p>Approved Appointments</p>
+					</span>
+				</li>
 			</ul>
+			<div class="table-data">
+				<div class="order">
+					<div class="head">
+						<h3><s:property value="%{today}"/><br>Appointments</h3>
+						<!-- <i class='bx bx-search' ></i>
+						<i class='bx bx-filter' ></i> -->
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>Pet</th>
+                                <th>Owner</th>
+                                <th>Service</th>
+                                <th>Schedule</th>
+                                <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+                        <s:iterator value="appointments" var="appointment">  
+                            <tr>
+                                <td><s:property value="petName"/></td>
+                                <td><s:property value="customer"/></td>
+                                <td><s:property value="service"/></td>
+                                <td><s:property value="schedule"/></td>
+								<s:set var="stat" value="status"/>
+								<s:if test='%{#stat == "pending"}'>
+									<td><span class="status pending" ><s:property value="status"/></span></td>
+								</s:if>
+								<s:else>
+									<td><span class="status completed" style="background-color: rgba(0, 128, 0, 0.831);"><s:property value="status"/></span></td>
+								</s:else>
+                            </tr>
+                        </s:iterator>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
 
 
 
@@ -146,13 +191,13 @@
   <script src="css/admincss/script.js"></script>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE. 
-This page is only for Veterinarians.
+	<s:include value="/access-denied.jsp"></s:include>
 </s:else>
 </s:if>
 <s:else>
-REDIRECT THIS TO ERROR PAGE.
-No Session.
+	<jsp:forward page="login.jsp"> 
+	<jsp:param name="noSession" value="Session Timeout. Please log in again." /> 
+	</jsp:forward>
 </s:else>
 </body>
 </html>
