@@ -17,6 +17,7 @@ public class Admin extends ActionSupport{
     private int accountId;
     private int clients;
     private int pendingAppointments;
+    private int approvedAppointments;
     private int totalSales;
     private String today;
     LocalDate now = LocalDate.now();
@@ -25,7 +26,7 @@ public class Admin extends ActionSupport{
     public String execute() throws Exception{
         
         setClients(numberOfClients());
-        setPendingAppointments(numOfPendingAppointments());
+        setApprovedAppointments(numOfApprovedAppointments());
         setTotalSales(totalSales());
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -93,7 +94,7 @@ public class Admin extends ActionSupport{
          }
          return clients;
     }
-    public int numOfPendingAppointments() throws Exception{
+    public int numOfApprovedAppointments() throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -106,7 +107,7 @@ public class Admin extends ActionSupport{
                 preparedStatement = connection.prepareStatement(sql);
                 ResultSet rs= preparedStatement.executeQuery();
                 while(rs.next()){
-                    setPendingAppointments(rs.getInt(1));
+                    setApprovedAppointments(rs.getInt(1));
                 }
                 
             } 
@@ -116,7 +117,7 @@ public class Admin extends ActionSupport{
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
          }
-         return pendingAppointments;
+         return approvedAppointments;
     }
 
     public int totalSales() throws Exception{
@@ -193,6 +194,12 @@ public class Admin extends ActionSupport{
     }
     public void setToday(String today) {
         this.today = today;
+    }
+    public int getApprovedAppointments() {
+        return approvedAppointments;
+    }
+    public void setApprovedAppointments(int approvedAppointments) {
+        this.approvedAppointments = approvedAppointments;
     }
 
     
