@@ -119,6 +119,17 @@ public class Cancel extends ActionSupport{
                 while (rs.next()){
                     setTimeOfAppointment(rs.getString(1));
                 }
+                sql = "select email from accounts where account_id=? OR account_type_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getVetID());
+                preparedStatement.setInt(2, 1);
+                rs = preparedStatement.executeQuery();
+                setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was canceled.");
+                setBody2("Hello Admins and "+getVetFName() +" " + getVetLName() + ",\n \n We're sorry to inform you that your approved appointment was cancelled by "+ getVetFName() + " " +getVetLName() +" due to some various reasons. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName());
+                while (rs.next()){
+                    setTo2(rs.getString(1));
+                    emailCancelClient();;
+                }
                 setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was canceled.");
                 setBody("Hello "+getClientName()+",\n \n We're sorry to inform you that your scheduled appointment was cancelled due to some various reasons. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName()+"\n \n We still hope to see you soon.");
                 emailCancelVetAd();
@@ -209,12 +220,15 @@ public class Cancel extends ActionSupport{
                 preparedStatement.setInt(1, getVetID());
                 preparedStatement.setInt(2, 1);
                 rs = preparedStatement.executeQuery();
-                setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was canceled.");
+                setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was cancelled.");
                 setBody2("Hello Admins and "+getVetFName() +" " + getVetLName() + ",\n \n We're sorry to inform you that your approved appointment was cancelled by "+ getClientName() +" due to some various reasons. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName());
                 while (rs.next()){
                     setTo2(rs.getString(1));
                     emailCancelClient();;
                 }
+                setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was cancelled.");
+                setBody("Hello "+getClientName()+",\n \n Cancellation of appointment was sent to your veterinarian . \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName()+"\n \n We still hope to see you soon.");
+                emailCancelVetAd();
                 sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.executeUpdate();
