@@ -204,9 +204,17 @@ public class Cancel extends ActionSupport{
                 while (rs.next()){
                     setTimeOfAppointment(rs.getString(1));
                 }
+                sql = "select email from accounts where account_id=? OR account_type_id=?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, getVetID());
+                preparedStatement.setInt(2, 1);
+                rs = preparedStatement.executeQuery();
                 setSubject("Cancelled: Appointment for "+ getPetName() +" on " +geteSchedule()+" was canceled.");
                 setBody2("Hello Admins and "+getVetFName() +" " + getVetLName() + ",\n \n We're sorry to inform you that your approved appointment was cancelled by "+ getClientName() +" due to some various reasons. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName());
-                emailCancelClient();
+                while (rs.next()){
+                    setTo2(rs.getString(1));
+                    emailCancelClient();;
+                }
                 sql = "DELETE FROM appointments WHERE appointment_id ='"+getAppointmentId()+"'";
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.executeUpdate();
