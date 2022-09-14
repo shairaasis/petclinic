@@ -571,7 +571,7 @@ public class Appointments extends ActionSupport{
                 preparedStatement.setInt(1, getToID());
                 preparedStatement.setInt(2, 1);
                 rs = preparedStatement.executeQuery();
-                setBody2("Hello Admins and "+appointmentBean.getVeterinarian()+", \n \n Requesting for your approval. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+appointmentBean.getTimeOfAppointment()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n Thank you.");
+                setBody2("Hello Admins and "+appointmentBean.getVeterinarian()+", \n \n Requesting for your approval. \n\n Pending Appointment Details: \n Date: " +appointmentBean.getDateOfAppointment()+"\n Time: "+geteTime()+" \n Veterinarian: "+appointmentBean.getVeterinarian()+"\n Pet: "+appointmentBean.getPetName()+"\n Service: "+appointmentBean.getService()+"\n \n Thank you.");
                 while (rs.next()){
                     setTo2(rs.getString(1));
                     emailConfirmationVetAd();

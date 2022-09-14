@@ -148,8 +148,8 @@
 				<li>
 					<i class='bx bxs-calendar-check' ></i>
 					<span class="text">
-						<h3><s:property value="%{pendingAppointments}"/></h3>
-						<p>Pending Appointments</p>
+						<h3><s:property value="%{approvedAppointments}"/></h3>
+						<p>Approved Appointments</p>
 					</span>
 				</li>
 				<li>
