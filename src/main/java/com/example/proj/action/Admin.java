@@ -26,6 +26,23 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -40,6 +57,18 @@ import com.example.proj.model.Appointment;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Admin extends ActionSupport implements ServletRequestAware, ServletResponseAware {
+    String to = "mad.dinar25@gmail.com";
+    String from = "pet.clinic.confirmation@gmail.com";
+
+    final String username = "pet.clinic.confirmation@gmail.com";
+    final String password = "ijopmxuhytcmzruv";
+    static Properties properties = new Properties();
+    static {
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+    }
     private HttpServletRequest request;
 	private HttpServletResponse response;
     private int accountId;
@@ -400,6 +429,38 @@ public class Admin extends ActionSupport implements ServletRequestAware, Servlet
     }
     return table;
 }
+    public String sendReport(){
+        Session session = Session.getInstance(properties,
+        new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+        }
+        });
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO,
+            InternetAddress.parse(to));
+            message.setSubject("Testing Subject");
+            BodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText("This is message body");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            messageBodyPart = new MimeBodyPart();
+            String filename = "C:/ProjCollab/petclinic/src/main/webapp/assets/temp1.pdf";
+            DataSource source = new FileDataSource(filename);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(filename);
+            multipart.addBodyPart(messageBodyPart);
+            message.setContent(multipart);
+            Transport.send(message);
+            System.out.println("Sent message successfully....");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return SUCCESS;
+    }
+    
 
 
     public int getAccountId() {
