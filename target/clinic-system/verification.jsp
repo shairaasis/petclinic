@@ -38,8 +38,6 @@
 
 <body>
     <!-- Topbar Start -->    
-    <s:set var = "token" value = "#session.token"/>
-	<s:if test="%{#token == null}">
     <div class="container-fluid" style="background-color:rgb(204 189 189 / 20%);">
         
         <div class="row py-3 px-lg-5">
@@ -96,7 +94,7 @@
   
     <div class="container-fluid pt-5">
       <div class="d-flex flex-column text-center mb-5 pt-5">
-        <h4 class="text-secondary mb-4">Login</h4>
+        <h4 class="text-secondary mb-4">Verification</h4>
       </div>
       <div class="row justify-content-center">
         <div class="col-12 col-sm-8 mb-5">
@@ -110,29 +108,25 @@
             <p style="text-align: center;"><s:property value="status"/></p>
             <p style="text-align: center; color: red;"><s:property value="errorMessage"/></p>
             
-          <s:form action="login" style="width: 100%;"> 
+          <s:form action="verify" style="width: 100%;">
             <div class="control-group">
-              <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
+                <s:textfield name="accountBean.username" class="form-control p-4" placeholder="Your Username" required="required" data-validation-required-message="Please enter your name" />
+                <p class="help-block text-danger"></p>
+              </div> 
+            <div class="control-group">
+              <s:textfield name="fourDigitCode" value ="" class="form-control p-4" placeholder="Your 4-Digit Code" required="required" data-validation-required-message="Please enter your name" />
               <p class="help-block text-danger"></p>
             </div>
-            <div class="control-group">
-              <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
-              <p class="help-block text-danger"></p>
-            </div>
-            <s:submit value="Log in" class="btn btn-primary py-3 px-5" style="float: right;"/>
+            <s:submit value="Log In" class="btn btn-primary py-3 px-5" style="float: right;"/>
             
           </s:form>
           <div class="redirect" style="float: right; text-align: right; ">
             <!-- <a href="#">Register with LoginRadius</a><br> -->
-            <a href="register.jsp">Don't have an account? Register here</a>
+            <a href="register.jsp">Forgot your account? Register here</a>
           </div>
           </div>
         </div>
       </div>
     </div>
-</s:if>
-<s:else> 
-REDIRECT THIS PAGE TO DASHBOARD (user is still currently logged in).
-</s:else>
 </body>
 </html>

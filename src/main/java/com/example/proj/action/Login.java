@@ -29,7 +29,9 @@ public class Login extends ActionSupport implements SessionAware{
     private String accountStatus;
     private int accountCode;
     private static Account accountBean;
-    private boolean fourDigitCode = false;
+    private boolean fourDigitCodeStats = false;
+    private int fourDigitCode;
+    private int verifyAccountID;
 
     public String execute() throws Exception {
         accountBean = getAccountBean();
@@ -52,10 +54,10 @@ public class Login extends ActionSupport implements SessionAware{
                 }
             }  
             else {
-                System.out.println("Account is not verified, send code? to your number?");
-                setFourDigitCode(true);
-                errorMessage = "Account is yet not verified, send code to your number?";
-                return "input";
+                System.out.println("Account is not verified");
+                setFourDigitCodeStats(true);
+                errorMessage = "Account is yet not verified, 4-Digit Code was sent code to your contact #.";
+                return "Pending";
             }
         }
         else{  
@@ -101,16 +103,20 @@ public class Login extends ActionSupport implements SessionAware{
             String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, "root", "password");
-            sql = "SELECT status, code FROM verification WHERE account_id=?";
+            if (connection != null) {
+            sql = "SELECT * FROM verification WHERE account_id=?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, accountID);
             System.out.println("madzAccountID: " + accountID);
             rs = preparedStatement.executeQuery();
             while (rs.next()){
-                setAccountStatus(rs.getString(1));
-                setAccountCode(rs.getInt(2));
+                setAccountStatus(rs.getString(3));
+                setAccountCode(rs.getInt(4));
             }
+            System.out.println("madzAccountSTATS: " + getAccountStatus());
+            System.out.println("madzAccountCODE: " + getAccountCode());
             if (getAccountStatus().equals("Verified")) {status2 = true;}
+        }
             else {status2 = false;}
         } catch(Exception e){e.printStackTrace();
         } finally {
@@ -183,6 +189,53 @@ public class Login extends ActionSupport implements SessionAware{
         }
     }
 
+    public String verify() {
+        String stats = ERROR;
+        Statement statement;
+        try{
+            System.out.println("VERIFICATION");
+            String URL = "jdbc:mysql://localhost:3306/petclinic?useTimezone=true&serverTimezone=UTC";
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, "root", "password");
+            if (connection != null) {
+            sql = "SELECT account_id FROM accounts WHERE username=?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, accountBean.getUsername());
+            rs = preparedStatement.executeQuery();
+            System.out.println("username: " + accountBean.getUsername());
+            while (rs.next()){
+                setVerifyAccountID(rs.getInt(1));
+            }
+            System.out.println("verifyAccountID: " + getVerifyAccountID());
+            sql = "SELECT * FROM verification WHERE account_id=? AND code =?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, getVerifyAccountID());
+            preparedStatement.setInt(2, getFourDigitCode());
+            System.out.println("verify account id " + getVerifyAccountID());
+            System.out.println("verify 4digit " + getFourDigitCode());
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                stats = "Verified";
+            }
+            if (stats == "Verified"){
+                statement = connection.createStatement();
+                sql = "update verification set status='Verified' where account_id =" +getVerifyAccountID();
+                statement.executeUpdate(sql);
+                System.out.println("YOU ARE NOW VERIFIED");
+                addActionMessage("You are now verified, Please log-in using your Username and Password.");
+            }
+            return stats;
+        }
+    } catch (Exception e) {
+        errorMessage = e.toString();
+        return stats;  
+    } finally {
+        if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+    }
+        return stats;
+    }
+
 
     public String logout() throws SQLException{
         deleteToken();
@@ -237,11 +290,11 @@ public class Login extends ActionSupport implements SessionAware{
     public void setAccountCode(int accountCode) {
         this.accountCode = accountCode;
     }
-    public boolean isFourDigitCode() {
-        return fourDigitCode;
+    public int getVerifyAccountID() {
+        return verifyAccountID;
     }
-    public void setFourDigitCode(boolean fourDigitCode) {
-        this.fourDigitCode = fourDigitCode;
+    public void setVerifyAccountID(int verifyAccountID) {
+        this.verifyAccountID = verifyAccountID;
     }
 
     public String getLogoutToken() {
@@ -249,6 +302,19 @@ public class Login extends ActionSupport implements SessionAware{
     }
     public void setLogoutToken(String logoutToken) {
         this.logoutToken = logoutToken;
+    }
+
+    public boolean isFourDigitCodeStats() {
+        return fourDigitCodeStats;
+    }
+    public void setFourDigitCodeStats(boolean fourDigitCodeStats) {
+        this.fourDigitCodeStats = fourDigitCodeStats;
+    }
+    public int getFourDigitCode() {
+        return fourDigitCode;
+    }
+    public void setFourDigitCode(int fourDigitCode) {
+        this.fourDigitCode = fourDigitCode;
     }
 
 }

@@ -23,7 +23,7 @@ public class Register extends ActionSupport {
     private String encryptedPassword;
     private int typeOfAccount;
     private int accountId;
-    private String temp4DCode;
+    private int temp4DCode;
     PreparedStatement preparedStatement;
     ResultSet rs;
 
@@ -35,7 +35,7 @@ public class Register extends ActionSupport {
         {
             accountBean.setAccountType(1);
             if(saveToDB()) {
-                addActionMessage("You have successfully created an account, Please log-in and verify your account. 4-Digit code will be sent to your Contact #.");
+                addActionMessage("You have successfully created an account, Please verify your account first. A 4-Digit code will be sent to your Contact #.");
                 return "accountregistered";
             } else {
                 return ERROR;
@@ -44,6 +44,7 @@ public class Register extends ActionSupport {
         else if (typeOfAccount == 2){
             accountBean.setAccountType(2);
             if(saveToDB()) {
+                addActionMessage("You have successfully created an account, Please verify your account first. A 4-Digit code will be sent to your Contact #.");
                 return "accountregistered";
             } else {
                 return ERROR;
@@ -51,6 +52,7 @@ public class Register extends ActionSupport {
         }else if (typeOfAccount == 3){
             accountBean.setAccountType(3);
             if(saveToDB()) {
+                addActionMessage("You have successfully created an account, Please verify your account first. A 4-Digit code will be sent to your Contact #.");
                 return "accountregistered";
             } else {
                 return ERROR;
@@ -122,10 +124,10 @@ public class Register extends ActionSupport {
         return encryptedPassword;
     }
 
-    private String fourDigitGenerator() { 
-        Random r = new Random();
-        String randomNumber = String.format("%04d", (Object) Integer.valueOf(r.nextInt(1001)));
-        System.out.println(randomNumber);
+    private int fourDigitGenerator() { 
+        int min = 9999;
+        int max = 1111;
+        int randomNumber = (int)(Math.random() * (max - min + 1) + min);
         return randomNumber;
     }
 
@@ -181,11 +183,11 @@ public class Register extends ActionSupport {
     public void setAccountId(int accountId) {
         this.accountId = accountId;
     } 
-    public String getTemp4DCode() {
+    public int getTemp4DCode() {
         return temp4DCode;
     }
 
-    public void setTemp4DCode(String temp4dCode) {
+    public void setTemp4DCode(int temp4dCode) {
         temp4DCode = temp4dCode;
     }
 }

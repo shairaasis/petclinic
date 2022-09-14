@@ -119,12 +119,6 @@
               <s:password name="accountBean.password" class="form-control p-4" placeholder="Your Password" required="required" data-validation-required-message="Please enter your name" />
               <p class="help-block text-danger"></p>
             </div>
-            <s:set var="4dc" value="fourDigitCode"/>
-            <s:if test="%{#4dc == true}">
-                <s:form action = "sendCode">
-                    <s:submit value = "Send Verification Code" />
-                </s:form>
-            </s:if>
             <s:submit value="Log in" class="btn btn-primary py-3 px-5" style="float: right;"/>
             
           </s:form>
