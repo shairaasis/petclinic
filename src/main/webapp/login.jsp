@@ -137,7 +137,15 @@
     </div>
 </s:if>
 <s:else> 
-REDIRECT THIS PAGE TO DASHBOARD (user is still currently logged in).
+    <s:if test='%{#session.accountType == "admin"}'>
+        <s:url action="admin" var="admin">
+            <s:param name="accountId" value="%{#session.accountID}"></s:param>
+        </s:url>
+        <jsp:forward page="${admin}"> 
+            <jsp:param name="accountId" value="%{#session.accountID}" /> 
+        </jsp:forward>
+    </s:if>
+    
 </s:else>
 </body>
 </html>

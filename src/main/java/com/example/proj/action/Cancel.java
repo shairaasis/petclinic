@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Cancel extends ActionSupport{
-    private String accountId;
+    private int accountId;
     private int appointmentId;
     private String appointmentStatus;
     private int customerID;
@@ -59,7 +59,7 @@ public class Cancel extends ActionSupport{
         }
         // EMAIL >
 
-    // / method for delete the record
+    // / method for cancelling the appointment
 	public String execute() throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -129,10 +129,10 @@ public class Cancel extends ActionSupport{
 
                 // EMAIL
                 
-                if( accountId == null){
-                    return SUCCESS;
+                if(accountId == getVetID()){
+                    return "vetAppointmentCancelled";
                 }
-                return "vetAppointmentCancelled";
+                return SUCCESS;
             }
 		} catch (Exception e) {
 
@@ -277,11 +277,13 @@ public class Cancel extends ActionSupport{
         return ret;
     }
     
-    public String getAccountId() {
+   
+
+    public int getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(int accountId) {
         this.accountId = accountId;
     }
 

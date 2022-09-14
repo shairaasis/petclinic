@@ -224,10 +224,11 @@
             </result>
             <result name="error">/error.jsp</result>            
         </action>
-        <!-- cancel appointment by admin -->
+        <!-- cancel appointment by admin and vet -->
         <action name="cancelAppointment" class="com.example.proj.action.Cancel" method="execute">
             <result name="success" type="redirectAction">
                 <param name="actionName">approvedAppointments</param>
+                <param name="accountId">${accountId}</param>
                 <param name="appointmentStatus">${appointmentStatus}</param>
             </result>
             <result name="vetAppointmentCancelled" type="redirectAction">
@@ -245,6 +246,7 @@
             <result name="success" type="redirectAction">
                 <param name="actionName">approvedAppointments</param>
                 <param name="appointmentStatus">${appointmentStatus}</param>
+                <param name="accountId">${accountId}</param>
             </result>
             <result name="vetApproved" type="redirectAction">
                 <param name="actionName">vetApprovedAppointments</param>

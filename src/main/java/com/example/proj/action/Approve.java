@@ -26,7 +26,7 @@ public class Approve extends ActionSupport{
     private int appointmentId;
     private String error;
     private String appointmentStatus;
-    private String accountId;
+    private int accountId;
     private int customerID;
     private int petID;
     private int vetID;
@@ -164,7 +164,7 @@ public class Approve extends ActionSupport{
                 setSubject("Approved: Appointment for "+ getPetName() +" on " +geteSchedule()+" was approved.");
                 setBody("Hello "+getClientName()+",\n \n We're glad to inform you that your scheduled appointment was approved. \n\n Appointment Details: \n Date: " +geteSchedule()+ "\n Time: "+getTimeOfAppointment()+" \n Veterinarian: "+getVetFName() +" "+getVetLName()+"\n Pet: "+getPetName()+"\n Service: "+getServiceName()+"\n \n  See you!");
                 emailApproved();
-                if(accountId != null){
+                if(accountId == getVetID()){
                     return "vetApproved";
                 }
                 return SUCCESS;
@@ -277,11 +277,13 @@ public class Approve extends ActionSupport{
         this.appointmentStatus = appointmentStatus;
     }
 
-    public String getAccountId() {
+   
+
+    public int getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(int accountId) {
         this.accountId = accountId;
     }
 
